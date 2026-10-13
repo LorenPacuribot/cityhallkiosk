@@ -1,4 +1,5 @@
-/* Kiosk: designed at 1080 × 1920 portrait (43" touchscreen) and scaled to fit any window. */
+/* Kiosk: designed at 1080 × 1920 portrait (43" touchscreen) and scaled to fit any window.
+   A landscape 1920 × 1080 layout lives at the end of this file (#stage.landscape). */
 html, body { height: 100%; overflow: hidden; background: #0d1b2a; }
 #viewport { position: fixed; inset: 0; overflow: hidden; }
 #stage {
@@ -6,6 +7,7 @@ html, body { height: 100%; overflow: hidden; background: #0d1b2a; }
   transform-origin: center center; font-size: 28px; line-height: 1.4; user-select: none; -webkit-user-select: none;
   --fs-display: 80px; --fs-h1: 56px; --fs-h2: 40px; --fs-h3: 32px; --fs-body: 28px; --fs-label: 24px; --fs-caption: 22px;
 }
+#stage.landscape { width: 1920px; height: 1080px; }
 #stage.large { --fs-display: 92px; --fs-h1: 66px; --fs-h2: 50px; --fs-h3: 40px; --fs-body: 34px; --fs-label: 30px; --fs-caption: 28px; }
 .screen { position: absolute; inset: 0; display: flex; flex-direction: column; }
 .content { flex: 1; overflow-y: auto; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 28px; scrollbar-width: thick; }
@@ -177,3 +179,82 @@ h1, h2, h3, p { margin: 0; }
 }
 #print-slip { display: none; }
 @media print { #print-slip { display: block; } }
+
+/* Layout wrappers — invisible in portrait, become columns in landscape. */
+.cols, .col, .search-left, .arrived-info { display: contents; }
+.nav-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+/* =====================================================================
+   LANDSCAPE 1920 × 1080  (/kiosk/landscape or ?layout=landscape)
+   Same screens and flow; content is arranged in columns because the
+   screen is wide but only 1080 px tall.
+   ===================================================================== */
+#stage.landscape .topbar { height: 112px; padding: 0 48px; }
+#stage.landscape .tb-btn { min-height: 80px; padding: 8px 18px; }
+#stage.landscape .content { padding: 28px 64px 32px; gap: 24px; }
+#stage.landscape .helpbar { padding: 18px 64px; }
+#stage.landscape .banner { padding: 14px 64px; }
+#stage.landscape .dock { padding: 20px 64px; }
+#stage.landscape .dock > * { flex: 0 1 560px; }
+#stage.landscape .dock { justify-content: flex-end; }
+
+/* columns */
+#stage.landscape .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+#stage.landscape .col { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+#stage.landscape .list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+#stage.landscape .col .list { grid-template-columns: minmax(0, 1fr); }
+#stage.landscape .row { min-height: 108px; }
+
+/* welcome: illustration on the left, call to action on the right */
+#stage.landscape .welcome .hero { left: -240px; top: -120px; width: 1680px; height: 1320px; }
+#stage.landscape .welcome .scrim { background: linear-gradient(90deg, rgba(18,53,91,0) 30%, rgba(18,53,91,.88) 55%, #12355B 68%); }
+#stage.landscape .welcome .panel { left: auto; right: 96px; top: 50%; transform: translateY(-50%); width: 760px; gap: 24px; }
+#stage.landscape .welcome .top { left: 48px; top: 40px; }
+
+/* home: shorter hero, search + 3 choices, popular in two columns */
+#stage.landscape .hero-band { height: 220px; }
+#stage.landscape .hero-band img { left: 0; top: -520px; width: 1920px; height: 1280px; }
+#stage.landscape .hero-band h1 { left: 64px; top: 70px; width: 1100px; }
+#stage.landscape .choice { flex-direction: row; align-items: center; gap: 24px; padding: 24px 28px; }
+#stage.landscape .choice .tile { flex: none; }
+#stage.landscape .choice .caption { display: none; }
+
+/* search: results on the left, keyboard on the right */
+#stage.landscape .search-layout { display: grid; grid-template-columns: minmax(0, 1fr) 940px; gap: 40px; align-items: start; }
+#stage.landscape .search-left { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+#stage.landscape .search-left .list { grid-template-columns: minmax(0, 1fr); }
+#stage.landscape .keyboard { margin-top: 0; align-self: end; padding: 20px 12px; }
+#stage.landscape .key { width: 80px; height: 84px; }
+#stage.landscape .key.wide { width: auto; }
+#stage.landscape .key.space { width: 300px; }
+
+/* service & office detail: two columns */
+#stage.landscape .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* navigation: 3D view on the left, step list on the right */
+#stage.landscape .dest { padding: 18px 64px; }
+#stage.landscape .nav-body { flex-direction: row; }
+#stage.landscape .viewport3d { flex: 1; }
+#stage.landscape .directions { width: 620px; flex: none; padding: 28px 36px; gap: 16px; border-left: 2px solid var(--border-default); overflow-y: auto; }
+#stage.landscape #dirs { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+#stage.landscape .directions .btn-row { flex-direction: column; gap: 12px; }
+#stage.landscape .minimap { width: 380px; }
+
+/* arrived: door picture left, message right */
+#stage.landscape .arrived-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 56px; align-items: center; text-align: left !important; padding: 40px 96px; }
+#stage.landscape .arrived-info { display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
+#stage.landscape .centered { justify-content: center; }
+#stage.landscape .centered > * { max-width: 1100px; }
+#stage.landscape .centered > .back { position: absolute; left: 64px; top: 28px; }
+#stage.landscape .centered { position: relative; }
+
+/* map: plan on the left, office list on the right */
+#stage.landscape .map-cols { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+
+/* overlays */
+#stage.landscape .overlay.bottom .sheet { width: 1200px; border-radius: 28px; margin-bottom: 40px; padding-bottom: 40px; }
+#stage.landscape .sheet .qr { width: 340px; height: 340px; }
+#stage.landscape .toast { bottom: 140px; }
+#stage.landscape .stats { gap: 14px; }
+#stage.landscape .stat { padding: 18px 20px; }
+#stage.landscape .stat .val { font-size: var(--fs-label); }

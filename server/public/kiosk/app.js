@@ -12,6 +12,12 @@ const WARN_S = 15;
 const LS = { bundle: 'kiosk.bundle', fbq: 'kiosk.feedbackQueue', lang: 'kiosk.lang' };
 
 const stage = document.getElementById('stage');
+// Screen layout: portrait 1080×1920 (default) or landscape 1920×1080.
+//   /kiosk/landscape  or  /kiosk?layout=landscape   → landscape
+//   /kiosk?layout=auto                               → follows the window shape
+const LAYOUT_PARAM = params.get('layout') || (/\/landscape\/?$/.test(location.pathname) ? 'landscape' : 'portrait');
+const layoutNow = () => LAYOUT_PARAM === 'auto' ? (innerWidth >= innerHeight ? 'landscape' : 'portrait') : LAYOUT_PARAM === 'landscape' ? 'landscape' : 'portrait';
+const DIM = { portrait: [1080, 1920], landscape: [1920, 1080] };
 const S = {
   bundle: null, online: true, savedAt: null, publicBase: location.origin,
   stack: [], query: '', kbMode: 'abc', filter: 'all', floorFilter: 'all', mapFloor: 1,
@@ -38,7 +44,13 @@ function toast(msg) {
   stage.appendChild(el); setTimeout(() => el.remove(), 2600);
 }
 function fit() {
-  const s = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+  const mode = layoutNow();
+  if (!stage.classList.contains(mode)) {
+    stage.classList.remove('portrait', 'landscape'); stage.classList.add(mode);
+    if (S.bundle) rerender();
+  }
+  const [w, h] = DIM[mode];
+  const s = Math.min(window.innerWidth / w, window.innerHeight / h);
   stage.style.transform = `translate(-50%, -50%) scale(${s})`;
 }
 addEventListener('resize', fit); fit();
@@ -176,11 +188,13 @@ const screens = {
     const q = S.query;
     const sug = S.lastSuggest;
     return `<section class="screen">${topbar()}
-      <div class="content" style="gap:20px">
+      <div class="content search-layout" style="gap:20px">
+        <div class="search-left">
         ${backBtn()}
         <div class="searchfield active" role="textbox" aria-label="${t('search_placeholder')}" aria-live="polite">${icon('search', 40)}<span class="q">${esc(q)}<span class="caret"></span>${q ? '' : `<span class="muted"> ${t('search_placeholder')}</span>`}</span></div>
         <p class="caption muted">${q.trim() ? t('suggestions') : t('type_to_search')}</p>
         <div class="list" id="suggest">${sug.slice(0, 4).map(rowHTML).join('')}</div>
+        </div>
         ${keyboard()}
       </div></section>`;
   },
@@ -241,6 +255,7 @@ const screens = {
     return `<section class="screen">${topbar()}
       <div class="content">
         ${backBtn()}
+        <div class="cols"><div class="col">
         <h1 class="h1">${esc(o.name)}</h1>
         <div class="badges">${inBuilding ? `<span class="badge info">${icon('map-pin', 24)}${esc(locText(o.location))}</span>` : `<span class="badge offsite">${t(o.location_type === 'offsite' ? 'not_in_building' : 'location_unconfirmed')}</span>`}</div>
         <div class="card" style="display:grid;grid-template-columns:auto 1fr;gap:12px 20px;align-items:center">
@@ -249,8 +264,10 @@ const screens = {
           ${o.offsite_address ? `${icon('map-pin', 32)}<span class="caption">${esc(o.offsite_address)}</span>` : ''}
         </div>
         ${inBuilding ? `<button class="btn btn-primary btn-block" data-action="navoffice" data-id="${o.id}">${icon('navigation', 36)}${t('show_way')}</button>` : ''}
+        </div><div class="col">
         <h2 class="h3">${t('office_services')} (${svcs.length})</h2>
         <div class="list">${svcs.map(s => rowHTML({ kind: 'service', id: s.id, title: s.display_title, subtitle: s.classification || '' })).join('')}</div>
+        </div></div>
       </div>${helpbar()}</section>`;
   },
 
@@ -272,6 +289,8 @@ const screens = {
             ${s.classification ? `<span class="badge neutral">${esc(s.classification)}</span>` : ''}${verified}
           </div>
         </header>
+        <div class="cols">
+        <div class="col">
         <div class="stats">
           ${[['wallet', 'total_fee', s.total_fees], ['clock', 'processing_time', s.total_processing_time], ['users', 'who_may_apply', s.who_may_avail]].map(([ic, k, v]) =>
             `<div class="stat"><span class="lbl">${icon(ic, 28)}${t(k)}</span><span class="val">${esc(v || '—')}</span></div>`).join('')}
@@ -279,6 +298,8 @@ const screens = {
         ${s.requirements.length ? `<section class="card" style="padding:28px 32px 12px"><h2 class="h3">${t('what_to_bring')} (${s.requirements.length})</h2>
           ${s.requirements.map(r => `<div class="req"><span class="box" aria-hidden="true"></span><div><p class="label">${esc(r.requirement)}</p>${r.where_to_secure ? `<p class="caption muted">${esc(r.where_to_secure)}</p>` : ''}</div></div>`).join('')}
         </section>` : ''}
+        </div>
+        <div class="col">
         ${s.steps.length ? `<h2 class="h3">${t('what_youll_do')}</h2>
           <div class="list">${s.steps.map((st, i) => `<div class="step"><span class="num">${i + 1}</span><div style="flex:1;display:flex;flex-direction:column;gap:8px">
             ${st.client_action ? `<p class="label">${esc(st.client_action)}</p>` : ''}
@@ -289,6 +310,7 @@ const screens = {
           <button data-action="fb" data-v="1" data-id="${s.id}">${icon('thumbs-up', 32)}</button>
           <button data-action="fb" data-v="0" data-id="${s.id}">${icon('thumbs-down', 32)}</button></div></div>
         <p class="caption muted">${s.verified_at ? '' : t('not_verified') + ' · '}${t('from_charter', { src: esc(s.source || "Citizen's Charter") })}</p>
+        </div></div>
       </div>
       <div class="dock">
         <button class="btn btn-secondary" data-action="qr" data-id="${s.id}">${icon('qr', 36)}${t('take_it')}</button>
@@ -299,7 +321,7 @@ const screens = {
   offsite({ id }) {
     const o = idx.offices.get(Number(id));
     return `<section class="screen">${topbar()}
-      <div class="content" style="align-items:center;text-align:center">
+      <div class="content centered" style="align-items:center;text-align:center">
         ${backBtn()}
         <div class="circle-icon" style="background:var(--brand-terracotta-tint);color:var(--brand-terracotta)">${icon('building', 64)}</div>
         <h1 class="h1">${t('offsite_title')}</h1>
@@ -315,6 +337,7 @@ const screens = {
     return `<section class="screen">${topbar()}
       <div class="dest">${icon('map-pin', 44)}<div style="flex:1"><p class="h3">${t('navigating_to', { room: esc(S.nav.title) })}</p>
         <p class="caption">${t('walk_info', { room_code: r.to.room_code, floor: r.to.floor_name, d: r.distance_m, m: r.minutes })}</p></div></div>
+      <div class="nav-body">
       <div class="viewport3d" id="vp">
         <div class="minimap" aria-label="Map">
           <div id="mm"></div>
@@ -330,7 +353,7 @@ const screens = {
         <div class="progress"><div id="prog"></div></div>
         <div id="dirs">${r.directions.map((d, i) => `<div class="dir" data-i="${i}"><span class="n">${d.kind === 'floor_change' ? icon('stairs', 28) : i + 1}</span><span class="label" style="font-weight:inherit">${esc(direction(d))}</span></div>`).join('')}</div>
         <div class="btn-row"><button class="btn btn-secondary" data-action="toggle2d">${icon('map', 32)}<span id="t2d">${t('view_2d')}</span></button><button class="btn btn-secondary" data-action="endnav">${t('end_nav')}</button></div>
-      </div></section>`;
+      </div></div></section>`;
   },
 
   arrived() {
@@ -338,8 +361,9 @@ const screens = {
     const room = idx.rooms.get(n.route.to.room_id);
     const office = n.officeId ? idx.offices.get(n.officeId) : null;
     return `<section class="screen">${topbar()}
-      <div class="content" style="align-items:center;text-align:center">
-        <div class="card" style="width:100%;padding:0;overflow:hidden">${doorIllustration(n.route.to.room_code, room?.name || '')}</div>
+      <div class="content arrived-layout" style="align-items:center;text-align:center">
+        <div class="card door" style="width:100%;padding:0;overflow:hidden">${doorIllustration(n.route.to.room_code, room?.name || '')}</div>
+        <div class="arrived-info">
         <div class="circle-icon" style="background:var(--brand-grass-tint);color:var(--status-success)">${icon('circle-check', 64)}</div>
         <h1 class="h1">${t('arrived')}</h1>
         <p class="body muted">${t('arrived_body', { office: esc(office?.name || room?.name || ''), room_code: n.route.to.room_code, floor: n.route.to.floor_name })}</p>
@@ -347,6 +371,7 @@ const screens = {
         <div style="display:flex;flex-direction:column;gap:16px;width:100%">
           ${n.serviceId ? `<button class="btn btn-primary btn-block" data-action="service" data-id="${n.serviceId}">${t('see_requirements')}</button>` : ''}
           <button class="btn btn-secondary btn-block" data-action="home">${t('back_home')}</button>
+        </div>
         </div>
       </div>${helpbar()}</section>`;
   },
@@ -358,12 +383,15 @@ const screens = {
       <div class="content">
         ${backBtn(t('home'))}
         <h1 class="h1">${t('map_hall')}</h1>
+        <div class="cols map-cols"><div class="col">
         <div class="chips">${S.bundle.floors.map(f => `<button class="chip" data-action="mapfloor" data-l="${f.level}" aria-pressed="${f.level === lvl}">${esc(f.name)}</button>`).join('')}</div>
         ${floorSVG(fl, { interactive: true, you: S.bundle.kiosk.floor_level === lvl ? S.bundle.kiosk : null })}
+        </div><div class="col">
         <div class="list">${fl.rooms.filter(r => r.room_type === 'office' || r.occupant).map(r => {
           const off = S.bundle.offices.find(o => o.location?.room_id === r.id);
           return rowHTML({ kind: 'office', id: off?.id ?? '', title: off?.name || r.name, subtitle: r.code });
         }).join('')}</div>
+        </div></div>
       </div>${helpbar()}</section>`;
   },
 };
