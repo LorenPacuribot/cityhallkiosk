@@ -157,10 +157,10 @@ const screens = {
     return `<section class="screen welcome" data-action="start" aria-label="${t('welcome_title')}">
       <div class="hero-frame"><img class="hero" src="/img/cityhall.svg" alt=""></div>
       <div class="scrim"></div>
-      <div class="top"><div class="seal" aria-hidden="true">CM</div><div class="identity"><span class="caption">${t('city')}</span><span class="label">New City Hall</span></div></div>
+      <div class="top"><div class="seal" aria-hidden="true">CM</div><div class="identity"><span class="caption">${t('city')}</span><span class="label">${t('kiosk_name')}</span></div></div>
       <div class="panel">
         <p class="greet">${t('welcome_sub')}</p>
-        <h1 class="display">${t('welcome_title')}</h1>
+        <h1 class="display">${t('welcome_title').replace(t('kiosk_name'), m => `<span class="nowrap">${m}</span>`)}</h1>
         <p class="body">${t('welcome_body')}</p>
         <button class="cta" data-action="start"><span class="cta-ic">${icon('navigation', 42)}</span><span class="h2">${t('touch_here')}</span></button>
         <div class="langs chips" role="group" aria-label="${t('language')}"><span class="body lang-lbl">${t('choose_lang')}</span>

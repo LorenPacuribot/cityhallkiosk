@@ -379,3 +379,9 @@ h1, h2, h3, p { margin: 0; }
 #stage.landscape .choice { flex-direction: row; align-items: center; }
 #stage.landscape .choice .caption { display: block; }
 .choice .ctext { display: flex; flex-direction: column; gap: 6px; }
+.nowrap { white-space: nowrap; }
+/* landscape welcome: room for "Malaybalay City Hall" on one line */
+#stage.landscape .welcome .hero-frame { left: 100px; top: 210px; width: 660px; height: 660px; }
+#stage.landscape .welcome .top { left: 100px; }
+#stage.landscape .welcome .panel { left: 840px; right: 100px; }
+#stage.landscape .welcome .display { font-size: 88px; }

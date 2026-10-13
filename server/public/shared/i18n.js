@@ -7,8 +7,8 @@ export const LANGS = { en: 'EN', fil: 'FIL', ceb: 'CEB' };
 
 const T = {
   en: {
-    city: 'City of Malaybalay', kiosk_name: 'City Hall Kiosk',
-    welcome_title: 'Welcome to City Hall', welcome_sub: 'Maayong pag-abot · Maligayang pagdating',
+    city: 'Self-service kiosk', kiosk_name: 'Malaybalay City Hall',
+    welcome_title: 'Welcome to Malaybalay City Hall', welcome_sub: 'Maayong pag-abot · Maligayang pagdating',
     welcome_body: 'Find the right office, the documents to bring, the fees, and the way there.',
     touch_start: 'Touch anywhere to start',
     home: 'Home', back: 'Back', large_text: 'Larger text', language: 'Language',
@@ -59,8 +59,8 @@ const T = {
     view_requirements: 'View requirements', none: 'None',
   },
   fil: {
-    city: 'Lungsod ng Malaybalay', kiosk_name: 'Kiosk ng City Hall',
-    welcome_title: 'Maligayang pagdating sa City Hall', welcome_sub: 'Welcome · Maayong pag-abot',
+    city: 'Self-service kiosk', kiosk_name: 'Malaybalay City Hall',
+    welcome_title: 'Maligayang pagdating sa Malaybalay City Hall', welcome_sub: 'Welcome · Maayong pag-abot',
     welcome_body: 'Hanapin ang tamang opisina, ang mga dokumentong dadalhin, ang bayad, at ang daan papunta roon.',
     touch_start: 'Pindutin kahit saan para magsimula',
     home: 'Home', back: 'Bumalik', large_text: 'Malaking titik', language: 'Wika',
@@ -110,8 +110,8 @@ const T = {
     view_requirements: 'Tingnan ang requirements', none: 'Wala',
   },
   ceb: {
-    city: 'Siyudad sa Malaybalay', kiosk_name: 'Kiosk sa City Hall',
-    welcome_title: 'Maayong pag-abot sa City Hall', welcome_sub: 'Welcome · Maligayang pagdating',
+    city: 'Self-service kiosk', kiosk_name: 'Malaybalay City Hall',
+    welcome_title: 'Maayong pag-abot sa Malaybalay City Hall', welcome_sub: 'Welcome · Maligayang pagdating',
     welcome_body: 'Pangitaa ang sakto nga opisina, ang mga dokumento nga dad-on, ang bayad, ug ang dalan paingon didto.',
     touch_start: 'Pindota bisan asa aron magsugod',
     home: 'Home', back: 'Balik', large_text: 'Dagkong letra', language: 'Pinulongan',

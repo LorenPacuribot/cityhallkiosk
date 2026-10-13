@@ -43,7 +43,7 @@ const officeOptions = (sel, { blank = false } = {}) => (blank ? '<option value="
 // ------------------------------------------------------------------ auth
 function renderLogin(msg = '') {
   root.innerHTML = `<div class="login"><form class="card" id="login" autocomplete="on">
-    <div class="row"><div class="seal">CM</div><div><b>City Hall Kiosk</b><div class="muted small">Admin panel · City of Malaybalay</div></div></div>
+    <div class="row"><div class="seal">CM</div><div><b>Malaybalay City Hall</b><div class="muted small">Kiosk admin panel</div></div></div>
     <h1 style="font-size:22px;margin:8px 0 0">Sign in</h1>
     ${msg ? `<div class="notice bad" role="alert">${icon('alert', 18)}<span>${esc(msg)}</span></div>` : ''}
     <label class="f">Email<input name="email" type="email" required autocomplete="username" value="admin@kiosk.local"></label>
@@ -75,7 +75,7 @@ const NAV = [
 ];
 function shell(active, inner) {
   root.innerHTML = `<div class="app">
-    <aside class="side"><div class="brand"><div class="seal">CM</div><div><b>Kiosk Admin</b><small>City of Malaybalay</small></div></div>
+    <aside class="side"><div class="brand"><div class="seal">CM</div><div><b>Malaybalay City Hall</b><small>Kiosk admin</small></div></div>
       <nav class="nav" aria-label="Sections">${NAV.filter(n => can(n[3])).map(([k, label, ic]) =>
         `<a href="#/${k}" class="${active === k ? 'on' : ''}" ${active === k ? 'aria-current="page"' : ''}>${icon(ic, 18)}${label}${k === 'approvals' && S.pending ? `<span class="count">${S.pending}</span>` : ''}</a>`).join('')}
         <h6>Open</h6>

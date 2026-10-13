@@ -9,7 +9,7 @@ const app = document.getElementById('app');
 const store = { get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } } };
 
 const header = (back = false) => `<header class="top">${back ? `<a href="/m" class="back" aria-label="Search">${icon('arrow-left', 22)}</a>` : ''}
-  <div class="seal">CM</div><div><b>City Hall Kiosk</b><small>City of Malaybalay</small></div></header>`;
+  <div class="seal">CM</div><div><b>Malaybalay City Hall</b><small>Self-service kiosk</small></div></header>`;
 
 async function getJSON(url) { const r = await fetch(url); if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || 'Not found'); return r.json(); }
 
