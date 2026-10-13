@@ -16,10 +16,12 @@ You need **Node.js 18.17 or newer** (https://nodejs.org). Nothing else is requir
 
 ```bash
 git clone https://github.com/LorenPacuribot/cityhallkiosk.git
-cd cityhallkiosk/server
-npm install
+cd cityhallkiosk
+npm install      # installs the server dependencies (in ./server)
 npm start
 ```
+
+(Running the same two commands inside `server/` works too.)
 
 Then open http://localhost:3000.
 
