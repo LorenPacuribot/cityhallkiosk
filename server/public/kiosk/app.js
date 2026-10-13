@@ -154,19 +154,34 @@ function locText(loc) {
 const screens = {
   welcome() {
     const l = getLang();
-    return `<section class="screen welcome" data-action="start" aria-label="${t('welcome_title')}">
-      <div class="hero-frame"><img class="hero" src="/img/cityhall-cover.jpg" alt="Malaybalay City Hall"></div>
-      <div class="scrim"></div>
-      <div class="top"><div class="seal" aria-hidden="true">CM</div><div class="identity"><span class="caption">${t('city')}</span><span class="label">${t('kiosk_name')}</span></div></div>
-      <div class="panel">
-        <p class="greet">${t('welcome_sub')}</p>
-        <h1 class="display">${t('welcome_title').replace(t('kiosk_name'), m => `<span class="nowrap">${m}</span>`)}</h1>
-        <p class="body">${t('welcome_body')}</p>
-        <button class="cta" data-action="start"><span class="cta-ic">${icon('navigation', 42)}</span><span class="h2">${t('touch_here')}</span></button>
-        <div class="langs chips" role="group" aria-label="${t('language')}"><span class="body lang-lbl">${t('choose_lang')}</span>
+    const name = t('kiosk_name');
+    const title = t('welcome_title').replace(new RegExp('\\s*' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
+      () => `<br>${name.split(' ').length > 2 ? `<span class="nowrap">${name.split(' ')[0]}</span><br><span class="nowrap">${name.split(' ').slice(1).join(' ')}</span>` : `<span class="nowrap">${name}</span>`}`);
+    const st = openStatus(new Date());
+    const openPill = cls => `<span class="wp-open ${cls} ${st.open ? 'is-open' : 'is-closed'}"><i class="dot"></i><span class="wp-open-txt">${esc(st.text)}</span></span>`;
+    return `<section class="screen welcome premium" data-action="start" aria-label="${esc(t('welcome_title'))}">
+      <div class="wp-photo"><img src="/img/cityhall-cover.jpg" alt=""></div>
+      <div class="wp-shade"></div>
+      <header class="wp-top">
+        <div class="seal" aria-hidden="true">CM</div>
+        <div class="identity"><span class="caption">${t('gov_name')}</span><span class="label">${name}</span></div>
+        <div class="wp-clock glass">
+          <span class="wp-time-col"><span class="wp-time" data-clock="time"></span><span class="wp-date" data-clock="date"></span></span>
+          <span class="wp-sep"></span>${openPill('in-clock')}
+        </div>
+      </header>
+      <div class="wp-panel">
+        ${openPill('in-panel')}
+        <p class="wp-greet">${t('welcome_sub')}</p>
+        <h1 class="wp-title${t('welcome_title').length > 34 ? ' long' : ''}">${title}</h1>
+        <button class="wp-cta" data-action="start"><span class="wp-cta-ic">${icon('navigation', 44)}</span><span>${t('touch_to_start')}</span></button>
+      </div>
+      <footer class="wp-foot">
+        <div class="wp-lang glass" role="group" aria-label="${t('language')}">
           ${[['en', 'English'], ['fil', 'Filipino'], ['ceb', 'Cebuano']].map(([k, n]) => `<button data-action="lang" data-lang="${k}" aria-pressed="${l === k}">${n}</button>`).join('')}
         </div>
-      </div></section>`;
+        <span class="wp-hint">${t('touch_anywhere')}</span>
+      </footer></section>`;
   },
 
   home() {
@@ -442,6 +457,30 @@ function keyboard() {
     </div></div>`;
 }
 
+// ---------------------------------------------------------------- welcome clock & office hours
+// Office hours: Monday–Friday 8:00 AM – 5:00 PM by default. Override with settings
+// office_open / office_close ("HH:MM"). Holidays are not known to the kiosk yet.
+function hm(str, def) { const m = /^(\d{1,2}):(\d{2})$/.exec(String(str || '')); return m ? Number(m[1]) * 60 + Number(m[2]) : def; }
+function fmtHM(mins) { const d = new Date(2000, 0, 1, Math.floor(mins / 60), mins % 60); return d.toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit' }); }
+function openStatus(now) {
+  const open = hm(S.bundle?.settings?.office_open, 8 * 60), close = hm(S.bundle?.settings?.office_close, 17 * 60);
+  const day = now.getDay(), mins = now.getHours() * 60 + now.getMinutes(), weekday = day >= 1 && day <= 5;
+  if (weekday && mins >= open && mins < close) return { open: true, text: t('open_now', { t: fmtHM(close) }) };
+  if (weekday && mins < open) return { open: false, text: t('opens_today', { t: fmtHM(open) }) };
+  if (day >= 1 && day <= 4) return { open: false, text: t('opens_tomorrow', { t: fmtHM(open) }) };
+  return { open: false, text: t('opens_monday', { t: fmtHM(open) }) };
+}
+function tickClock() {
+  const els = stage.querySelectorAll('[data-clock]'); if (!els.length) return;
+  const now = new Date(), loc = getLang() === 'fil' ? 'fil-PH' : 'en-PH';
+  els.forEach(el => { el.textContent = el.dataset.clock === 'time'
+    ? now.toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit' })
+    : now.toLocaleDateString(loc, { weekday: 'long', day: 'numeric', month: 'long' }); });
+  const st = openStatus(now);
+  stage.querySelectorAll('.wp-open').forEach(el => { el.classList.toggle('is-open', st.open); el.classList.toggle('is-closed', !st.open); el.querySelector('.wp-open-txt').textContent = st.text; });
+}
+setInterval(tickClock, 15000);
+
 // ---------------------------------------------------------------- router
 function current() { return S.stack[S.stack.length - 1]?.name || 'welcome'; }
 function go(name, p = {}, { replace = false } = {}) {
@@ -461,6 +500,7 @@ function rerender() {
   stage.innerHTML = (screens[name] || screens.home)(p);
   overlays.forEach(o => stage.appendChild(o));
   if (name === 'navigate') startNav();
+  if (name === 'welcome') tickClock();
   if (name === 'search') { /* suggestions update in place */ }
   const content = stage.querySelector('.content'); if (content) content.scrollTop = 0;
 }
