@@ -42,6 +42,7 @@ export async function createApp() {
 
   const pub = path.join(ROOT, 'public');
   app.use('/vendor/three', express.static(path.join(ROOT, 'node_modules', 'three')));
+  app.use('/vendor/fonts/jakarta', express.static(path.join(ROOT, 'node_modules', '@fontsource', 'plus-jakarta-sans')));
   app.use(express.static(pub, { extensions: ['html'] }));
   // single-page apps
   app.get(['/kiosk', '/kiosk/*'], (req, res) => res.sendFile(path.join(pub, 'kiosk', 'index.html')));

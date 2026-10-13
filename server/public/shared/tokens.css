@@ -1,7 +1,11 @@
 /* Design tokens — mirror the Figma file "Malaybalay City Hall Kiosk — System Design"
    (variables collection "Color", "Space & Radius", text styles Kiosk/*, Admin/*, Phone/*). */
-@font-face { font-family: 'Plus Jakarta Sans'; font-weight: 400 800; font-display: swap;
-  src: local('Plus Jakarta Sans'), local('PlusJakartaSans'); }
+/* Plus Jakarta Sans, served locally so the kiosk looks the same offline */
+@import url('/vendor/fonts/jakarta/400.css');
+@import url('/vendor/fonts/jakarta/500.css');
+@import url('/vendor/fonts/jakarta/600.css');
+@import url('/vendor/fonts/jakarta/700.css');
+@import url('/vendor/fonts/jakarta/800.css');
 
 :root {
   /* brand — taken from the City Hall: seal navy, sky, terracotta roof, grounds green */

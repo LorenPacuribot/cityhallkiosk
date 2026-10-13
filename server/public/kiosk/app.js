@@ -155,15 +155,15 @@ const screens = {
   welcome() {
     const l = getLang();
     return `<section class="screen welcome" data-action="start" aria-label="${t('welcome_title')}">
-      <img class="hero" src="/img/cityhall.svg" alt="">
+      <div class="hero-frame"><img class="hero" src="/img/cityhall.svg" alt=""></div>
       <div class="scrim"></div>
       <div class="top"><div class="seal" aria-hidden="true">CM</div><div class="identity"><span class="caption">${t('city')}</span><span class="label">New City Hall</span></div></div>
       <div class="panel">
+        <p class="greet">${t('welcome_sub')}</p>
         <h1 class="display">${t('welcome_title')}</h1>
-        <p class="h3 gold">${t('welcome_sub')}</p>
         <p class="body">${t('welcome_body')}</p>
-        <button class="cta" data-action="start">${icon('navigation', 48)}<span class="h2">${t('touch_start')}</span></button>
-        <div class="langs chips" role="group" aria-label="${t('language')}">
+        <button class="cta" data-action="start"><span class="cta-ic">${icon('navigation', 42)}</span><span class="h2">${t('touch_here')}</span></button>
+        <div class="langs chips" role="group" aria-label="${t('language')}"><span class="body lang-lbl">${t('choose_lang')}</span>
           ${[['en', 'English'], ['fil', 'Filipino'], ['ceb', 'Cebuano']].map(([k, n]) => `<button data-action="lang" data-lang="${k}" aria-pressed="${l === k}">${n}</button>`).join('')}
         </div>
       </div></section>`;
@@ -172,12 +172,12 @@ const screens = {
   home() {
     const pop = (S.bundle.popular_service_ids || []).map(id => idx.services.get(id)).filter(Boolean);
     return `<section class="screen">${topbar()}
-      <div class="hero-band"><img src="/img/cityhall.svg" alt=""><div class="scrim"></div><h1 class="h1">${t('home_q')}</h1></div>
+      <div class="hero-band"><img src="/img/cityhall.svg" alt=""><div class="scrim"></div><div class="glow"></div><h1 class="h1">${t('home_q')}</h1><p class="body hero-sub">${t('home_sub')}</p></div>
       <div class="content">
         <button class="searchfield" data-action="search">${icon('search', 40)}<span class="q">${t('search_placeholder')}</span></button>
         <div class="choices">
           ${[['search', 'file-text', 'find_service'], ['offices', 'building', 'browse_offices'], ['map', 'map', 'map_hall']].map(([a, ic, k]) => `
-          <button class="choice" data-action="${a}"><span class="tile">${icon(ic, 44)}</span><span class="h3">${t(k)}</span><span class="caption muted">${t(k + '_d')}</span></button>`).join('')}
+          <button class="choice" data-action="${a}"><span class="tile">${icon(ic, 44)}</span><span class="ctext"><span class="h3">${t(k)}</span><span class="caption muted">${t(k + '_d')}</span></span></button>`).join('')}
         </div>
         <h2 class="h3">${t('popular')}</h2>
         <div class="list">${pop.map(s => rowHTML({ kind: 'service', id: s.id, title: s.display_title, subtitle: `${s.office_name} · ${locText(s.location)}` })).join('')}</div>
@@ -278,10 +278,10 @@ const screens = {
     const verified = s.verified_at ? `<span class="badge success">${icon('circle-check', 24)}${t('verified_on', { d: new Date(s.verified_at).toLocaleDateString([], { month: 'short', year: 'numeric' }) })}</span>` : '';
     const inBuilding = s.location?.room_id;
     return `<section class="screen">${topbar()}
+      <div class="page-hero"><div class="glow"></div>${backBtn()}<div class="ph-text"><h1 class="h1">${esc(s.display_title)}</h1>
+        <p class="body">${esc(s.office_name)} · ${esc(locText(s.location))}</p></div></div>
       <div class="content">
-        <div class="crumb">${backBtn()}</div>
         <header style="display:flex;flex-direction:column;gap:16px">
-          <h1 class="h1">${esc(s.display_title)}</h1>
           ${s.plain_title ? `<p class="caption muted">${esc(s.title)}</p>` : ''}
           ${s.description ? `<p class="body muted">${esc(s.description.length > 360 ? s.description.slice(0, 357) + '…' : s.description)}</p>` : ''}
           <div class="badges">
@@ -307,8 +307,8 @@ const screens = {
               <p class="caption meta">${[a.fee && `${t('total_fee').split(' ').pop()}: ${a.fee}`, a.processing_time, a.person_in_charge].filter(Boolean).map(esc).join(' · ')}</p></div>`).join('')}</div>` : ''}
           </div></div>`).join('')}</div>` : ''}
         <div class="helpful"><span class="label">${t('did_help')}</span><div class="btns">
-          <button data-action="fb" data-v="1" data-id="${s.id}">${icon('thumbs-up', 32)}</button>
-          <button data-action="fb" data-v="0" data-id="${s.id}">${icon('thumbs-down', 32)}</button></div></div>
+          <button data-action="fb" data-v="1" data-id="${s.id}">${icon('thumbs-up', 32)}<span>${t('yes')}</span></button>
+          <button data-action="fb" data-v="0" data-id="${s.id}">${icon('thumbs-down', 32)}<span>${t('no')}</span></button></div></div>
         <p class="caption muted">${s.verified_at ? '' : t('not_verified') + ' · '}${t('from_charter', { src: esc(s.source || "Citizen's Charter") })}</p>
         </div></div>
       </div>
@@ -437,7 +437,7 @@ function keyboard() {
       <button class="key wide" data-action="kbmode">${S.kbMode === 'abc' ? t('kb_123') : t('kb_abc')}</button>
       <button class="key wide" data-action="kbclear">${t('kb_clear')}</button>
       <button class="key space" data-action="key" data-k=" ">${t('kb_space')}</button>
-      <button class="key wide" data-action="kbdel" aria-label="${t('kb_delete')}">${icon('backspace', 36)}</button>
+      <button class="key wide" data-action="kbdel">${icon('backspace', 32)}<span>${t('kb_delete')}</span></button>
       <button class="key wide primary" data-action="kbsearch">${icon('search', 32)}&nbsp;${t('kb_search')}</button>
     </div></div>`;
 }

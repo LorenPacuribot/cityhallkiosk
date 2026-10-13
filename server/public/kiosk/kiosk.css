@@ -258,3 +258,124 @@ h1, h2, h3, p { margin: 0; }
 #stage.landscape .stats { gap: 14px; }
 #stage.landscape .stat { padding: 18px 20px; }
 #stage.landscape .stat .val { font-size: var(--fs-label); }
+
+/* =====================================================================
+   CIVIC BLUE — gradient look (approved design, Oct 2026)
+   Gradients only behind headings and on main buttons; everything people
+   read sits on solid white cards in dark text (easy for older visitors).
+   ===================================================================== */
+#stage {
+  --g-hero: linear-gradient(115deg, #081C3A 0%, #12355B 45%, #2F7BD8 100%);
+  --g-welcome: radial-gradient(900px 700px at 12% 18%, rgba(124,196,255,.40) 0%, rgba(124,196,255,0) 60%), linear-gradient(160deg, #061733 0%, #12355B 50%, #2563B8 100%);
+  --g-btn: linear-gradient(135deg, #2F7BD8 0%, #12355B 100%);
+  --g-icon: linear-gradient(135deg, #5AA9F0 0%, #1A4F9C 100%);
+  --g-strip: linear-gradient(90deg, #5AA9F0 0%, #1A4F9C 100%);
+  --g-help: linear-gradient(90deg, #081C3A 0%, #12355B 55%, #1E5AA8 100%);
+  --g-glow: radial-gradient(closest-side, rgba(124,196,255,.55), rgba(124,196,255,0));
+  --page: #F3F7FC; --soft: #E3EEFB;
+  --fs-label: 26px; --fs-caption: 24px;
+  background: var(--page);
+}
+#stage.large { --fs-label: 30px; --fs-caption: 27px; }
+#stage .muted, #stage .row .sub, #stage .stat .lbl { color: #4A5260; }
+
+/* top bar */
+#stage .seg button[aria-pressed="true"] { background: var(--g-btn); }
+#stage .tb-btn { border-width: 3px; font-weight: 700; min-width: 112px; }
+
+/* buttons */
+#stage .btn-primary { background: var(--g-btn); box-shadow: 0 12px 26px rgba(18,53,91,.28); }
+#stage .btn-primary:active { filter: brightness(.92); }
+#stage .btn-secondary { border-width: 3px; font-weight: 700; }
+#stage .back { border-width: 3px; font-weight: 700; }
+#stage .chip[aria-pressed="true"] { background: var(--g-btn); border-color: #12355B; }
+
+/* rows & cards */
+#stage .row { border-radius: 24px; box-shadow: 0 4px 14px rgba(18,53,91,.05); }
+#stage .row .tile { background: var(--soft); color: #12355B; border-radius: 20px; }
+#stage .row .title { font-weight: 700; }
+#stage .row .chev { width: 60px; height: 60px; border-radius: 50%; background: var(--g-btn); color: #fff; display: grid; place-items: center; }
+#stage .row .chev .icon { width: 30px; height: 30px; }
+#stage .card { border-radius: 28px; }
+
+/* help bar */
+#stage .helpbar { background: var(--g-help); color: #fff; font-weight: 600; font-size: var(--fs-label); }
+
+/* welcome */
+#stage .welcome { background: var(--g-welcome); }
+#stage .welcome .scrim { display: none; }
+#stage .welcome .hero-frame { position: absolute; left: 110px; top: 190px; width: 860px; height: 780px; padding: 14px; box-sizing: border-box; border-radius: 48px; background: linear-gradient(160deg, #9BD2FF 0%, #2F7BD8 100%); box-shadow: 0 40px 90px rgba(0,0,0,.35); }
+#stage .welcome .hero-frame .hero { position: static; width: 100%; height: 100%; object-fit: cover; border-radius: 36px; display: block; left: auto; top: auto; }
+#stage .welcome .top { background: transparent; padding: 0; left: 64px; top: 56px; }
+#stage .welcome .top .caption, #stage .welcome .top .label { color: #fff; }
+#stage .welcome .top .seal { border-color: #fff; }
+#stage .welcome .panel { top: 1040px; gap: 26px; }
+#stage .welcome .greet { align-self: flex-start; font-size: var(--fs-label); font-weight: 700; padding: 10px 24px; border-radius: 999px; background: rgba(255,255,255,.14); color: #A9D8FF; }
+#stage .welcome .body { color: #EEF3FA; }
+#stage .welcome .cta { min-height: 132px; padding: 0 32px; border-radius: 32px; background: #fff; color: #12355B; animation: none; box-shadow: 0 0 0 8px rgba(255,255,255,.22), 0 24px 50px rgba(0,0,0,.25); }
+#stage .welcome .cta .h2 { font-weight: 800; }
+#stage .welcome .cta-ic { width: 76px; height: 76px; border-radius: 50%; background: var(--g-icon); color: #fff; display: grid; place-items: center; flex: none; }
+#stage .welcome .langs { align-items: center; }
+#stage .welcome .lang-lbl { color: #EEF3FA; margin-right: 4px; }
+#stage .welcome .langs button { min-height: 84px; border-width: 3px; font-weight: 700; }
+
+/* home hero band (no photo — gradient + soft glow) */
+#stage .hero-band { background: var(--g-hero); height: 300px; }
+#stage .hero-band img, #stage .hero-band .scrim { display: none; }
+#stage .glow { position: absolute; right: -60px; top: -140px; width: 760px; height: 520px; border-radius: 50%; background: var(--g-glow); pointer-events: none; }
+#stage .hero-band h1 { top: 64px; width: auto; right: 40px; font-weight: 800; }
+#stage .hero-band .hero-sub { position: absolute; left: 40px; right: 40px; top: 136px; color: #EEF3FA; }
+#stage .hero-band + .content { margin-top: -60px; position: relative; padding-top: 0; }
+#stage .searchfield { border: 3px solid #fff; border-radius: 28px; box-shadow: 0 16px 40px rgba(18,53,91,.18); }
+#stage .searchfield .icon { width: 64px; height: 64px; padding: 15px; box-sizing: border-box; border-radius: 50%; background: var(--g-icon); color: #fff; flex: none; }
+#stage .searchfield.active { border-color: #2F7BD8; }
+#stage .choice { border-radius: 28px; box-shadow: 0 6px 18px rgba(18,53,91,.06); }
+#stage .choice .tile { background: var(--g-icon); color: #fff; border-radius: 26px; }
+
+/* service: gradient title band */
+#stage .page-hero { flex: none; position: relative; overflow: hidden; background: var(--g-hero); color: #fff; padding: 26px 40px 30px; display: flex; flex-direction: column; gap: 18px; }
+#stage .page-hero .back { position: relative; background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.7); color: #fff; }
+#stage .page-hero .ph-text { position: relative; display: flex; flex-direction: column; gap: 8px; }
+#stage .page-hero .h1 { font-weight: 800; }
+#stage .page-hero .body { color: #EEF3FA; }
+#stage .stat { background: var(--g-strip) top / 100% 10px no-repeat, #fff; padding-top: 30px; border-radius: 24px; }
+#stage .stat .lbl .icon { color: #2F7BD8; }
+#stage .stat .val { font-weight: 800; }
+#stage .req { background: var(--soft); border-radius: 20px; border-bottom: 0; padding: 18px 20px; margin-bottom: 12px; }
+#stage .req .box { border-color: #12355B; background: #fff; }
+#stage .step { border-radius: 26px; }
+#stage .step .num { background: var(--g-btn); font-weight: 800; }
+#stage .step .agency { border-left-color: #A9CDF2; }
+#stage .helpful { background: #fff; border: 2px solid var(--border-default); }
+#stage .helpful button { min-width: 150px; min-height: 84px; border-width: 3px; font-weight: 700; }
+#stage .dock { box-shadow: 0 -8px 24px rgba(18,53,91,.08); }
+
+/* keyboard */
+#stage .key.primary { background: var(--g-btn); border-color: #12355B; }
+#stage .key.wide { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+
+/* navigation */
+#stage .dest { background: var(--g-hero); }
+#stage .dest .icon { color: #A9D8FF; }
+#stage .progress > div { background: var(--g-strip); }
+#stage .dir.on .n { background: var(--g-btn); }
+#stage .controls button { border: 3px solid #12355B; font-weight: 700; }
+#stage .floorpick button[aria-pressed="true"] { background: var(--g-btn); }
+#stage .minimap { border-color: #2F7BD8; }
+
+/* overlays */
+#stage .ring { border-color: #2F7BD8; }
+
+/* ---- landscape placement ---- */
+#stage.landscape .welcome .hero-frame { left: 120px; top: 180px; width: 760px; height: 720px; }
+#stage.landscape .welcome .top { left: 120px; top: 48px; }
+#stage.landscape .welcome .panel { left: 976px; right: 120px; width: auto; top: 50%; transform: translateY(-50%); }
+#stage.landscape .welcome .display { font-size: 104px; }
+#stage.landscape .hero-band { height: 250px; }
+#stage.landscape .hero-band h1 { left: 64px; top: 52px; }
+#stage.landscape .hero-band .hero-sub { left: 64px; top: 128px; }
+#stage.landscape .hero-band + .content { margin-top: -48px; }
+#stage.landscape .page-hero { flex-direction: row; align-items: flex-end; gap: 28px; padding: 26px 64px 30px; }
+#stage.landscape .choice { flex-direction: row; align-items: center; }
+#stage.landscape .choice .caption { display: block; }
+.choice .ctext { display: flex; flex-direction: column; gap: 6px; }

@@ -15,6 +15,7 @@
     "node": ">=18.17"
   },
   "dependencies": {
+    "@fontsource/plus-jakarta-sans": "^5.3.0",
     "express": "^4.22.3",
     "qrcode": "^1.5.4",
     "sql.js": "^1.14.2",
