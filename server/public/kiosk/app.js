@@ -155,7 +155,7 @@ const screens = {
   welcome() {
     const l = getLang();
     return `<section class="screen welcome" data-action="start" aria-label="${t('welcome_title')}">
-      <div class="hero-frame"><img class="hero" src="/img/cityhall.svg" alt=""></div>
+      <div class="hero-frame"><img class="hero" src="/img/cityhall-cover.jpg" alt="Malaybalay City Hall"></div>
       <div class="scrim"></div>
       <div class="top"><div class="seal" aria-hidden="true">CM</div><div class="identity"><span class="caption">${t('city')}</span><span class="label">${t('kiosk_name')}</span></div></div>
       <div class="panel">

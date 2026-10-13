@@ -385,3 +385,12 @@ h1, h2, h3, p { margin: 0; }
 #stage.landscape .welcome .top { left: 100px; }
 #stage.landscape .welcome .panel { left: 840px; right: 100px; }
 #stage.landscape .welcome .display { font-size: 88px; }
+/* cover photo of Malaybalay City Hall (wide image — frames sized so both wings stay visible) */
+#stage .welcome .hero-frame { left: 80px; top: 180px; width: 920px; height: 640px; }
+#stage .welcome .hero-frame .hero { object-position: 50% 38%; }
+#stage .welcome .panel { top: 880px; }
+#stage.landscape .welcome .hero-frame { left: 80px; top: 230px; width: 780px; height: 560px; }
+#stage.landscape .welcome .top { left: 80px; }
+#stage.landscape .welcome .panel { left: 920px; right: 80px; top: 50%; }
+#stage:not(.landscape) .welcome .hero-frame { left: 60px; top: 240px; width: 960px; height: 720px; }
+#stage:not(.landscape) .welcome .panel { top: 1060px; }
