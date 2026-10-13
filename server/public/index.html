@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>City Hall Kiosk — Prototype</title>
+  <link rel="stylesheet" href="/shared/tokens.css">
+  <style>
+    body { min-height: 100vh; background: linear-gradient(160deg, #12355B, #0b2340); color: #fff; display: grid; place-items: center; padding: 24px; }
+    .wrap { max-width: 920px; width: 100%; }
+    .hero { display: flex; gap: 24px; align-items: center; margin-bottom: 28px; flex-wrap: wrap; }
+    .hero img { width: 220px; border-radius: 16px; background: #fff1; }
+    h1 { font-size: 34px; margin: 0 0 6px; } p { margin: 0; opacity: .85; line-height: 1.5; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    a.card { display: flex; flex-direction: column; gap: 6px; background: #fff; color: var(--text-primary); border-radius: 18px; padding: 20px; text-decoration: none; box-shadow: var(--shadow-pop); transition: transform .15s; }
+    a.card:hover { transform: translateY(-3px); } a.card b { font-size: 19px; color: var(--brand-navy); } a.card span { color: var(--text-secondary); font-size: 14px; }
+    a.card code { font-size: 13px; color: var(--brand-blue); }
+    .foot { margin-top: 24px; font-size: 14px; opacity: .75; } .foot code { background: #ffffff1f; padding: 1px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero"><img src="/img/cityhall.svg" alt="Malaybalay City Hall illustration">
+      <div><h1>City Hall Kiosk — prototype</h1><p>Malaybalay City Hall wayfinding and Citizen’s Charter kiosk. Everything below reads from one local SQLite database, so a change in the admin panel shows on the kiosk, the phone page and in Unity.</p></div></div>
+    <div class="cards">
+      <a class="card" href="/kiosk"><b>Kiosk screen</b><span>The 43″ portrait touchscreen (1080 × 1920, scaled to your window). Search, services, offices, 3D “show me the way”.</span><code>/kiosk</code></a>
+      <a class="card" href="/admin"><b>Admin panel</b><span>Services, approvals, offices &amp; moves, floors &amp; rooms with x / y / z, kiosks, feedback, users.</span><code>/admin</code></a>
+      <a class="card" href="/m"><b>Phone page</b><span>What visitors get from the QR code: a checklist that stays on their phone and the floor map.</span><code>/m</code></a>
+      <a class="card" href="/api/destinations"><b>API for Unity</b><span>Destinations with room coordinates. See <code>docs/API.md</code> for every endpoint.</span><code>/api/destinations</code></a>
+    </div>
+    <p class="foot">Admin sign-in: <code>admin@kiosk.local</code> / <code>ChangeMe!2026</code> — change it before any real use.</p>
+  </div>
+</body>
+</html>

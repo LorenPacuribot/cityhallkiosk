@@ -1,0 +1,52 @@
+/* Design tokens — mirror the Figma file "Malaybalay City Hall Kiosk — System Design"
+   (variables collection "Color", "Space & Radius", text styles Kiosk/*, Admin/*, Phone/*). */
+@font-face { font-family: 'Plus Jakarta Sans'; font-weight: 400 800; font-display: swap;
+  src: local('Plus Jakarta Sans'), local('PlusJakartaSans'); }
+
+:root {
+  /* brand — taken from the City Hall: seal navy, sky, terracotta roof, grounds green */
+  --brand-navy: #12355B;
+  --brand-blue: #1A63BE;
+  --brand-blue-hover: #154F98;
+  --brand-sky: #E8F2FC;
+  --brand-sky-strong: #C9E0F8;
+  --brand-terracotta: #B8432F;
+  --brand-terracotta-tint: #FBE9E5;
+  --brand-gold: #D9A520;
+  --brand-grass: #2E7D32;
+  --brand-grass-tint: #E6F2E7;
+  /* surfaces */
+  --bg-canvas: #FBF8F3;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F3EFE8;
+  --border-default: #E3DDD3;
+  --border-strong: #C7BFB2;
+  /* text */
+  --text-primary: #1B2430;
+  --text-secondary: #5A6472;
+  --text-on-brand: #FFFFFF;
+  --text-link: #1A63BE;
+  /* status */
+  --status-success: #2E7D32;
+  --status-warning: #8A5300;      /* darkened from Figma #B26A00 to pass 4.5:1 on the tint */
+  --status-warning-tint: #FFF4E0;
+  --status-critical: #B3261E;
+  --status-critical-tint: #FCE8E6;
+  /* space & radius */
+  --space-4: 4px; --space-8: 8px; --space-12: 12px; --space-16: 16px; --space-24: 24px;
+  --space-32: 32px; --space-48: 48px; --space-64: 64px;
+  --radius-8: 8px; --radius-12: 12px; --radius-16: 16px; --radius-24: 24px; --radius-pill: 999px;
+  /* type */
+  --font: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --shadow-card: 0 1px 2px rgba(18, 53, 91, .06), 0 4px 16px rgba(18, 53, 91, .06);
+  --shadow-pop: 0 16px 48px rgba(0, 0, 0, .25);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: var(--font); color: var(--text-primary); background: var(--bg-canvas); -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 4px solid var(--brand-blue); outline-offset: 2px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.icon { display: inline-block; flex: none; vertical-align: middle; }

@@ -1,0 +1,12 @@
+node_modules/
+server/data/kiosk.sqlite
+server/data/*.tmp
+*.log
+.DS_Store
+# Unity
+unity/[Ll]ibrary/
+unity/[Tt]emp/
+unity/[Oo]bj/
+unity/[Bb]uild*/
+unity/[Ll]ogs/
+unity/[Uu]ser[Ss]ettings/
