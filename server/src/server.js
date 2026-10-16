@@ -42,6 +42,7 @@ export async function createApp() {
 
   const pub = path.join(ROOT, 'public');
   app.use('/vendor/three', express.static(path.join(ROOT, 'node_modules', 'three')));
+  app.use('/vendor/fonts/jakarta', express.static(path.join(ROOT, 'node_modules', '@fontsource', 'plus-jakarta-sans')));
   app.use(express.static(pub, { extensions: ['html'] }));
   // single-page apps
   app.get(['/kiosk', '/kiosk/*'], (req, res) => res.sendFile(path.join(pub, 'kiosk', 'index.html')));
@@ -60,7 +61,8 @@ if (process.argv[1] && path.resolve(process.argv[1]).endsWith(path.join('src', '
   const app = await createApp();
   app.listen(PORT, () => {
     console.log(`\nMalaybalay City Hall Kiosk prototype is running:\n`);
-    console.log(`  Kiosk        http://localhost:${PORT}/kiosk`);
+    console.log(`  Kiosk        http://localhost:${PORT}/kiosk            (portrait 1080×1920)`);
+    console.log(`               http://localhost:${PORT}/kiosk/landscape  (landscape 1920×1080)`);
     console.log(`  Admin panel  http://localhost:${PORT}/admin   (admin@kiosk.local / ChangeMe!2026)`);
     console.log(`  Phone page   ${PUBLIC_BASE_URL}/m   (open from a phone on the same Wi-Fi)`);
     console.log(`  API          http://localhost:${PORT}/api/health\n`);

@@ -1,0 +1,13 @@
+{
+  "name": "cityhallkiosk",
+  "private": true,
+  "description": "Root helper: lets `npm install` and `npm start` work from the repo root. The app lives in ./server.",
+  "scripts": {
+    "postinstall": "npm --prefix server install",
+    "start": "npm --prefix server start",
+    "dev": "npm --prefix server run dev",
+    "seed": "npm --prefix server run seed",
+    "test": "npm --prefix server test"
+  },
+  "engines": { "node": ">=18.17" }
+}

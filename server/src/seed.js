@@ -96,7 +96,7 @@ export async function seed({ reset = true } = {}) {
   tx(() => {
     setSetting('content_version', 1);
     setSetting('city_name', 'City Government of Malaybalay');
-    setSetting('building_name', 'New City Hall');
+    setSetting('building_name', 'Malaybalay City Hall');
     setSetting('info_desk_hint', 'The information desk is to your left as you enter.');
 
     const b = run(`INSERT INTO buildings(code,name,address,origin_note) VALUES (?,?,?,?)`,

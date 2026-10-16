@@ -20,7 +20,7 @@ const app = document.getElementById('app');
 const store = { get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } } };
 
 const header = (back = false) => `<header class="top">${back ? `<a href="/m" class="back" aria-label="Search">${icon('arrow-left', 22)}</a>` : ''}
-  <a href="/m" class="brand-home" aria-label="Home"><img class="seal" src="/img/malaybalay-seal.jpg" alt="Official seal of the City of Malaybalay"><div><b>Malaybalay City Hall</b><small>City of Malaybalay</small></div></a></header>`;
+  <a href="/m" class="brand-home" aria-label="Home"><img class="seal" src="/img/malaybalay-seal.jpg" alt="Official seal of the City of Malaybalay"><div><b>Malaybalay City Hall</b><small>Self-service kiosk</small></div></a></header>`;
 
 async function getJSON(url) { const r = await fetch(url); if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || 'Not found'); return r.json(); }
 

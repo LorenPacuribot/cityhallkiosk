@@ -135,7 +135,7 @@ function topbar() {
   const l = getLang();
   return `<header class="topbar">
     <button class="brand-home" data-action="home" aria-label="${t('home')}"><img class="seal" src="/img/malaybalay-seal.jpg" alt="">
-    <span class="identity"><span class="label">${t('city')}</span><span class="caption">${t('kiosk_name')}</span></span></button>
+    <span class="identity"><span class="label">${t('kiosk_name')}</span><span class="caption">${t('city')}</span></span></button>
     <div class="spacer"></div>
     <div class="seg" role="group" aria-label="${t('language')}">
       ${LANGS.map(([x, name]) => `<button data-action="lang" data-lang="${x}" aria-pressed="${l === x}">${LAYOUT === 'landscape' ? name : x.toUpperCase()}</button>`).join('')}
@@ -168,20 +168,34 @@ function locText(loc) {
 const screens = {
   welcome() {
     const l = getLang();
-    return `<section class="screen welcome" data-action="start" aria-label="${t('welcome_title')}">
-      <div class="top"><img class="seal" src="/img/malaybalay-seal.jpg" alt=""><div class="identity"><span class="label">${t('city')}</span><span class="caption">${t('kiosk_name')}</span></div></div>
-      <div class="welcome-body">
-        <figure class="photo-card"><img src="/img/cityhall-photo.jpg" alt="The New Malaybalay City Hall"></figure>
-        <div class="panel">
-          <span class="greet label">${t('welcome_sub')}</span>
-          <h1 class="display">${t('welcome_title')}</h1>
-          <p class="body">${t('welcome_body')}</p>
-          <button class="cta" data-action="start"><span class="cta-icon">${icon('navigation', 44)}</span><span class="h2">${t('touch_start')}</span></button>
-          <div class="langs" role="group" aria-label="${t('language')}"><span class="label">${t('language')}:</span>
-            ${LANGS.map(([k, n]) => `<button data-action="lang" data-lang="${k}" aria-pressed="${l === k}">${n}</button>`).join('')}
-          </div>
+    const name = t('kiosk_name');
+    const title = t('welcome_title').replace(new RegExp('\\s*' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
+      () => `<br>${name.split(' ').length > 2 ? `<span class="nowrap">${name.split(' ')[0]}</span><br><span class="nowrap">${name.split(' ').slice(1).join(' ')}</span>` : `<span class="nowrap">${name}</span>`}`);
+    const st = openStatus(new Date());
+    const openPill = cls => `<span class="wp-open ${cls} ${st.open ? 'is-open' : 'is-closed'}"><i class="dot"></i><span class="wp-open-txt">${esc(st.text)}</span></span>`;
+    return `<section class="screen welcome premium" data-action="start" aria-label="${esc(t('welcome_title'))}">
+      <div class="wp-photo"><img src="/img/cityhall-cover.jpg" alt=""></div>
+      <div class="wp-shade"></div>
+      <header class="wp-top">
+        <img class="seal" src="/img/malaybalay-seal.jpg" alt="">
+        <div class="identity"><span class="caption">${t('gov_name')}</span><span class="label">${name}</span></div>
+        <div class="wp-clock glass">
+          <span class="wp-time-col"><span class="wp-time" data-clock="time"></span><span class="wp-date" data-clock="date"></span></span>
+          <span class="wp-sep"></span>${openPill('in-clock')}
         </div>
-      </div></section>`;
+      </header>
+      <div class="wp-panel">
+        ${openPill('in-panel')}
+        <p class="wp-greet">${t('welcome_sub')}</p>
+        <h1 class="wp-title${t('welcome_title').length > 34 ? ' long' : ''}">${title}</h1>
+        <button class="wp-cta" data-action="start"><span class="wp-cta-ic">${icon('navigation', 44)}</span><span>${t('touch_to_start')}</span></button>
+      </div>
+      <footer class="wp-foot">
+        <div class="wp-lang glass" role="group" aria-label="${t('language')}">
+          ${LANGS.map(([k, n]) => `<button data-action="lang" data-lang="${k}" aria-pressed="${l === k}">${n}</button>`).join('')}
+        </div>
+        <span class="wp-hint">${t('touch_anywhere')}</span>
+      </footer></section>`;
   },
 
   home() {
@@ -319,8 +333,8 @@ const screens = {
           </div></div>`).join('')}</div>` : ''}
         ${s.notes ? `<section class="card notes"><h2 class="h3">${t('notes')}</h2>${notesHTML(s.notes)}</section>` : ''}
         <div class="helpful"><span class="label">${t('did_help')}</span><div class="btns">
-          <button data-action="fb" data-v="1" data-id="${s.id}">${icon('thumbs-up', 32)}</button>
-          <button data-action="fb" data-v="0" data-id="${s.id}">${icon('thumbs-down', 32)}</button></div></div>
+          <button data-action="fb" data-v="1" data-id="${s.id}">${icon('thumbs-up', 32)}<span>${t('yes')}</span></button>
+          <button data-action="fb" data-v="0" data-id="${s.id}">${icon('thumbs-down', 32)}<span>${t('no')}</span></button></div></div>
         <p class="caption muted">${s.verified_at ? '' : t('not_verified') + ' · '}${t('from_charter', { src: esc(s.source || "Citizen's Charter") })}</p>
         </div>
       </div>
@@ -478,10 +492,34 @@ function keyboard() {
       <button class="key wide" data-action="kbmode">${S.kbMode === 'abc' ? t('kb_123') : t('kb_abc')}</button>
       <button class="key wide" data-action="kbclear">${t('kb_clear')}</button>
       <button class="key space" data-action="key" data-k=" ">${t('kb_space')}</button>
-      <button class="key wide" data-action="kbdel" aria-label="${t('kb_delete')}">${icon('backspace', 36)}</button>
+      <button class="key wide" data-action="kbdel">${icon('backspace', 32)}<span>${t('kb_delete')}</span></button>
       <button class="key wide primary" data-action="kbsearch">${icon('search', 32)}&nbsp;${t('kb_search')}</button>
     </div></div>`;
 }
+
+// ---------------------------------------------------------------- welcome clock & office hours
+// Office hours: Monday–Friday 8:00 AM – 5:00 PM by default. Override with settings
+// office_open / office_close ("HH:MM"). Holidays are not known to the kiosk yet.
+function hm(str, def) { const m = /^(\d{1,2}):(\d{2})$/.exec(String(str || '')); return m ? Number(m[1]) * 60 + Number(m[2]) : def; }
+function fmtHM(mins) { const d = new Date(2000, 0, 1, Math.floor(mins / 60), mins % 60); return d.toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit' }); }
+function openStatus(now) {
+  const open = hm(S.bundle?.settings?.office_open, 8 * 60), close = hm(S.bundle?.settings?.office_close, 17 * 60);
+  const day = now.getDay(), mins = now.getHours() * 60 + now.getMinutes(), weekday = day >= 1 && day <= 5;
+  if (weekday && mins >= open && mins < close) return { open: true, text: t('open_now', { t: fmtHM(close) }) };
+  if (weekday && mins < open) return { open: false, text: t('opens_today', { t: fmtHM(open) }) };
+  if (day >= 1 && day <= 4) return { open: false, text: t('opens_tomorrow', { t: fmtHM(open) }) };
+  return { open: false, text: t('opens_monday', { t: fmtHM(open) }) };
+}
+function tickClock() {
+  const els = stage.querySelectorAll('[data-clock]'); if (!els.length) return;
+  const now = new Date(), loc = getLang() === 'fil' ? 'fil-PH' : 'en-PH';
+  els.forEach(el => { el.textContent = el.dataset.clock === 'time'
+    ? now.toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit' })
+    : now.toLocaleDateString(loc, { weekday: 'long', day: 'numeric', month: 'long' }); });
+  const st = openStatus(now);
+  stage.querySelectorAll('.wp-open').forEach(el => { el.classList.toggle('is-open', st.open); el.classList.toggle('is-closed', !st.open); el.querySelector('.wp-open-txt').textContent = st.text; });
+}
+setInterval(tickClock, 15000);
 
 // ---------------------------------------------------------------- router
 function current() { return S.stack[S.stack.length - 1]?.name || 'welcome'; }
@@ -502,6 +540,7 @@ function rerender() {
   stage.innerHTML = (screens[name] || screens.home)(p);
   overlays.forEach(o => stage.appendChild(o));
   if (name === 'navigate') startNav();
+  if (name === 'welcome') tickClock();
   if (name === 'search') { /* suggestions update in place */ }
   const content = stage.querySelector('.content'); if (content) content.scrollTop = 0;
   updateScrollFades();
@@ -627,7 +666,7 @@ function printSlip(id) {
   const s = idx.services.get(Number(id));
   let slip = document.getElementById('print-slip');
   if (!slip) { slip = document.createElement('div'); slip.id = 'print-slip'; document.body.appendChild(slip); }
-  slip.innerHTML = `<b>${esc(t('city'))}</b><hr><b>${esc(s.display_title)}</b><br>${esc(s.office_name)} — ${esc(locText(s.location))}<br>
+  slip.innerHTML = `<b>${esc(t('kiosk_name'))}</b><hr><b>${esc(s.display_title)}</b><br>${esc(s.office_name)} — ${esc(locText(s.location))}<br>
     ${esc(t('total_fee'))}: ${esc(s.total_fees || '-')}<br>${esc(t('processing_time'))}: ${esc(s.total_processing_time || '-')}<hr>
     <b>${esc(t('what_to_bring'))}</b><br>${s.requirements.map(r => `[ ] ${esc(r.requirement)}`).join('<br>')}<hr>${esc(s.source || '')}<br>${new Date().toLocaleString()}`;
   window.print();

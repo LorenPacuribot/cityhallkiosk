@@ -17,10 +17,12 @@ You need **Node.js 18.17 or newer** (https://nodejs.org). Nothing else is requir
 
 ```bash
 git clone https://github.com/LorenPacuribot/cityhallkiosk.git
-cd cityhallkiosk/server
-npm install
+cd cityhallkiosk
+npm install      # installs the server dependencies (in ./server)
 npm start
 ```
+
+(Running the same two commands inside `server/` works too.)
 
 Then open http://localhost:3000.
 
@@ -44,6 +46,11 @@ PUBLIC_BASE_URL=http://192.168.1.20:3000 npm start   # address printed inside QR
 ```
 
 To test the phone page, connect your phone to the same Wi-Fi and scan the QR code on a service screen. The server prints its LAN address when it starts.
+
+**Screen orientation:** the kiosk comes in two layouts, which use the same screens and the same data.
+- Portrait 1080 × 1920: http://localhost:3000/kiosk
+- Landscape 1920 × 1080: http://localhost:3000/kiosk/landscape (or `?layout=landscape`)
+- `?layout=auto` picks the layout from the window shape.
 
 Useful kiosk URL options:
 - `?kiosk=KIOSK-LOBBY-1` sets which kiosk this screen is (it sets the start point of routes).

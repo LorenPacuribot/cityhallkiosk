@@ -9,6 +9,7 @@ html, body { height: 100%; overflow: hidden; background: #0d1b2a; }
   transform-origin: 0 0; touch-action: manipulation; font-size: 28px; line-height: 1.4; user-select: none; -webkit-user-select: none;
   --fs-display: 80px; --fs-h1: 56px; --fs-h2: 40px; --fs-h3: 32px; --fs-body: 28px; --fs-label: 24px; --fs-caption: 22px;
 }
+#stage.landscape { width: 1920px; height: 1080px; }
 #stage.large { --fs-display: 92px; --fs-h1: 66px; --fs-h2: 50px; --fs-h3: 40px; --fs-body: 34px; --fs-label: 30px; --fs-caption: 28px; }
 .screen { position: absolute; inset: 0; display: flex; flex-direction: column; }
 .content { flex: 1; overflow-y: auto; padding: 32px 40px 40px; display: flex; flex-direction: column; gap: 28px; scrollbar-width: thick; }
@@ -389,3 +390,92 @@ h1, h2, h3, p { margin: 0; }
 }
 #print-slip { display: none; }
 @media print { #print-slip { display: block; } }
+
+
+.nowrap { white-space: nowrap; }
+
+/* =====================================================================
+   PREMIUM COVER (welcome screen) — full-bleed City Hall photo fading
+   into Civic Blue, live clock + office-hours status, frosted glass.
+   ===================================================================== */
+#stage .welcome.premium { background: #061733; color: #fff; }
+.welcome.premium .wp-photo { position: absolute; inset: 0; overflow: hidden; }
+.welcome.premium .wp-photo img { width: 100%; height: 100%; object-fit: cover; display: block; transform-origin: 62% 18%; transform: scale(1.32); animation: wp-kenburns 24s ease-in-out infinite alternate; }
+@keyframes wp-kenburns { from { transform: scale(1.30); } to { transform: scale(1.38) translateX(-1.5%); } }
+.welcome.premium .wp-shade { position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(6,23,51,.95) 0%, rgba(8,28,58,.88) 34%, rgba(14,42,80,.45) 56%, rgba(18,53,91,0) 74%),
+              linear-gradient(0deg, rgba(6,23,51,.85) 0%, rgba(6,23,51,0) 34%),
+              linear-gradient(180deg, rgba(6,23,51,.55) 0%, rgba(6,23,51,0) 22%); }
+.welcome.premium .glass { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+.welcome.premium .wp-top { position: absolute; left: 120px; right: 120px; top: 56px; display: flex; align-items: center; gap: 20px; }
+.welcome.premium .wp-top .seal { width: 84px; height: 84px; background: radial-gradient(circle at 35% 30%, #F4D27A 0%, #D9A520 55%, #9C7210 100%); border: 0; box-shadow: 0 0 0 3px rgba(255,255,255,.85), 0 10px 24px rgba(0,0,0,.35); font-size: 22px; }
+.welcome.premium .wp-top .identity { flex: 1; gap: 2px; }
+.welcome.premium .wp-top .caption { color: rgba(255,255,255,.8); font-size: 22px; font-weight: 500; }
+.welcome.premium .wp-top .label { color: #fff; font-size: 30px; font-weight: 700; }
+.welcome.premium .wp-clock { display: flex; align-items: center; gap: 22px; padding: 14px 26px; border-radius: 999px; }
+.welcome.premium .wp-time-col { display: flex; flex-direction: column; align-items: flex-end; }
+.welcome.premium .wp-time { font-size: 34px; font-weight: 700; line-height: 1.1; letter-spacing: -.5px; }
+.welcome.premium .wp-date { font-size: 20px; color: rgba(255,255,255,.82); }
+.welcome.premium .wp-sep { width: 1px; height: 52px; background: rgba(255,255,255,.25); }
+.welcome.premium .wp-open { display: inline-flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 700; }
+.welcome.premium .wp-open .dot { width: 14px; height: 14px; border-radius: 50%; background: #5BD68A; box-shadow: 0 0 0 5px rgba(91,214,138,.25); }
+.welcome.premium .wp-open.is-closed .dot { background: #FF8A7A; box-shadow: 0 0 0 5px rgba(255,138,122,.25); }
+.welcome.premium .wp-open.in-panel { display: none; }
+.welcome.premium .wp-panel { position: absolute; left: 120px; top: 290px; width: 940px; display: flex; flex-direction: column; gap: 28px; }
+.welcome.premium .wp-greet { font-size: 28px; font-weight: 600; color: #A9D8FF; }
+.welcome.premium .wp-title { margin: 0; font-size: 112px; line-height: 1.0; font-weight: 800; letter-spacing: -3px; }
+.welcome.premium .wp-cta { margin-top: 26px; align-self: flex-start; display: flex; align-items: center; gap: 26px; min-height: 128px; padding: 0 56px 0 24px; border: 0; border-radius: 999px; background: #fff; color: #12355B; font-size: 42px; font-weight: 800; letter-spacing: -.5px; animation: wp-breathe 3.2s ease-in-out infinite; }
+.welcome.premium .wp-cta-ic { width: 84px; height: 84px; border-radius: 50%; background: linear-gradient(135deg, #5AA9F0 0%, #1A4F9C 100%); color: #fff; display: grid; place-items: center; flex: none; }
+@keyframes wp-breathe { 0%, 100% { box-shadow: 0 0 0 0 rgba(169,216,255,.55), 0 24px 60px rgba(0,0,0,.35); } 50% { box-shadow: 0 0 0 18px rgba(169,216,255,0), 0 24px 60px rgba(0,0,0,.35); } }
+.welcome.premium .wp-foot { position: absolute; left: 120px; right: 120px; bottom: 56px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.welcome.premium .wp-lang { display: flex; padding: 8px; gap: 6px; border-radius: 999px; }
+.welcome.premium .wp-lang button { min-height: 80px; padding: 0 40px; border: 0; border-radius: 999px; background: transparent; color: #fff; font-size: 27px; font-weight: 700; }
+.welcome.premium .wp-lang button[aria-pressed="true"] { background: #fff; color: #12355B; }
+.welcome.premium .wp-hint { font-size: 24px; color: rgba(255,255,255,.88); }
+@media (prefers-reduced-motion: reduce) { .welcome.premium .wp-photo img, .welcome.premium .wp-cta { animation: none; } }
+
+/* portrait 1080 × 1920: photo across the top, text below */
+#stage:not(.landscape) .welcome.premium { background: linear-gradient(180deg, #0A2448 0%, #0E2D57 55%, #1E5AA8 100%); }
+#stage:not(.landscape) .welcome.premium .wp-photo { bottom: auto; height: 1200px; }
+#stage:not(.landscape) .welcome.premium .wp-photo img { object-position: 50% 32%; transform-origin: 50% 28%; animation-name: wp-kenburns-p; }
+@keyframes wp-kenburns-p { from { transform: scale(1.12); } to { transform: scale(1.2) translateY(1%); } }
+#stage:not(.landscape) .welcome.premium .wp-shade { bottom: auto; height: 1200px; background: linear-gradient(180deg, rgba(6,23,51,.6) 0%, rgba(6,23,51,0) 20%, rgba(6,23,51,0) 46%, rgba(10,36,72,.85) 78%, #0A2448 100%); }
+#stage:not(.landscape) .welcome.premium .wp-top { left: 64px; right: 64px; gap: 18px; }
+#stage:not(.landscape) .welcome.premium .wp-top .seal { width: 80px; height: 80px; }
+#stage:not(.landscape) .welcome.premium .wp-top .caption { font-size: 21px; }
+#stage:not(.landscape) .welcome.premium .wp-top .label { font-size: 29px; }
+#stage:not(.landscape) .welcome.premium .wp-clock { border-radius: 22px; padding: 12px 22px; }
+#stage:not(.landscape) .welcome.premium .wp-clock .wp-sep, #stage:not(.landscape) .welcome.premium .wp-open.in-clock { display: none; }
+#stage:not(.landscape) .welcome.premium .wp-time { font-size: 32px; }
+#stage:not(.landscape) .welcome.premium .wp-date { font-size: 19px; }
+#stage:not(.landscape) .welcome.premium .wp-open.in-panel { display: inline-flex; align-self: flex-start; padding: 10px 22px; border-radius: 999px; background: rgba(91,214,138,.16); border: 1px solid rgba(91,214,138,.45); }
+#stage:not(.landscape) .welcome.premium .wp-open.in-panel.is-closed { background: rgba(255,138,122,.16); border-color: rgba(255,138,122,.45); }
+#stage:not(.landscape) .welcome.premium .wp-panel { left: 72px; right: 72px; width: auto; top: 960px; gap: 26px; }
+#stage:not(.landscape) .welcome.premium .wp-title { font-size: 104px; }
+#stage:not(.landscape) .welcome.premium .wp-cta { align-self: stretch; justify-content: center; min-height: 136px; padding: 0 40px; font-size: 44px; }
+#stage:not(.landscape) .welcome.premium .wp-foot { left: 72px; right: 72px; bottom: 72px; flex-direction: column; justify-content: center; gap: 22px; }
+/* the text block grows upward from just above the language bar, so longer
+   translations (Filipino, Cebuano) never overlap the buttons */
+.welcome.premium .wp-panel { top: auto; bottom: 176px; }
+.welcome.premium .wp-title.long { font-size: 96px; }
+#stage:not(.landscape) .welcome.premium .wp-panel { top: auto; bottom: 270px; }
+#stage:not(.landscape) .welcome.premium .wp-title.long { font-size: 90px; }
+
+/* narrow (phones, small windows): the premium cover is drawn for a 1080 px wide stage; scale it down */
+#stage.narrow .welcome.premium .wp-photo, #stage.narrow .welcome.premium .wp-shade { height: 780px; }
+#stage.narrow .welcome.premium .wp-top { left: 28px; right: 28px; top: 32px; gap: 14px; }
+#stage.narrow .welcome.premium .wp-top .seal { width: 60px; height: 60px; }
+#stage.narrow .welcome.premium .wp-top .caption { font-size: 17px; }
+#stage.narrow .welcome.premium .wp-top .label { font-size: 23px; white-space: nowrap; }
+#stage.narrow .welcome.premium .wp-clock { padding: 8px 14px; border-radius: 16px; }
+#stage.narrow .welcome.premium .wp-time { font-size: 24px; }
+#stage.narrow .welcome.premium .wp-date { font-size: 14px; }
+#stage.narrow .welcome.premium .wp-panel { left: 28px; right: 28px; bottom: 220px; gap: 16px; }
+#stage.narrow .welcome.premium .wp-open.in-panel { font-size: 20px; padding: 8px 18px; }
+#stage.narrow .welcome.premium .wp-greet { font-size: 20px; }
+#stage.narrow .welcome.premium .wp-title, #stage.narrow .welcome.premium .wp-title.long { font-size: 62px; letter-spacing: -1.5px; }
+#stage.narrow .welcome.premium .wp-cta { min-height: 100px; margin-top: 12px; padding: 0 28px; gap: 18px; font-size: 32px; }
+#stage.narrow .welcome.premium .wp-cta-ic { width: 64px; height: 64px; }
+#stage.narrow .welcome.premium .wp-foot { left: 28px; right: 28px; bottom: 36px; gap: 14px; }
+#stage.narrow .welcome.premium .wp-lang button { min-height: 68px; padding: 0 22px; font-size: 22px; }
+#stage.narrow .welcome.premium .wp-hint { font-size: 18px; }
