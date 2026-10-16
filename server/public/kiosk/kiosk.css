@@ -1,9 +1,12 @@
-/* Kiosk: designed at 1080 × 1920 portrait (43" touchscreen) and scaled to fit any window. */
+/* Kiosk: designed at 1080 × 1920 portrait (43" touchscreen). fit() in app.js sizes #stage to fill the window in
+   design pixels and scales it, so other screens reflow rather than letterbox.
+   #stage.landscape (near the end of this file) is the 1920 × 1080 layout for wide screens and /kiosk/landscape;
+   #stage.narrow (after it) adapts portrait for phones. */
 html, body { height: 100%; overflow: hidden; background: #0d1b2a; }
 #viewport { position: fixed; inset: 0; overflow: hidden; }
 #stage {
-  width: 1080px; height: 1920px; position: absolute; left: 50%; top: 50%; overflow: hidden; background: var(--bg-canvas);
-  transform-origin: center center; font-size: 28px; line-height: 1.4; user-select: none; -webkit-user-select: none;
+  width: 1080px; height: 1920px; position: absolute; left: 0; top: 0; overflow: hidden; background: var(--bg-canvas);
+  transform-origin: 0 0; touch-action: manipulation; font-size: 28px; line-height: 1.4; user-select: none; -webkit-user-select: none;
   --fs-display: 80px; --fs-h1: 56px; --fs-h2: 40px; --fs-h3: 32px; --fs-body: 28px; --fs-label: 24px; --fs-caption: 22px;
 }
 #stage.large { --fs-display: 92px; --fs-h1: 66px; --fs-h2: 50px; --fs-h3: 40px; --fs-body: 34px; --fs-label: 30px; --fs-caption: 28px; }
@@ -23,7 +26,9 @@ h1, h2, h3, p { margin: 0; }
 
 /* top bar */
 .topbar { height: 128px; flex: none; display: flex; align-items: center; gap: 14px; padding: 0 40px; background: var(--bg-surface); border-bottom: 2px solid var(--border-default); }
-.seal { width: 64px; height: 64px; border-radius: 50%; background: var(--brand-gold); border: 4px solid var(--brand-navy); flex: none; display: grid; place-items: center; color: var(--brand-navy); font-weight: 800; font-size: 18px; }
+.seal { width: 72px; height: 72px; border-radius: 50%; background: #fff; object-fit: contain; flex: none; display: block; } /* official city seal */
+.brand-home { display: flex; align-items: center; gap: 14px; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; font: inherit; }
+.brand-home:active { opacity: .7; }
 .identity { display: flex; flex-direction: column; }
 .identity .caption { color: var(--text-secondary); } .identity .label { color: var(--brand-navy); }
 .spacer { flex: 1; }
@@ -49,7 +54,7 @@ h1, h2, h3, p { margin: 0; }
 .row:active { background: var(--brand-sky); }
 .row .tile { width: 72px; height: 72px; border-radius: 16px; background: var(--brand-sky); color: var(--brand-navy); display: grid; place-items: center; flex: none; }
 .row .txt { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.row .title { font-size: var(--fs-body); font-weight: 600; line-height: 1.3; }
+.row .title { font-size: var(--fs-body); font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
 .row .sub { font-size: var(--fs-caption); color: var(--text-secondary); font-weight: 500; }
 .row .chev { color: var(--text-secondary); flex: none; }
 .list { display: flex; flex-direction: column; gap: 16px; }
@@ -60,6 +65,10 @@ h1, h2, h3, p { margin: 0; }
 .badge.neutral { background: var(--bg-subtle); color: var(--text-secondary); }
 .badge.offsite { background: var(--brand-terracotta-tint); color: var(--brand-terracotta); }
 .badges { display: flex; flex-wrap: wrap; gap: 12px; }
+/* a badge that opens something: outlined and with a chevron, so it does not read as a plain tag */
+.badge-link { border: 2px solid var(--brand-sky-strong); padding: 6px 12px 6px 16px; }
+.badge-link.offsite { border-color: #EFC2B8; }
+.badge-link:active { filter: brightness(.95); }
 .chips { display: flex; flex-wrap: wrap; gap: 12px; }
 .chip { min-height: 64px; padding: 0 28px; border-radius: 999px; border: 2px solid var(--border-strong); background: var(--bg-surface); font-size: var(--fs-label); font-weight: 600; }
 .chip[aria-pressed="true"] { background: var(--brand-navy); color: var(--text-on-brand); border-color: var(--brand-navy); }
@@ -72,33 +81,52 @@ h1, h2, h3, p { margin: 0; }
 .banner.info { background: var(--brand-sky); color: var(--brand-navy); }
 .banner.critical { background: var(--status-critical-tint); color: var(--status-critical); }
 
-/* welcome */
-.welcome { background: var(--brand-navy); cursor: pointer; }
-.welcome .hero { position: absolute; left: -540px; top: 0; width: 2160px; height: 1440px; object-fit: cover; }
-.welcome .scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,53,91,0) 0%, rgba(18,53,91,.85) 50%, #12355B 70%); }
-.welcome .top { position: absolute; left: 40px; top: 48px; display: flex; align-items: center; gap: 20px; background: rgba(255,255,255,.92); padding: 12px 24px 12px 12px; border-radius: 999px; }
-.welcome .panel { position: absolute; left: 72px; right: 72px; top: 1040px; display: flex; flex-direction: column; gap: 28px; color: #fff; }
-.welcome .gold { color: var(--brand-gold); }
-.welcome .cta { display: flex; align-items: center; justify-content: center; gap: 24px; background: #fff; color: var(--brand-navy); border-radius: 28px; padding: 40px; border: 0; animation: pulse 2.4s ease-in-out infinite; }
-.welcome .langs button { min-height: 72px; padding: 0 32px; border-radius: 999px; border: 2px solid #fff; background: transparent; color: #fff; font-size: var(--fs-label); font-weight: 600; }
-.welcome .langs button[aria-pressed="true"] { background: #fff; color: var(--brand-navy); }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+/* welcome: City Hall photo in a framed card, then the greeting and the start button */
+.welcome { background: radial-gradient(ellipse 70% 50% at 20% 0%, rgba(80,140,220,.35), rgba(0,0,0,0) 70%), linear-gradient(170deg, #0E2748 0%, #143A68 55%, #2066BF 100%); cursor: pointer; color: #fff; }
+.welcome .top { position: absolute; left: 56px; top: 48px; display: flex; align-items: center; gap: 20px; }
+.welcome .top .seal { width: 96px; height: 96px; box-shadow: 0 0 0 4px rgba(255,255,255,.25); }
+.welcome .identity .caption { color: rgba(255,255,255,.8); } .welcome .identity .label { color: #fff; }
+.welcome-body { position: absolute; left: 56px; right: 56px; top: 200px; bottom: 72px; display: flex; flex-direction: column; gap: 56px; }
+.photo-card { margin: 0; flex: 1; min-height: 0; border-radius: 48px; padding: 14px; background: linear-gradient(160deg, #8EC2FA, #3D86DC); box-shadow: 0 30px 70px rgba(0,0,0,.35); }
+.photo-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 36px; display: block; }
+.welcome .panel { display: flex; flex-direction: column; gap: 28px; align-items: flex-start; }
+.welcome .greet { padding: 10px 24px; border-radius: 999px; background: rgba(255,255,255,.14); color: #CFE3FB; }
+.welcome .panel .body { color: rgba(255,255,255,.88); }
+.welcome .cta { align-self: stretch; display: flex; align-items: center; justify-content: center; gap: 28px; background: #fff; color: var(--brand-navy); border-radius: 32px; padding: 36px; border: 0;
+  box-shadow: 0 0 0 10px rgba(255,255,255,.14), 0 24px 50px rgba(0,0,0,.3); animation: pulse 2.4s ease-in-out infinite; }
+.cta-icon { width: 88px; height: 88px; border-radius: 50%; background: var(--grad-tile); color: #fff; display: grid; place-items: center; flex: none; }
+.welcome .langs { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.welcome .langs .label { color: rgba(255,255,255,.85); font-weight: 500; margin-right: 6px; }
+.welcome .langs button { min-height: 76px; padding: 0 34px; border-radius: 999px; border: 2px solid rgba(255,255,255,.85); background: transparent; color: #fff; font-size: var(--fs-label); font-weight: 600; }
+.welcome .langs button[aria-pressed="true"] { background: #fff; color: var(--brand-navy); border-color: #fff; }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.015); } }
 @media (prefers-reduced-motion: reduce) { .welcome .cta { animation: none; } }
 
+/* page header band (home, service): dark blue gradient */
+.page-head { flex: none; position: relative; overflow: hidden; background: var(--grad-hero); color: #fff; padding: 48px 40px; display: flex; flex-direction: column; gap: 12px; }
+.page-head > * { position: relative; }
+.page-head .body { color: rgba(255,255,255,.85); }
+/* the City Hall photo fades in on the right of the home header */
+.head-photo { position: absolute !important; right: 0; top: 0; height: 100%; width: 62%; object-fit: cover; opacity: .38;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 60%); mask-image: linear-gradient(90deg, transparent, #000 60%); }
+.home-head { padding-bottom: 120px; }
+.home-content { margin-top: -88px; position: relative; padding-top: 0; }
+.home-content > .h3 { margin-top: 8px; }
+
 /* home */
-.hero-band { height: 380px; flex: none; position: relative; overflow: hidden; background: var(--brand-sky); }
-.hero-band img { position: absolute; left: 0; top: -250px; width: 1080px; height: 720px; }
-.hero-band .scrim { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(18,53,91,.9), rgba(18,53,91,.1) 65%); }
-.hero-band h1 { position: absolute; left: 40px; top: 150px; width: 620px; color: #fff; }
 .searchfield { display: flex; align-items: center; gap: 20px; padding: 0 32px; min-height: 112px; border-radius: 24px; background: var(--bg-surface); border: 2px solid var(--border-strong); width: 100%; text-align: left; color: var(--text-secondary); font-size: var(--fs-body); }
+.searchfield.raised { border: 0; box-shadow: var(--shadow-raised); min-height: 128px; flex: none; }
 .searchfield.active { border: 4px solid var(--brand-blue); color: var(--text-primary); }
 .searchfield .icon { color: var(--brand-navy); }
+.search-dot { width: 72px; height: 72px; border-radius: 50%; background: var(--grad-tile); display: grid; place-items: center; flex: none; }
+.search-dot .icon { color: #fff; }
 .searchfield .q { flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .caret { display: inline-block; width: 3px; height: 1.1em; background: var(--brand-blue); vertical-align: text-bottom; margin-left: 2px; animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
-.choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.choice { display: flex; flex-direction: column; gap: 16px; padding: 32px; border-radius: 24px; background: var(--bg-surface); border: 2px solid var(--border-default); text-align: left; }
-.choice .tile { width: 88px; height: 88px; border-radius: 20px; background: var(--brand-sky); color: var(--brand-navy); display: grid; place-items: center; }
+.choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; flex: none; }
+.choice { display: flex; flex-direction: column; gap: 20px; padding: 32px; border-radius: 24px; background: var(--bg-surface); border: 2px solid var(--border-default); text-align: left; box-shadow: 0 2px 8px rgba(15,42,74,.05); }
+.choice-txt { display: flex; flex-direction: column; gap: 8px; }
+.choice .tile { width: 88px; height: 88px; border-radius: 22px; background: var(--grad-tile); color: #fff; display: grid; place-items: center; box-shadow: 0 8px 18px rgba(29,90,166,.3); }
 
 /* keyboard */
 .keyboard { margin-top: auto; background: var(--bg-subtle); border-radius: 24px; padding: 20px 12px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
@@ -123,6 +151,14 @@ h1, h2, h3, p { margin: 0; }
 .step .num { width: 64px; height: 64px; border-radius: 50%; background: var(--brand-navy); color: #fff; display: grid; place-items: center; font-size: var(--fs-h3); font-weight: 600; flex: none; }
 .step .agency { margin-top: 12px; padding-left: 20px; border-left: 4px solid var(--brand-sky-strong); display: flex; flex-direction: column; gap: 10px; }
 .step .meta { color: var(--brand-blue); }
+/* charter text keeps its line breaks (lists, one value per line) */
+.svc-desc, .stat .val, .req p, .step p { white-space: pre-line; }
+.notes { display: flex; flex-direction: column; gap: 12px; }
+.notes p { white-space: pre-line; }
+.note-table { overflow-x: auto; }
+.note-table table { border-collapse: collapse; width: 100%; font-size: var(--fs-caption); }
+.note-table td { border: 2px solid var(--border-default); padding: 8px 12px; vertical-align: top; }
+.note-table tr:first-child td { background: var(--bg-subtle); font-weight: 600; }
 .dock { flex: none; display: flex; gap: 20px; padding: 24px 40px; background: var(--bg-surface); border-top: 2px solid var(--border-default); box-shadow: 0 -6px 24px rgba(0,0,0,.08); }
 .dock > * { flex: 1; }
 .helpful { display: flex; align-items: center; gap: 16px; justify-content: space-between; padding: 24px 28px; border-radius: 20px; background: var(--bg-subtle); }
@@ -148,7 +184,10 @@ h1, h2, h3, p { margin: 0; }
 .dir .n { width: 52px; height: 52px; border-radius: 50%; background: var(--bg-subtle); display: grid; place-items: center; flex: none; }
 .dir.on { color: var(--text-primary); font-weight: 600; }
 .dir.on .n { background: var(--brand-blue); color: #fff; }
-.dir.done { opacity: .6; }
+.dir .n-done { display: none; }
+.dir.done .n { background: var(--brand-grass-tint); color: var(--status-success); }
+.dir.done .n-num { display: none; } .dir.done .n-done { display: contents; }
+.big2d { position: absolute; inset: 24px 390px 130px 24px; display: grid; place-items: center; }
 .webgl-fallback { position: absolute; inset: 0; display: grid; place-items: center; padding: 40px; text-align: center; color: var(--text-secondary); }
 
 /* overlays */
@@ -165,9 +204,182 @@ h1, h2, h3, p { margin: 0; }
 .toast { position: absolute; left: 50%; bottom: 200px; transform: translateX(-50%); background: var(--brand-navy); color: #fff; padding: 24px 36px; border-radius: 20px; font-size: var(--fs-label); font-weight: 600; z-index: 60; box-shadow: var(--shadow-pop); }
 
 /* floor map screen */
-.mapsvg { width: 100%; background: var(--bg-surface); border: 2px solid var(--border-default); border-radius: 24px; }
+.mapsvg { flex: none; width: 100%; height: auto; background: var(--bg-surface); border: 2px solid var(--border-default); border-radius: 24px; }
 .mapsvg .room { cursor: pointer; }
 .legend { display: flex; gap: 24px; flex-wrap: wrap; }
+
+/* ================================================================ 2026 visual refresh (both layouts) */
+.topbar { box-shadow: 0 2px 10px rgba(15,42,74,.06); border-bottom-color: var(--border-default); }
+.seg button[aria-pressed="true"] { background: var(--grad-primary); }
+.tb-btn { border-color: var(--border-default); }
+.btn-primary { background: var(--grad-primary); box-shadow: 0 8px 20px rgba(29,90,166,.3); }
+.btn-primary:active { background: var(--brand-blue-hover); }
+.back { color: var(--brand-blue); border-color: var(--border-default); }
+.page-head .back { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.55); color: #fff; }
+.row { border-color: var(--border-default); box-shadow: 0 2px 8px rgba(15,42,74,.05); }
+.row .chev { width: 60px; height: 60px; border-radius: 50%; background: var(--grad-primary); color: #fff; display: grid; place-items: center; }
+.row .chev .icon { width: 30px; height: 30px; }
+.chip[aria-pressed="true"] { background: var(--grad-primary); border-color: transparent; }
+.helpbar { background: linear-gradient(100deg, #0E2748, #1D5AA6); color: #fff; }
+.dest { background: var(--grad-hero); }
+.step .num { background: var(--grad-tile); }
+.stat { border-top: 8px solid var(--brand-blue-bright); }
+.key.primary { background: var(--grad-primary); border-color: transparent; }
+.minimap { border-color: var(--brand-blue-bright); }
+/* service: title in the header band */
+.svc-head { flex-direction: column; align-items: flex-start; gap: 20px; }
+.svc-head .head-txt { display: flex; flex-direction: column; gap: 8px; }
+
+/* column wrappers: invisible in portrait, used by the landscape layout */
+.col-main, .col-side, .nav-body { display: contents; }
+
+/* ================================================================ landscape 1920 × 1080 (/kiosk/landscape)
+   Spacing uses the token scale only (8 / 12 / 16 / 24 / 32 / 48):
+   48 = page gutter (every bar and the content share one left/right edge) and the gap between columns,
+   32 = between sections, 24 = inside cards and panels, 16 = between list items, 8–12 = inside controls. */
+.landscape .topbar { height: 104px; padding: 0 48px; gap: 16px; }
+.landscape .tb-btn { min-height: 80px; flex-direction: row; gap: 12px; padding: 8px 24px; }
+.landscape .seg button { padding: 12px 24px; }
+.landscape .helpbar, .landscape .banner { padding-left: 48px; padding-right: 48px; }
+.landscape .content { padding: 32px 48px; gap: 32px; }
+.landscape .list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.landscape .overlay .list, .landscape .col-side .list, .landscape .col-main .list { grid-template-columns: minmax(0, 1fr); }
+
+/* two-column screens: each column scrolls on its own */
+.landscape .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; overflow: hidden; align-items: stretch; }
+.landscape .cols > .col-main, .landscape .cols > .col-side { display: flex; flex-direction: column; gap: 32px; min-height: 0; overflow-y: auto; padding-right: 8px; scrollbar-width: thick; }
+.landscape .col-side > h2 { margin-bottom: -16px; } /* a heading sits 16px above the list it labels, not a full section gap */
+/* a fade at the bottom edge says "there is more below" (class set by updateScrollFades in app.js) */
+.landscape .more { -webkit-mask-image: linear-gradient(#000 calc(100% - 120px), transparent); mask-image: linear-gradient(#000 calc(100% - 120px), transparent); }
+.landscape .svc-cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
+.landscape .map-cols { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+
+/* search: query + 2 × 2 suggestions on top, keyboard centred along the bottom within easy reach.
+   Titles wrap to two lines so similar services (Born at Home / at the Hospital) stay distinguishable. */
+.landscape .search-cols { display: flex; flex-direction: column; gap: 16px; padding-top: 24px; padding-bottom: 24px; overflow-y: auto; }
+.landscape .search-cols > .col-main { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px 16px; align-items: center; overflow: visible; padding-right: 0; }
+.landscape .search-cols > .col-main > p, .landscape .search-cols > .col-main > .list { grid-column: 1 / -1; }
+.landscape .search-cols > .col-main > .back { min-height: 112px; }
+.landscape .search-cols #suggest { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.landscape .search-cols #suggest .row { min-height: 112px; padding: 16px 24px; }
+.landscape .search-cols #suggest .title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.landscape .search-cols .keyboard { margin-top: auto; align-self: center; padding: 16px 24px; gap: 12px; }
+.landscape .search-cols .key { height: 80px; }
+.landscape .search-cols .key:not(.wide):not(.space) { width: 80px; }
+
+.landscape .arrived-cols { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: center; }
+.landscape .arrived-cols > .col-main, .landscape .arrived-cols > .col-side { overflow: visible; align-items: center; justify-content: center; gap: 24px; }
+
+/* welcome: photo card on the left, greeting and start button on the right */
+.landscape .welcome .top { left: 96px; top: 48px; }
+.landscape .welcome .top .seal { width: 80px; height: 80px; }
+.landscape .welcome-body { left: 96px; right: 96px; top: 168px; bottom: 120px; flex-direction: row; align-items: center; gap: 96px; }
+.landscape .photo-card { flex: none; width: min(780px, 45%); height: min(740px, 100%); }
+.landscape .welcome .panel { flex: 1; gap: 32px; max-width: 1040px; }
+
+/* home: header band, raised search, three cards in a row, "Most searched" in two columns */
+.landscape .page-head { padding: 40px 48px; }
+.landscape .home-head { padding-bottom: 112px; }
+.landscape .home-content { margin-top: -80px; padding-top: 0; }
+.landscape .home-content .list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.landscape .choices { gap: 24px; }
+.landscape .choice { flex-direction: row; align-items: center; gap: 24px; padding: 24px 28px; }
+
+/* service detail */
+.landscape .svc-head { flex-direction: row; align-items: center; gap: 32px; padding: 28px 48px; }
+.landscape .stats { gap: 16px; }
+.landscape .stat { padding: 24px; }
+.landscape .stat .val { font-size: var(--fs-body); }
+.landscape .dock { padding: 24px 48px; gap: 24px; }
+.landscape .dock > :first-child { flex: 1; }
+.landscape .dock > :last-child { flex: 2; } /* the main action is the widest target */
+
+/* navigation: 3D view on the left, directions on the right */
+.landscape .nav-body { display: flex; flex: 1; min-height: 0; }
+.landscape .nav-body .viewport3d { flex: 1; }
+.landscape .nav-body .directions { width: 640px; flex: none; overflow-y: auto; padding: 32px; gap: 24px; border-left: 2px solid var(--border-default); }
+.landscape .nav-body .directions #dircur { color: var(--brand-navy); min-height: 2.3em; text-wrap: balance; }
+.landscape .nav-body .directions #dirs { display: flex; flex-direction: column; gap: 16px; }
+.landscape .nav-body .directions .controls { position: static; margin-top: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.landscape .nav-body .directions .controls button { flex-direction: column; justify-content: center; gap: 8px; min-height: 104px; padding: 12px; text-align: center; line-height: 1.2; background: var(--bg-subtle); box-shadow: none; }
+.landscape .nav-body .directions .btn-row { flex-direction: column; gap: 12px; }
+.landscape .dest { padding: 16px 48px; gap: 24px; }
+.landscape .minimap { width: 460px; }
+.landscape .floorpick button { white-space: nowrap; padding: 0 8px; }
+
+/* overlays */
+.landscape .sheet { width: 1000px; max-height: 1020px; overflow-y: auto; }
+.landscape .overlay.bottom .sheet { width: 1200px; }
+.landscape .sheet .qr { width: 320px; height: 320px; }
+.landscape .toast { bottom: 144px; }
+
+/* ================================================================ narrow: phones (compact) and small windows
+   Same portrait design, about 600 design px wide: controls wrap, grids stack, fixed widths become fluid. */
+#stage.narrow { --fs-display: 64px; --fs-h1: 48px; }
+#stage.narrow.large { --fs-display: 76px; --fs-h1: 56px; }
+.narrow .topbar { height: auto; flex-wrap: wrap; padding: 16px 24px; gap: 12px; }
+.narrow .topbar .spacer { display: none; }
+.narrow .brand-home { flex: 1 1 calc(100% - 200px); min-width: 0; }
+.narrow .brand-home .seal { width: 64px; height: 64px; }
+.narrow .identity { min-width: 0; } .narrow .identity > span { overflow-wrap: anywhere; }
+.narrow .tb-btn { flex-direction: row; gap: 10px; min-height: 72px; min-width: 0; padding: 8px 18px; }
+.narrow .tb-btn[data-action="home"] { order: 1; }
+.narrow .seg { order: 2; flex: 1; } .narrow .seg button { flex: 1; }
+.narrow .tb-btn[data-action="large"] { order: 3; }
+.narrow .content { padding: 24px 24px 32px; gap: 24px; }
+.narrow .page-head { padding: 32px 24px; }
+.narrow .home-head { padding-bottom: 104px; }
+.narrow .head-photo { width: 100%; }
+.narrow .helpbar, .narrow .banner { padding: 16px 24px; }
+.narrow .choices { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.narrow .choice { flex-direction: row; align-items: center; padding: 20px 24px; gap: 20px; }
+.narrow .choice .tile { width: 72px; height: 72px; flex: none; }
+.narrow .searchfield { padding: 0 20px; gap: 16px; }
+.narrow .searchfield.raised { min-height: 112px; }
+.narrow .row { padding: 20px; gap: 16px; min-height: 104px; }
+.narrow .row .tile { width: 60px; height: 60px; }
+.narrow .row .chev { width: 48px; height: 48px; }
+.narrow .stats { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.narrow .card { padding: 24px; }
+.narrow .step { padding: 20px; gap: 16px; }
+.narrow .step .num { width: 52px; height: 52px; }
+.narrow .helpful { flex-wrap: wrap; padding: 20px; }
+.narrow .dock { padding: 16px 24px; gap: 12px; }
+.narrow .btn { padding: 0 20px; gap: 10px; line-height: 1.2; text-align: center; }
+.narrow .back { min-height: 64px; }
+.narrow .keyboard { width: 100%; padding: 12px 6px; gap: 8px; }
+.narrow .kb-row { width: 100%; gap: 6px; }
+.narrow .key { flex: 1 1 0; width: auto; min-width: 0; height: 80px; padding: 0; }
+.narrow .key.wide { flex: 0 1 auto; padding: 0 12px; }
+.narrow .key.space { flex: 2 1 0; width: auto; }
+.narrow .dest { padding: 16px 24px; gap: 16px; }
+.narrow .minimap { width: 240px; right: 12px; top: 12px; padding: 10px; }
+.narrow .viewport3d:has(.big2d) .minimap { display: none; } /* the big 2D map already shows the floor */
+.narrow .big2d { inset: 12px 12px 112px 12px; }
+.narrow .controls { left: 12px; right: 12px; bottom: 12px; gap: 8px; }
+.narrow .controls button { flex: 1; justify-content: center; padding: 0 12px; }
+.narrow .directions { padding: 20px 24px 24px; }
+.narrow .sheet { width: calc(100% - 32px); max-height: calc(100% - 32px); overflow-y: auto; padding: 28px 24px; }
+.narrow .overlay.bottom .sheet { width: 100%; max-height: 90%; }
+.narrow .sheet .qr { width: min(340px, 100%); height: auto; aspect-ratio: 1; }
+.narrow .toast { bottom: 120px; max-width: calc(100% - 48px); text-align: center; }
+.narrow .welcome .top { left: 24px; right: 24px; top: 32px; gap: 16px; }
+.narrow .welcome .top .seal { width: 80px; height: 80px; }
+.narrow .welcome-body { left: 24px; right: 24px; top: 152px; bottom: 32px; gap: 32px; }
+.narrow .photo-card { border-radius: 32px; padding: 10px; min-height: 160px; }
+.narrow .photo-card img { border-radius: 24px; }
+.narrow .welcome .panel { gap: 20px; }
+.narrow .welcome .cta { padding: 24px; gap: 20px; border-radius: 28px; }
+.narrow .cta-icon { width: 72px; height: 72px; }
+.narrow .welcome .langs button { min-height: 68px; padding: 0 24px; }
+/* phones in landscape are short: let the welcome screen scroll instead of squashing the photo */
+.compact .welcome { overflow-y: auto; }
+.compact .welcome-body { position: relative; inset: auto; margin: 152px 24px 32px; min-height: calc(100% - 184px); }
+.compact.narrow .welcome-body { margin-left: 24px; margin-right: 24px; }
+.compact:not(.narrow) .welcome-body { flex-direction: row; align-items: flex-start; }
+.compact:not(.narrow) .helpbar { display: none; } /* short screen: keep the room for content */
+.compact:not(.narrow) .photo-card { flex: 1; align-self: stretch; }
+.compact:not(.narrow) .welcome .panel { flex: 1.2; }
 
 /* print slip (thermal printer, 80 mm) */
 @media print {

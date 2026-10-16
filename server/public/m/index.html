@@ -3,15 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="icon" href="/img/malaybalay-seal.jpg">
   <meta name="theme-color" content="#12355B">
-  <title>City Hall — Malaybalay</title>
+  <title>Malaybalay City Hall</title>
   <link rel="stylesheet" href="/shared/tokens.css">
   <style>
     body { font-size: 16px; line-height: 1.5; }
     .top { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--brand-navy); color: #fff; }
+    .top .brand-home { display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
     .top b { display: block; font-size: 15px; } .top small { opacity: .75; font-size: 12px; }
     .top .back { color: #fff; display: grid; place-items: center; width: 40px; height: 40px; margin-left: -8px; }
-    .seal { width: 34px; height: 34px; border-radius: 50%; background: var(--brand-gold); color: var(--brand-navy); display: grid; place-items: center; font-weight: 800; font-size: 12px; flex: none; }
+    .seal { width: 38px; height: 38px; border-radius: 50%; background: #fff; object-fit: contain; flex: none; display: block; }
     main { padding: 16px 16px 48px; max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
     h1 { font-size: 24px; line-height: 1.25; margin: 4px 0 0; } h2 { font-size: 18px; margin: 0 0 6px; display: flex; gap: 8px; align-items: center; }
     p { margin: 0; } .muted { color: var(--text-secondary); } .small { font-size: 14px; }
@@ -36,6 +38,12 @@
     .results { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
     .results a { display: block; background: #fff; border: 1px solid var(--border-default); border-radius: 12px; padding: 12px 14px; color: var(--text-primary); text-decoration: none; }
     .results small { display: block; color: var(--text-secondary); }
+    /* charter text keeps its line breaks (lists, one value per line) */
+    .check b, .check small, .steps b, .steps small, section > p { white-space: pre-line; }
+    .note-table { overflow-x: auto; margin: 8px 0; }
+    .note-table table { border-collapse: collapse; font-size: 13px; min-width: 100%; }
+    .note-table td { border: 1px solid var(--border-default); padding: 6px 8px; vertical-align: top; }
+    .note-table tr:first-child td { background: var(--bg-subtle); font-weight: 700; }
   </style>
 </head>
 <body>

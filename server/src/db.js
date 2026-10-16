@@ -22,7 +22,14 @@ export async function openDb({ fresh = false } = {}) {
   }
   db.run('PRAGMA foreign_keys = ON;');
   db.run(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
+  upgrade();
   return db;
+}
+
+// Columns added after a database was first created (CREATE TABLE IF NOT EXISTS leaves old tables as they were).
+function upgrade() {
+  const cols = db.exec('PRAGMA table_info(services)')[0]?.values.map(r => r[1]) || [];
+  if (!cols.includes('notes')) db.run('ALTER TABLE services ADD COLUMN notes TEXT');
 }
 
 export function saveNow() {

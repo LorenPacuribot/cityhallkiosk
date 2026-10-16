@@ -7,9 +7,17 @@ import { planRouteCore } from '../shared/route-core.js';
 const params = new URLSearchParams(location.search);
 const KIOSK = params.get('kiosk') || 'KIOSK-LOBBY-1';
 const APP_VERSION = 'web-0.1.0';
-const IDLE_MS = Number(params.get('idle') ?? 60) * 1000; // ?idle=0 disables the reset (demos/testing)
 const WARN_S = 15;
 const LS = { bundle: 'kiosk.bundle', fbq: 'kiosk.feedbackQueue', lang: 'kiosk.lang' };
+
+// Layout: portrait (designed at 1080 × 1920) or landscape (1920 × 1080), picked from the window's shape
+// unless forced with /kiosk/landscape or ?layout=portrait|landscape. Phones get "compact": a narrower,
+// larger-text version of portrait. See fit().
+const FORCED = params.get('layout') || (/\/landscape\/?$/.test(location.pathname) ? 'landscape' : null);
+const isPhone = () => !FORCED && Math.min(innerWidth, innerHeight) < 540;
+let LAYOUT = 'portrait';
+// Idle privacy reset is for the shared kiosk; a visitor's own phone doesn't need it. ?idle=0 disables it (demos/testing).
+const IDLE_MS = Number(params.get('idle') ?? (isPhone() ? 0 : 60)) * 1000;
 
 const stage = document.getElementById('stage');
 const S = {
@@ -18,6 +26,7 @@ const S = {
   nav: null, idleTimer: null, warnTimer: null, suggestTimer: null, lastSuggest: [],
 };
 const idx = { services: new Map(), offices: new Map(), rooms: new Map() };
+const LANGS = [['en', 'English'], ['fil', 'Filipino'], ['ceb', 'Cebuano']];
 
 // ---------------------------------------------------------------- utilities
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -37,9 +46,26 @@ function toast(msg) {
   el.className = 'toast'; el.setAttribute('role', 'status'); el.textContent = msg;
   stage.appendChild(el); setTimeout(() => el.remove(), 2600);
 }
+// The stage always fills the window. It is laid out in design pixels and scaled, so the kiosk screen
+// (1080 × 1920 or 1920 × 1080) renders 1:1 and other screens get the same design, reflowed to their shape:
+// 4K/TV and desktops scale up or down, iPads get portrait or landscape by orientation, phones get compact.
 function fit() {
-  const s = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
-  stage.style.transform = `translate(-50%, -50%) scale(${s})`;
+  const w = innerWidth, h = innerHeight, compact = isPhone();
+  const layout = FORCED ? (FORCED === 'landscape' ? 'landscape' : 'portrait') : !compact && w / h >= 1.15 ? 'landscape' : 'portrait';
+  const s = compact ? Math.min(0.75, w / 600, h / 640) : layout === 'landscape' ? Math.min(w / 1920, h / 1000) : Math.min(w / 1080, h / 1500);
+  const sw = w / s, narrow = sw < 900;
+  const changed = layout !== LAYOUT || compact !== stage.classList.contains('compact') || narrow !== stage.classList.contains('narrow');
+  stage.style.width = `${sw}px`; stage.style.height = `${h / s}px`;
+  stage.style.transform = `scale(${s})`;
+  stage.classList.toggle('landscape', layout === 'landscape');
+  stage.classList.toggle('compact', compact);
+  stage.classList.toggle('narrow', narrow);
+  LAYOUT = layout;
+  if (changed && S.stack.length) { // e.g. a tablet rotated: redraw the current screen for the new layout
+    if (S.nav?.ctrl) { S.nav.ctrl.dispose(); S.nav.ctrl = null; }
+    rerender();
+  }
+  updateScrollFades();
 }
 addEventListener('resize', fit); fit();
 
@@ -108,11 +134,11 @@ async function doSearch(q, log) {
 function topbar() {
   const l = getLang();
   return `<header class="topbar">
-    <div class="seal" aria-hidden="true">CM</div>
-    <div class="identity"><span class="caption">${t('city')}</span><span class="label">${t('kiosk_name')}</span></div>
+    <button class="brand-home" data-action="home" aria-label="${t('home')}"><img class="seal" src="/img/malaybalay-seal.jpg" alt="">
+    <span class="identity"><span class="label">${t('city')}</span><span class="caption">${t('kiosk_name')}</span></span></button>
     <div class="spacer"></div>
     <div class="seg" role="group" aria-label="${t('language')}">
-      ${['en', 'fil', 'ceb'].map(x => `<button data-action="lang" data-lang="${x}" aria-pressed="${l === x}">${x.toUpperCase()}</button>`).join('')}
+      ${LANGS.map(([x, name]) => `<button data-action="lang" data-lang="${x}" aria-pressed="${l === x}">${LAYOUT === 'landscape' ? name : x.toUpperCase()}</button>`).join('')}
     </div>
     <button class="tb-btn" data-action="large" aria-pressed="${stage.classList.contains('large')}">${icon('text-size', 30)}<span>${t('large_text')}</span></button>
     <button class="tb-btn" data-action="home">${icon('home', 30)}<span>${t('home')}</span></button>
@@ -143,16 +169,17 @@ const screens = {
   welcome() {
     const l = getLang();
     return `<section class="screen welcome" data-action="start" aria-label="${t('welcome_title')}">
-      <img class="hero" src="/img/cityhall.svg" alt="">
-      <div class="scrim"></div>
-      <div class="top"><div class="seal" aria-hidden="true">CM</div><div class="identity"><span class="caption">${t('city')}</span><span class="label">New City Hall</span></div></div>
-      <div class="panel">
-        <h1 class="display">${t('welcome_title')}</h1>
-        <p class="h3 gold">${t('welcome_sub')}</p>
-        <p class="body">${t('welcome_body')}</p>
-        <button class="cta" data-action="start">${icon('navigation', 48)}<span class="h2">${t('touch_start')}</span></button>
-        <div class="langs chips" role="group" aria-label="${t('language')}">
-          ${[['en', 'English'], ['fil', 'Filipino'], ['ceb', 'Cebuano']].map(([k, n]) => `<button data-action="lang" data-lang="${k}" aria-pressed="${l === k}">${n}</button>`).join('')}
+      <div class="top"><img class="seal" src="/img/malaybalay-seal.jpg" alt=""><div class="identity"><span class="label">${t('city')}</span><span class="caption">${t('kiosk_name')}</span></div></div>
+      <div class="welcome-body">
+        <figure class="photo-card"><img src="/img/cityhall-photo.jpg" alt="The New Malaybalay City Hall"></figure>
+        <div class="panel">
+          <span class="greet label">${t('welcome_sub')}</span>
+          <h1 class="display">${t('welcome_title')}</h1>
+          <p class="body">${t('welcome_body')}</p>
+          <button class="cta" data-action="start"><span class="cta-icon">${icon('navigation', 44)}</span><span class="h2">${t('touch_start')}</span></button>
+          <div class="langs" role="group" aria-label="${t('language')}"><span class="label">${t('language')}:</span>
+            ${LANGS.map(([k, n]) => `<button data-action="lang" data-lang="${k}" aria-pressed="${l === k}">${n}</button>`).join('')}
+          </div>
         </div>
       </div></section>`;
   },
@@ -160,12 +187,12 @@ const screens = {
   home() {
     const pop = (S.bundle.popular_service_ids || []).map(id => idx.services.get(id)).filter(Boolean);
     return `<section class="screen">${topbar()}
-      <div class="hero-band"><img src="/img/cityhall.svg" alt=""><div class="scrim"></div><h1 class="h1">${t('home_q')}</h1></div>
-      <div class="content">
-        <button class="searchfield" data-action="search">${icon('search', 40)}<span class="q">${t('search_placeholder')}</span></button>
+      <div class="page-head home-head"><img class="head-photo" src="/img/cityhall-photo.jpg" alt=""><h1 class="h1">${t('home_q')}</h1><p class="body">${t('home_sub')}</p></div>
+      <div class="content home-content">
+        <button class="searchfield raised" data-action="search"><span class="search-dot">${icon('search', 36)}</span><span class="q">${t('search_placeholder')}</span></button>
         <div class="choices">
           ${[['search', 'file-text', 'find_service'], ['offices', 'building', 'browse_offices'], ['map', 'map', 'map_hall']].map(([a, ic, k]) => `
-          <button class="choice" data-action="${a}"><span class="tile">${icon(ic, 44)}</span><span class="h3">${t(k)}</span><span class="caption muted">${t(k + '_d')}</span></button>`).join('')}
+          <button class="choice" data-action="${a}"><span class="tile">${icon(ic, 44)}</span><span class="choice-txt"><span class="h3">${t(k)}</span><span class="caption muted">${t(k + '_d')}</span></span></button>`).join('')}
         </div>
         <h2 class="h3">${t('popular')}</h2>
         <div class="list">${pop.map(s => rowHTML({ kind: 'service', id: s.id, title: s.display_title, subtitle: `${s.office_name} · ${locText(s.location)}` })).join('')}</div>
@@ -176,11 +203,13 @@ const screens = {
     const q = S.query;
     const sug = S.lastSuggest;
     return `<section class="screen">${topbar()}
-      <div class="content" style="gap:20px">
+      <div class="content cols search-cols" style="gap:20px">
+        <div class="col-main">
         ${backBtn()}
         <div class="searchfield active" role="textbox" aria-label="${t('search_placeholder')}" aria-live="polite">${icon('search', 40)}<span class="q">${esc(q)}<span class="caret"></span>${q ? '' : `<span class="muted"> ${t('search_placeholder')}</span>`}</span></div>
         <p class="caption muted">${q.trim() ? t('suggestions') : t('type_to_search')}</p>
         <div class="list" id="suggest">${sug.slice(0, 4).map(rowHTML).join('')}</div>
+        </div>
         ${keyboard()}
       </div></section>`;
   },
@@ -223,7 +252,7 @@ const screens = {
     const list = S.bundle.offices.filter(o => f === 'all' ? true : f === 'out' ? o.location_type !== 'in_building' || !o.location?.room_id : o.location?.floor_level === Number(f));
     return `<section class="screen">${topbar()}
       <div class="content" style="gap:24px">
-        ${backBtn(t('home'))}
+        ${backBtn()}
         <h1 class="h1">${t('offices_title')}</h1>
         <div class="chips" role="group">
           ${[['all', t('all_floors')], ...S.bundle.floors.filter(fl => S.bundle.offices.some(o => o.location?.floor_level === fl.level)).map(fl => [String(fl.level), fl.name]), ['out', t('not_in_building')]]
@@ -261,14 +290,15 @@ const screens = {
     const verified = s.verified_at ? `<span class="badge success">${icon('circle-check', 24)}${t('verified_on', { d: new Date(s.verified_at).toLocaleDateString([], { month: 'short', year: 'numeric' }) })}</span>` : '';
     const inBuilding = s.location?.room_id;
     return `<section class="screen">${topbar()}
-      <div class="content">
-        <div class="crumb">${backBtn()}</div>
+      <div class="page-head svc-head">${backBtn()}<div class="head-txt"><h1 class="h1">${esc(s.display_title)}</h1>
+        <p class="body">${esc(s.office_name)} · ${esc(locText(s.location))}</p></div></div>
+      <div class="content cols svc-cols">
+        <div class="col-main">
         <header style="display:flex;flex-direction:column;gap:16px">
-          <h1 class="h1">${esc(s.display_title)}</h1>
           ${s.plain_title ? `<p class="caption muted">${esc(s.title)}</p>` : ''}
-          ${s.description ? `<p class="body muted">${esc(s.description.length > 360 ? s.description.slice(0, 357) + '…' : s.description)}</p>` : ''}
+          ${s.description ? `<p class="body muted svc-desc">${esc(s.description)}</p>` : ''}
           <div class="badges">
-            <button class="badge ${inBuilding ? 'info' : 'offsite'}" data-action="office" data-id="${s.office_id}" style="border:0">${icon(inBuilding ? 'map-pin' : 'building', 24)}${esc(s.office_name)} · ${esc(locText(s.location))}</button>
+            <button class="badge badge-link ${inBuilding ? 'info' : 'offsite'}" data-action="office" data-id="${s.office_id}">${icon(inBuilding ? 'map-pin' : 'building', 24)}${esc(s.office_name)} · ${esc(locText(s.location))}${icon('chevron-right', 24)}</button>
             ${s.classification ? `<span class="badge neutral">${esc(s.classification)}</span>` : ''}${verified}
           </div>
         </header>
@@ -276,6 +306,8 @@ const screens = {
           ${[['wallet', 'total_fee', s.total_fees], ['clock', 'processing_time', s.total_processing_time], ['users', 'who_may_apply', s.who_may_avail]].map(([ic, k, v]) =>
             `<div class="stat"><span class="lbl">${icon(ic, 28)}${t(k)}</span><span class="val">${esc(v || '—')}</span></div>`).join('')}
         </div>
+        </div>
+        <div class="col-side">
         ${s.requirements.length ? `<section class="card" style="padding:28px 32px 12px"><h2 class="h3">${t('what_to_bring')} (${s.requirements.length})</h2>
           ${s.requirements.map(r => `<div class="req"><span class="box" aria-hidden="true"></span><div><p class="label">${esc(r.requirement)}</p>${r.where_to_secure ? `<p class="caption muted">${esc(r.where_to_secure)}</p>` : ''}</div></div>`).join('')}
         </section>` : ''}
@@ -283,12 +315,14 @@ const screens = {
           <div class="list">${s.steps.map((st, i) => `<div class="step"><span class="num">${i + 1}</span><div style="flex:1;display:flex;flex-direction:column;gap:8px">
             ${st.client_action ? `<p class="label">${esc(st.client_action)}</p>` : ''}
             ${st.agency.length ? `<div class="agency">${st.agency.map(a => `<div><p class="caption muted">${esc(a.agency_action)}</p>
-              <p class="caption meta">${[a.fee && `${t('total_fee').split(' ').pop()}: ${a.fee}`, a.processing_time, a.person_in_charge].filter(Boolean).map(esc).join(' · ')}</p></div>`).join('')}</div>` : ''}
+              <p class="caption meta">${stepMeta(a)}</p></div>`).join('')}</div>` : ''}
           </div></div>`).join('')}</div>` : ''}
+        ${s.notes ? `<section class="card notes"><h2 class="h3">${t('notes')}</h2>${notesHTML(s.notes)}</section>` : ''}
         <div class="helpful"><span class="label">${t('did_help')}</span><div class="btns">
           <button data-action="fb" data-v="1" data-id="${s.id}">${icon('thumbs-up', 32)}</button>
           <button data-action="fb" data-v="0" data-id="${s.id}">${icon('thumbs-down', 32)}</button></div></div>
         <p class="caption muted">${s.verified_at ? '' : t('not_verified') + ' · '}${t('from_charter', { src: esc(s.source || "Citizen's Charter") })}</p>
+        </div>
       </div>
       <div class="dock">
         <button class="btn btn-secondary" data-action="qr" data-id="${s.id}">${icon('qr', 36)}${t('take_it')}</button>
@@ -312,25 +346,31 @@ const screens = {
 
   navigate() {
     const r = S.nav.route;
+    const wide = LAYOUT === 'landscape';
+    // In landscape the playback controls sit in the directions panel so they don't cover the route start.
+    const controls = `<div class="controls">
+          <button data-action="navpause" id="btn-pause">${icon('pause', 32)}<span>${t('pause')}</span></button>
+          <button data-action="navreplay">${icon('replay', 32)}<span>${t('replay')}</span></button>
+          <button data-action="navskip">${icon('skip', 32)}<span>${t('skip')}</span></button>
+        </div>`;
     return `<section class="screen">${topbar()}
       <div class="dest">${icon('map-pin', 44)}<div style="flex:1"><p class="h3">${t('navigating_to', { room: esc(S.nav.title) })}</p>
         <p class="caption">${t('walk_info', { room_code: r.to.room_code, floor: r.to.floor_name, d: r.distance_m, m: r.minutes })}</p></div></div>
+      <div class="nav-body">
       <div class="viewport3d" id="vp">
         <div class="minimap" aria-label="Map">
           <div id="mm"></div>
           <div class="floorpick">${S.bundle.floors.map(f => `<button data-action="mmfloor" data-l="${f.level}" aria-pressed="false">${esc(f.name)}</button>`).join('')}</div>
         </div>
-        <div class="controls">
-          <button data-action="navpause" id="btn-pause">${icon('pause', 32)}<span>${t('pause')}</span></button>
-          <button data-action="navreplay">${icon('replay', 32)}<span>${t('replay')}</span></button>
-          <button data-action="navskip">${icon('skip', 32)}<span>${t('skip')}</span></button>
-        </div>
+        ${wide ? '' : controls}
       </div>
       <div class="directions">
         <div class="progress"><div id="prog"></div></div>
-        <div id="dirs">${r.directions.map((d, i) => `<div class="dir" data-i="${i}"><span class="n">${d.kind === 'floor_change' ? icon('stairs', 28) : i + 1}</span><span class="label" style="font-weight:inherit">${esc(direction(d))}</span></div>`).join('')}</div>
+        ${wide ? `<p class="h2" id="dircur" aria-live="polite">${esc(direction(r.directions[0]))}</p>` : ''}
+        <div id="dirs">${r.directions.map((d, i) => `<div class="dir" data-i="${i}"><span class="n"><span class="n-num">${d.kind === 'floor_change' ? icon('stairs', 28) : i + 1}</span><span class="n-done">${icon('check', 28)}</span></span><span class="label" style="font-weight:inherit">${esc(direction(d))}</span></div>`).join('')}</div>
+        ${wide ? controls : ''}
         <div class="btn-row"><button class="btn btn-secondary" data-action="toggle2d">${icon('map', 32)}<span id="t2d">${t('view_2d')}</span></button><button class="btn btn-secondary" data-action="endnav">${t('end_nav')}</button></div>
-      </div></section>`;
+      </div></div></section>`;
   },
 
   arrived() {
@@ -338,8 +378,9 @@ const screens = {
     const room = idx.rooms.get(n.route.to.room_id);
     const office = n.officeId ? idx.offices.get(n.officeId) : null;
     return `<section class="screen">${topbar()}
-      <div class="content" style="align-items:center;text-align:center">
-        <div class="card" style="width:100%;padding:0;overflow:hidden">${doorIllustration(n.route.to.room_code, room?.name || '')}</div>
+      <div class="content cols arrived-cols" style="align-items:center;text-align:center">
+        <div class="col-main"><div class="card" style="width:100%;padding:0;overflow:hidden">${doorIllustration(n.route.to.room_code, office?.name || room?.name || '')}</div></div>
+        <div class="col-side">
         <div class="circle-icon" style="background:var(--brand-grass-tint);color:var(--status-success)">${icon('circle-check', 64)}</div>
         <h1 class="h1">${t('arrived')}</h1>
         <p class="body muted">${t('arrived_body', { office: esc(office?.name || room?.name || ''), room_code: n.route.to.room_code, floor: n.route.to.floor_name })}</p>
@@ -348,6 +389,7 @@ const screens = {
           ${n.serviceId ? `<button class="btn btn-primary btn-block" data-action="service" data-id="${n.serviceId}">${t('see_requirements')}</button>` : ''}
           <button class="btn btn-secondary btn-block" data-action="home">${t('back_home')}</button>
         </div>
+        </div>
       </div>${helpbar()}</section>`;
   },
 
@@ -355,25 +397,52 @@ const screens = {
     const lvl = S.mapFloor;
     const fl = S.bundle.floors.find(f => f.level === lvl);
     return `<section class="screen">${topbar()}
-      <div class="content">
-        ${backBtn(t('home'))}
+      <div class="content cols map-cols">
+        <div class="col-main">
+        ${backBtn()}
         <h1 class="h1">${t('map_hall')}</h1>
         <div class="chips">${S.bundle.floors.map(f => `<button class="chip" data-action="mapfloor" data-l="${f.level}" aria-pressed="${f.level === lvl}">${esc(f.name)}</button>`).join('')}</div>
         ${floorSVG(fl, { interactive: true, you: S.bundle.kiosk.floor_level === lvl ? S.bundle.kiosk : null })}
-        <div class="list">${fl.rooms.filter(r => r.room_type === 'office' || r.occupant).map(r => {
+        </div>
+        <div class="col-side"><div class="list">${fl.rooms.filter(r => r.room_type === 'office' || r.occupant).map(r => {
           const off = S.bundle.offices.find(o => o.location?.room_id === r.id);
           return rowHTML({ kind: 'office', id: off?.id ?? '', title: off?.name || r.name, subtitle: r.code });
-        }).join('')}</div>
+        }).join('')}</div></div>
       </div>${helpbar()}</section>`;
   },
 };
 
+// "Fee: … · time · person". A charter cell can list one value per line for several sub-actions
+// ("PHP100.00 / None" beside "15 Minutes / 5 Minutes"); those are paired line by line.
+function stepMeta(a) {
+  const fees = String(a.fee || '').split('\n').filter(Boolean), times = String(a.processing_time || '').split('\n').filter(Boolean);
+  const feeLabel = t('total_fee').split(' ').pop();
+  const lines = fees.length > 1 && fees.length === times.length
+    ? fees.map((f, i) => `${feeLabel}: ${f} · ${times[i]}`)
+    : [[fees.length && `${feeLabel}: ${fees.join(', ')}`, times.join(', ')].filter(Boolean).join(' · ')];
+  if (a.person_in_charge) lines[lines.length - 1] = [lines[lines.length - 1], a.person_in_charge].filter(Boolean).join(' · ');
+  return lines.map(esc).join('<br>');
+}
+
+// Charter notes: plain lines become paragraphs; runs of "a | b | c" lines (fee schedules) become a table.
+function notesHTML(notes) {
+  const out = []; let rows = [];
+  const flush = () => { if (rows.length) out.push(`<div class="note-table"><table>${rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table></div>`); rows = []; };
+  for (const line of String(notes).split('\n')) {
+    if (line.includes(' | ')) rows.push(line.split(' | '));
+    else { flush(); out.push(`<p class="caption">${esc(line)}</p>`); }
+  }
+  flush();
+  return out.join('');
+}
+
 function doorIllustration(code, name) {
-  return `<svg viewBox="0 0 1000 420" width="100%" role="img" aria-label="${esc(code)}"><rect width="1000" height="420" fill="#F4F1EA"/><rect y="330" width="1000" height="90" fill="#C98F6C"/>
+  // 16:9, the frame a real door photo will use later
+  return `<svg viewBox="0 0 1000 562" width="100%" style="display:block" role="img" aria-label="${esc(code)}"><rect width="1000" height="562" fill="#F4F1EA"/><g transform="translate(0 142)"><rect y="330" width="1000" height="90" fill="#C98F6C"/>
   <rect x="380" y="70" width="240" height="260" fill="#23415F"/><rect x="396" y="86" width="208" height="244" fill="#2E5578"/><circle cx="584" cy="210" r="9" fill="#D9A520"/>
   <rect x="340" y="18" width="320" height="44" rx="8" fill="#12355B"/><text x="500" y="48" fill="#fff" font-size="24" font-weight="700" text-anchor="middle" font-family="sans-serif">${esc(code)}</text>
   <rect x="140" y="110" width="140" height="160" fill="#DCE9F5"/><rect x="720" y="110" width="140" height="160" fill="#DCE9F5"/>
-  <text x="500" y="395" fill="#1B2430" font-size="22" text-anchor="middle" font-family="sans-serif">Replace with a photo of ${esc(name).slice(0, 48)}</text></svg>`;
+  <text x="500" y="395" fill="#1B2430" font-size="22" text-anchor="middle" font-family="sans-serif">${esc(name.length > 60 ? name.slice(0, 57) + '…' : name)}</text></g></svg>`;
 }
 
 // 2D floor plan (top-down X/Z). Used on the map screen, minimap and phone page.
@@ -435,7 +504,16 @@ function rerender() {
   if (name === 'navigate') startNav();
   if (name === 'search') { /* suggestions update in place */ }
   const content = stage.querySelector('.content'); if (content) content.scrollTop = 0;
+  updateScrollFades();
 }
+// Landscape: fade the bottom edge of any area that has more content below, so it reads as scrollable.
+function updateScrollFades() {
+  if (LAYOUT !== 'landscape') return;
+  stage.querySelectorAll('.content, .col-main, .col-side').forEach(el => {
+    el.classList.toggle('more', el.scrollHeight - el.clientHeight - el.scrollTop > 8);
+  });
+}
+stage.addEventListener('scroll', updateScrollFades, { capture: true, passive: true });
 function resetToWelcome() {
   S.stack = []; S.query = ''; S.results = null; S.filter = 'all'; S.floorFilter = 'all'; S.lastSuggest = [];
   stage.classList.remove('large'); setLang(safeLS.get(LS.lang) || 'en');
@@ -465,6 +543,8 @@ async function startNav() {
     const bar = $('#prog'); if (bar) bar.style.width = `${Math.round(frac * 100)}%`;
     updateMinimap(pos);
     stage.querySelectorAll('.dir').forEach((el, i) => { el.classList.toggle('on', i === legIndex); el.classList.toggle('done', i < legIndex); });
+    const cur = $('#dircur'), d = S.nav.route.directions[legIndex];
+    if (cur && d && cur.dataset.i !== String(legIndex)) { cur.textContent = direction(d); cur.dataset.i = String(legIndex); }
   };
   const onArrive = () => setTimeout(() => { if (current() === 'navigate') go('arrived', {}, { replace: true }); }, 1400);
   if (S.nav.mode === '2d') { animate2D(onProgress, onArrive); return; }
@@ -498,7 +578,7 @@ function animate2D(onProgress, onArrive) {
   const pts = S.nav.route.waypoints;
   let seg = 0, t0 = performance.now(), cur = { ...pts[0] };
   let holder = vp.querySelector('.big2d');
-  if (!holder) { holder = document.createElement('div'); holder.className = 'big2d'; holder.style.cssText = 'position:absolute;inset:24px 390px 130px 24px;display:grid;place-items:center'; vp.prepend(holder); }
+  if (!holder) { holder = document.createElement('div'); holder.className = 'big2d'; vp.prepend(holder); }
   const lens = pts.slice(1).map((p, i) => Math.hypot(p.x - pts[i].x, p.z - pts[i].z) + Math.abs(p.y - pts[i].y));
   const total = lens.reduce((a, b) => a + b, 0) || 1;
   const speed = 8; // m/s preview speed
@@ -547,7 +627,7 @@ function printSlip(id) {
   const s = idx.services.get(Number(id));
   let slip = document.getElementById('print-slip');
   if (!slip) { slip = document.createElement('div'); slip.id = 'print-slip'; document.body.appendChild(slip); }
-  slip.innerHTML = `<b>${esc(t('city'))} · City Hall</b><hr><b>${esc(s.display_title)}</b><br>${esc(s.office_name)} — ${esc(locText(s.location))}<br>
+  slip.innerHTML = `<b>${esc(t('city'))}</b><hr><b>${esc(s.display_title)}</b><br>${esc(s.office_name)} — ${esc(locText(s.location))}<br>
     ${esc(t('total_fee'))}: ${esc(s.total_fees || '-')}<br>${esc(t('processing_time'))}: ${esc(s.total_processing_time || '-')}<hr>
     <b>${esc(t('what_to_bring'))}</b><br>${s.requirements.map(r => `[ ] ${esc(r.requirement)}`).join('<br>')}<hr>${esc(s.source || '')}<br>${new Date().toLocaleString()}`;
   window.print();

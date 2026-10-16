@@ -5,18 +5,29 @@ import { icon } from '/shared/icons.js';
 
 const $ = s => document.querySelector(s);
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// Charter notes: plain lines become paragraphs; runs of "a | b | c" lines (fee schedules) become a table.
+function notesHTML(notes) {
+  const out = []; let rows = [];
+  const flush = () => { if (rows.length) out.push(`<div class="note-table"><table>${rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table></div>`); rows = []; };
+  for (const line of String(notes).split('\n')) {
+    if (line.includes(' | ')) rows.push(line.split(' | '));
+    else { flush(); out.push(`<p class="small">${esc(line)}</p>`); }
+  }
+  flush();
+  return out.join('');
+}
 const app = document.getElementById('app');
 const store = { get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } } };
 
 const header = (back = false) => `<header class="top">${back ? `<a href="/m" class="back" aria-label="Search">${icon('arrow-left', 22)}</a>` : ''}
-  <div class="seal">CM</div><div><b>City Hall Kiosk</b><small>City of Malaybalay</small></div></header>`;
+  <a href="/m" class="brand-home" aria-label="Home"><img class="seal" src="/img/malaybalay-seal.jpg" alt="Official seal of the City of Malaybalay"><div><b>Malaybalay City Hall</b><small>City of Malaybalay</small></div></a></header>`;
 
 async function getJSON(url) { const r = await fetch(url); if (!r.ok) throw new Error((await r.json().catch(() => ({}))).error || 'Not found'); return r.json(); }
 
 // ------------------------------------------------------------ service page
 async function servicePage(id) {
   const s = await getJSON(`/api/services/${id}`);
-  document.title = `${s.display_title} — City Hall`;
+  document.title = `${s.display_title} — Malaybalay City Hall`;
   const key = `chk:${s.id}`; const done = new Set(store.get(key) || []);
   const loc = s.location;
   let floor = null, route = null;
@@ -38,7 +49,9 @@ async function servicePage(id) {
       <ul class="check">${s.requirements.map(r => `<li><label><input type="checkbox" data-r="${r.id}" ${done.has(r.id) ? 'checked' : ''}><span><b>${esc(r.requirement)}</b>${r.where_to_secure ? `<small>Get it from: ${esc(r.where_to_secure)}</small>` : ''}</span></label></li>`).join('') || '<li class="muted">No documents needed.</li>'}</ul>
     </section>
 
-    <section><h2>What you’ll do</h2><ol class="steps">${s.steps.map(st => `<li><b>${esc(st.client_action)}</b>${st.agency.map(a => `<small>${esc(a.agency_action)}${a.processing_time ? ` · ${esc(a.processing_time)}` : ''}${a.fee && !/^none$/i.test(a.fee) ? ` · ${esc(a.fee)}` : ''}</small>`).join('')}</li>`).join('')}</ol></section>
+    <section><h2>What you’ll do</h2><ol class="steps">${s.steps.map(st => `<li><b>${esc(st.client_action)}</b>${st.agency.map(a => `<small>${esc(a.agency_action)}${a.processing_time ? ` · ${esc(a.processing_time.replace(/\n/g, ', '))}` : ''}${a.fee && !/^none$/i.test(a.fee) ? ` · ${esc(a.fee.replace(/\n/g, ', '))}` : ''}</small>`).join('')}</li>`).join('')}</ol></section>
+
+    ${s.notes ? `<section><h2>Notes and fees</h2>${notesHTML(s.notes)}</section>` : ''}
 
     <section id="where"><h2>How to get there</h2>
       ${floor && loc ? `${planSVG(floor, loc.room_id, route)}<ol class="dirs">${(route?.directions || []).map(d => `<li>${esc(d.text)}</li>`).join('')}</ol><p class="muted small">Directions start at the kiosk in the main lobby.</p>` : `<p>${loc?.type === 'offsite' ? `This office is <b>not inside City Hall</b>: ${esc(loc.offsite_address || 'ask the information desk for the address')}.` : 'The room is not confirmed yet. Please ask at the information desk.'}</p>`}

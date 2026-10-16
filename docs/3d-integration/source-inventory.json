@@ -1,0 +1,447 @@
+{
+  "document_type": "read-only source inventory for an implementation guide; not a browser runtime manifest",
+  "created_utc": "2026-10-16T20:26:46.155267+00:00",
+  "project_root": "C:\\Users\\Administrator\\Desktop\\cityhallkiosk_codex\\City Hall Code\\cityhallkiosk",
+  "model_workspace": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex",
+  "installed_three_version": "0.160.0",
+  "scene": "UNITY_Baked_Optimized",
+  "geometry_collection": "UNITY_Optimized_Geometry",
+  "building_meshes": 463,
+  "building_triangles": 183170,
+  "total_meshes": 469,
+  "total_triangles": 183182,
+  "closed_door_roots": 193,
+  "blank_sign_faces": 54,
+  "environment_cards": 6,
+  "material_kinds": {
+    "baked": 24,
+    "pbr": 16,
+    "projected": 1
+  },
+  "lightmaps": [
+    {
+      "zone": "West_F3Roof",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 4,
+      "maximum": 2.3786494731903076,
+      "mean_absolute_error": 0.000673480040859431,
+      "max_absolute_error": 0.004159450531005859,
+      "packed_half_float_max_error": 0.000965118408203125
+    },
+    {
+      "zone": "Centre_F3Roof",
+      "size": [
+        2048,
+        2048
+      ],
+      "range": 4,
+      "maximum": 3.413114309310913,
+      "mean_absolute_error": 0.0006776236114092171,
+      "max_absolute_error": 0.006493568420410156,
+      "packed_half_float_max_error": 0.0009765625
+    },
+    {
+      "zone": "West_F2",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 4,
+      "maximum": 2.916443109512329,
+      "mean_absolute_error": 0.0005181024898774922,
+      "max_absolute_error": 0.005502223968505859,
+      "packed_half_float_max_error": 0.0009765625
+    },
+    {
+      "zone": "East_F3Roof",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 4,
+      "maximum": 2.465602159500122,
+      "mean_absolute_error": 0.0005415920168161392,
+      "max_absolute_error": 0.004546403884887695,
+      "packed_half_float_max_error": 0.0009419918060302734
+    },
+    {
+      "zone": "East_F2",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 4,
+      "maximum": 3.1622419357299805,
+      "mean_absolute_error": 0.0005580369615927339,
+      "max_absolute_error": 0.006206512451171875,
+      "packed_half_float_max_error": 0.0009765625
+    },
+    {
+      "zone": "Centre_F2",
+      "size": [
+        2048,
+        2048
+      ],
+      "range": 4,
+      "maximum": 3.342761516571045,
+      "mean_absolute_error": 0.0004643477441277355,
+      "max_absolute_error": 0.006384134292602539,
+      "packed_half_float_max_error": 0.0009765625
+    },
+    {
+      "zone": "West_GF",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 4,
+      "maximum": 3.0304203033447266,
+      "mean_absolute_error": 0.000604218861553818,
+      "max_absolute_error": 0.00575709342956543,
+      "packed_half_float_max_error": 0.0009765625
+    },
+    {
+      "zone": "Centre_GF",
+      "size": [
+        2048,
+        2048
+      ],
+      "range": 4,
+      "maximum": 2.9864249229431152,
+      "mean_absolute_error": 0.0004181115364190191,
+      "max_absolute_error": 0.00571441650390625,
+      "packed_half_float_max_error": 0.0009765625
+    },
+    {
+      "zone": "East_GF",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 4,
+      "maximum": 3.225430965423584,
+      "mean_absolute_error": 0.0006114447023719549,
+      "max_absolute_error": 0.0061550140380859375,
+      "packed_half_float_max_error": 0.0009765625
+    },
+    {
+      "zone": "Centre_F3Roof_Detail",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 4,
+      "maximum": 3.7527172565460205,
+      "mean_absolute_error": 0.0006293018814176321,
+      "max_absolute_error": 0.006930112838745117,
+      "packed_half_float_max_error": 0.0009763240814208984
+    },
+    {
+      "zone": "West_F2_Detail",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 4,
+      "maximum": 3.8415653705596924,
+      "mean_absolute_error": 0.00048300973139703274,
+      "max_absolute_error": 0.0072176456451416016,
+      "packed_half_float_max_error": 0.0009765625
+    },
+    {
+      "zone": "East_F2_Detail",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 8,
+      "maximum": 4.188137531280518,
+      "mean_absolute_error": 0.0005835108458995819,
+      "max_absolute_error": 0.0070531368255615234,
+      "packed_half_float_max_error": 0.0009760856628417969
+    },
+    {
+      "zone": "West_GF_Detail",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 8,
+      "maximum": 4.539184093475342,
+      "mean_absolute_error": 0.000583349377848208,
+      "max_absolute_error": 0.008257389068603516,
+      "packed_half_float_max_error": 0.0019407272338867188
+    },
+    {
+      "zone": "Centre_GF_Detail",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 8,
+      "maximum": 4.056262493133545,
+      "mean_absolute_error": 0.0006271883030422032,
+      "max_absolute_error": 0.0072858333587646484,
+      "packed_half_float_max_error": 0.0015749931335449219
+    },
+    {
+      "zone": "East_GF_Detail",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 4,
+      "maximum": 3.830388307571411,
+      "mean_absolute_error": 0.0005587838822975755,
+      "max_absolute_error": 0.007220745086669922,
+      "packed_half_float_max_error": 0.0009765625
+    },
+    {
+      "zone": "Centre_F2_Detail",
+      "size": [
+        1024,
+        1024
+      ],
+      "range": 8,
+      "maximum": 4.322035312652588,
+      "mean_absolute_error": 0.0005470750038512051,
+      "max_absolute_error": 0.007639646530151367,
+      "packed_half_float_max_error": 0.0017228126525878906
+    }
+  ],
+  "viewpoints": [
+    {
+      "marker": "VIEW_LAYERED_Front_Composition",
+      "sourceCamera": "LAYERED_Front_Composition",
+      "verticalFov": 22.895194130645738,
+      "aspect": 1.7777777777777777,
+      "targetChild": "VIEW_LAYERED_Front_Composition_TARGET",
+      "upChild": "VIEW_LAYERED_Front_Composition_UP"
+    },
+    {
+      "marker": "VIEW_WALK_2F-L-07",
+      "sourceCamera": "WALK_2F-L-07",
+      "verticalFov": 39.76070325000613,
+      "aspect": 1.7777777777777777,
+      "targetChild": "VIEW_WALK_2F-L-07_TARGET",
+      "upChild": "VIEW_WALK_2F-L-07_UP"
+    },
+    {
+      "marker": "VIEW_WALK_2F-R-07",
+      "sourceCamera": "WALK_2F-R-07",
+      "verticalFov": 39.76070325000613,
+      "aspect": 1.7777777777777777,
+      "targetChild": "VIEW_WALK_2F-R-07_TARGET",
+      "upChild": "VIEW_WALK_2F-R-07_UP"
+    },
+    {
+      "marker": "VIEW_WALK_GF-R-08",
+      "sourceCamera": "WALK_GF-R-08",
+      "verticalFov": 39.76070325000613,
+      "aspect": 1.7777777777777777,
+      "targetChild": "VIEW_WALK_GF-R-08_TARGET",
+      "upChild": "VIEW_WALK_GF-R-08_UP"
+    },
+    {
+      "marker": "VIEW_WALK_ENTRY-04",
+      "sourceCamera": "WALK_ENTRY-04",
+      "verticalFov": 39.76070325000613,
+      "aspect": 1.7777777777777777,
+      "targetChild": "VIEW_WALK_ENTRY-04_TARGET",
+      "upChild": "VIEW_WALK_ENTRY-04_UP"
+    }
+  ],
+  "source_assets": [
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\09_Unity_Baked_Optimized.blend",
+      "bytes": 91389023,
+      "sha256": "6b861ed900092188ac6ff359f4c003d72b437cc375baff6819baa6bd6d648c37"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Export_Report.json",
+      "bytes": 47540,
+      "sha256": "0231d3c55adc519b0804f9614459a377437b1593386b304343bf08e62a9a8f22"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Validation_Report.json",
+      "bytes": 1215,
+      "sha256": "d784212e106a60942633c0605a02f950bfd6582ac687c38ecd0c9ef0aadd4500"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Texture_Validation.json",
+      "bytes": 5274,
+      "sha256": "c4bc0316d5821ef39660cfeba4f5c45dd485a7bed3f302ecbf10e9f599ed8c77"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Bake_Manifest.json",
+      "bytes": 2393998,
+      "sha256": "56a299e7c6e53f09016720bb63c16a96e802bfc7464c71732d9810e3ad869cbd"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\MaterialBindings.json",
+      "bytes": 16945,
+      "sha256": "d47f3a57e03f3a938f1470bf2e6615433295625b4ebc9c899a48b6c35fc3574a"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\DynamicObjects.json",
+      "bytes": 39821,
+      "sha256": "5869b3548c77c5fe54a92b5b9c71bc410960b9ed624cd9dc63c05118b504e60a"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Viewpoints.json",
+      "bytes": 1389,
+      "sha256": "211145dfbbbdf2d478bde8bdc7308d9f7fcf8506bd0ca40a3dde0fb51bafeb08"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\AgX_Afternoon_LUT.png",
+      "bytes": 117107,
+      "sha256": "f2359820229d5b94679e4316b4596741256290656cb9d00379c52017a04b8175"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\Centre_F2_Detail_RGBM.png",
+      "bytes": 2599338,
+      "sha256": "5c437c05956ec32cab591a3a8bbfd46bfd327f4aef0fb0ee31642ad4e2f5ca9a"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\Centre_F2_RGBM.png",
+      "bytes": 7312457,
+      "sha256": "0efdfaeeec7b1a873bcfcebb604c67e0574e86615ddf2315cf641c277d8fb7f4"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\Centre_F3Roof_Detail_RGBM.png",
+      "bytes": 2799440,
+      "sha256": "c9a070e9df3d13d75d1c978523a3e43948c867241a045939e13f3622d5faf81a"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\Centre_F3Roof_RGBM.png",
+      "bytes": 8319091,
+      "sha256": "2e74e712cc6f28b8c6b153af2cf56cc09b800519b962d8d257ffec156fa44685"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\Centre_GF_Detail_RGBM.png",
+      "bytes": 2711686,
+      "sha256": "c481a46521290b5a0aa7e0aa28fe631a9ed3f32749cf5e096145a088572b6b9d"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\Centre_GF_RGBM.png",
+      "bytes": 5210199,
+      "sha256": "bf6ed2a7fecf5569cebb0322cfa53767c57c6681bba903449919bdc756fed6d2"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\Civic_Seal_Photo.png",
+      "bytes": 100106,
+      "sha256": "b6cd5998a5f77bd152ccf3bd721e8934c34b30c5d5e186712292dcfa641212a9"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\East_F2_Detail_RGBM.png",
+      "bytes": 2633385,
+      "sha256": "03957e69d20dea5595d6266efccb67b13f050685e81c0950f768eb2f4e51c460"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\East_F2_RGBM.png",
+      "bytes": 2214215,
+      "sha256": "865cce6d623eb7af3e60cf6701cbff57377ca70091f6e0a976deea64b35cdfcd"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\East_F3Roof_RGBM.png",
+      "bytes": 1343737,
+      "sha256": "26ca65d2a3df194cb1ceefcc9a60fa791f0ce66fbcd173ebcc61d0dbe0a884b5"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\East_GF_Detail_RGBM.png",
+      "bytes": 2683924,
+      "sha256": "64e13e6d5e40ed50da91a63f07978b7d09a1689ee6d2c2acb6bf7959a9b6f565"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\East_GF_RGBM.png",
+      "bytes": 2665420,
+      "sha256": "a7f30dceae944909c0cedd83c2e48cbd1110c8acfca1ac979b751c7c067b5002"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\LAYERED_Building_Removed_Environment.png",
+      "bytes": 2891157,
+      "sha256": "229bb1d2a2763ebf88c8e2db16e639b71a9b4e6dd1d97a38ba948703173ab2b3"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\Ochre_Tile_512.png",
+      "bytes": 173187,
+      "sha256": "ec7e3a5b923c87bc828d2e4714c3748b025521405fc652a96dd673773f7bb984"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\West_F2_Detail_RGBM.png",
+      "bytes": 2379498,
+      "sha256": "7bae7d3a412016d3c9200c88d23882a81c8c11f65ab24658eef422f1e9200db7"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\West_F2_RGBM.png",
+      "bytes": 2156462,
+      "sha256": "65bff23064a33a35c12ac4da6481088ba89b61a482c0e4668107532812c85b5f"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\West_F3Roof_RGBM.png",
+      "bytes": 1652019,
+      "sha256": "2cdbace63beb5f25dd94879b1ee3afb987646d1a8861ca90a9536d7a1f5d8d0c"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\West_GF_Detail_RGBM.png",
+      "bytes": 2754784,
+      "sha256": "b9e3bc38c5da9800ffea30284d2cb7a954ce200625163316f224605d80267794"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\unity_baked_revision\\Unity_Package\\Assets\\CityHallPrepared\\Textures\\West_GF_RGBM.png",
+      "bytes": 2665201,
+      "sha256": "791caa39545c23a47009542b17cb73d64c0ddefc153ee0a32345c8440276b98b"
+    }
+  ],
+  "code_baseline": [
+    {
+      "path": "C:\\Users\\Administrator\\Desktop\\cityhallkiosk_codex\\City Hall Code\\cityhallkiosk\\server\\package.json",
+      "bytes": 624,
+      "sha256": "a5902ce496a8555b27449b45373959865c23470b66e346a55e7a46fcb7180574"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Desktop\\cityhallkiosk_codex\\City Hall Code\\cityhallkiosk\\server\\public\\kiosk\\app.js",
+      "bytes": 49803,
+      "sha256": "fec365bf7a19644080dcc4dbdda1d69b5bb345bd774a0d5999e31e9c0b0f1d62"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Desktop\\cityhallkiosk_codex\\City Hall Code\\cityhallkiosk\\server\\public\\kiosk\\nav3d.js",
+      "bytes": 11481,
+      "sha256": "dd46040e3a50647b998252b2c679a1f117ee4b38ee5dd9a9b82326f07e87dc36"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Desktop\\cityhallkiosk_codex\\City Hall Code\\cityhallkiosk\\server\\public\\shared\\route-core.js",
+      "bytes": 5950,
+      "sha256": "a0e25860d1465f7fa90030a035d41bcd18d0a421f245f306e45c59d92c717d5a"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Desktop\\cityhallkiosk_codex\\City Hall Code\\cityhallkiosk\\server\\src\\lib\\route.js",
+      "bytes": 1140,
+      "sha256": "02d4358f0ed10685c620cecf034dee45b12e98e8063bf27618daffbbe8480208"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Desktop\\cityhallkiosk_codex\\City Hall Code\\cityhallkiosk\\server\\src\\lib\\data.js",
+      "bytes": 5715,
+      "sha256": "212b178f7153fb0f6c556c616d0555a6f11b489cd40aba356913d4c4e4a94ffd"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Desktop\\cityhallkiosk_codex\\City Hall Code\\cityhallkiosk\\server\\src\\schema.sql",
+      "bytes": 11888,
+      "sha256": "467092490acf6447d5fb296d53d5442e8bc57bd2a1ac7d77ad3baf52a19dbbb0"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Desktop\\cityhallkiosk_codex\\City Hall Code\\cityhallkiosk\\server\\src\\routes\\admin.js",
+      "bytes": 27911,
+      "sha256": "7b71df9f092e96b037826a73d3a6421e3937a55de5908937ab694312d0a1e64f"
+    },
+    {
+      "path": "C:\\Users\\Administrator\\Desktop\\cityhallkiosk_codex\\City Hall Code\\cityhallkiosk\\server\\public\\m\\app.js",
+      "bytes": 9729,
+      "sha256": "d2326d9cf5a975103992be95ac6bae355071b37985684e627f30cb61cbde2367"
+    }
+  ],
+  "implementation_status": "instructions only; GLB export, shader port, coordinate calibration, route graph and browser integration have not been implemented by this documentation task"
+}

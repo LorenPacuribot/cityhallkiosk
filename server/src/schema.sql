@@ -137,6 +137,7 @@ CREATE TABLE IF NOT EXISTS services (
   total_fees         TEXT,
   total_processing_time TEXT,
   period_of_extension TEXT,
+  notes              TEXT,                 -- charter notes, policies and fee schedules printed with the service
   is_citizen_facing  INTEGER NOT NULL DEFAULT 1,
   status             TEXT NOT NULL DEFAULT 'draft'
                      CHECK (status IN ('draft','pending','published','archived')),

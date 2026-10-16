@@ -158,10 +158,10 @@ export async function seed({ reset = true } = {}) {
       let plain = null;
       const kws = new Set();
       for (const [re, words, p] of KEYWORDS) if (re.test(s.title)) { words.forEach(w => kws.add(w)); if (p && !plain) plain = p; }
-      const sid = run(`INSERT INTO services(office_id,title,plain_title,description,office_division,classification,transaction_type,who_may_avail,total_fees,total_processing_time,period_of_extension,is_citizen_facing,status,source,parse_quality)
-                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?, 'published', ?, ?)`,
+      const sid = run(`INSERT INTO services(office_id,title,plain_title,description,office_division,classification,transaction_type,who_may_avail,total_fees,total_processing_time,period_of_extension,notes,is_citizen_facing,status,source,parse_quality)
+                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?, 'published', ?, ?)`,
         [officeId, s.title, plain, s.description, s.office_and_division, s.classification, s.transaction_type, s.who_may_avail,
-         s.total_fees, s.total_processing_time, s.period_of_extension, isG2GOnly(s.transaction_type) ? 0 : 1,
+         s.total_fees, s.total_processing_time, s.period_of_extension, s.notes || null, isG2GOnly(s.transaction_type) ? 0 : 1,
          `Citizen's Charter 2023, p. ${s.source_page}`, s.parse_quality]).lastId;
       s.requirements.forEach((r, i) => run(`INSERT INTO service_requirements(service_id,sort,requirement,where_to_secure) VALUES (?,?,?,?)`, [sid, i, r.requirement, r.where_to_secure]));
       let sort = 0;

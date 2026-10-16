@@ -67,7 +67,7 @@ adminApi.get('/dashboard', requireRole('viewer'), (req, res) => {
 });
 
 // ============================================================ services
-const SERVICE_FIELDS = ['office_id', 'title', 'plain_title', 'description', 'office_division', 'classification', 'transaction_type', 'who_may_avail', 'total_fees', 'total_processing_time', 'period_of_extension', 'is_citizen_facing'];
+const SERVICE_FIELDS = ['office_id', 'title', 'plain_title', 'description', 'office_division', 'classification', 'transaction_type', 'who_may_avail', 'total_fees', 'total_processing_time', 'period_of_extension', 'notes', 'is_citizen_facing'];
 
 adminApi.get('/services', requireRole('viewer'), (req, res) => {
   const where = [`s.status != 'archived'`]; const p = [];

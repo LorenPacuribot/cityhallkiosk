@@ -1,7 +1,12 @@
 /* Design tokens — mirror the Figma file "Malaybalay City Hall Kiosk — System Design"
    (variables collection "Color", "Space & Radius", text styles Kiosk/*, Admin/*, Phone/*). */
+/* Plus Jakarta Sans (SIL Open Font License), served from /fonts so the kiosk works offline */
 @font-face { font-family: 'Plus Jakarta Sans'; font-weight: 400 800; font-display: swap;
-  src: local('Plus Jakarta Sans'), local('PlusJakartaSans'); }
+  src: local('Plus Jakarta Sans'), url('/fonts/PlusJakartaSans-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Plus Jakarta Sans'; font-weight: 400 800; font-display: swap;
+  src: local('Plus Jakarta Sans'), url('/fonts/PlusJakartaSans-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 :root {
   /* brand — taken from the City Hall: seal navy, sky, terracotta roof, grounds green */
@@ -15,19 +20,25 @@
   --brand-gold: #D9A520;
   --brand-grass: #2E7D32;
   --brand-grass-tint: #E6F2E7;
-  /* surfaces */
-  --bg-canvas: #FBF8F3;
+  --brand-blue-bright: #2F7BD6;
+  /* surfaces (cool blue-grey, 2026 redesign) */
+  --bg-canvas: #F1F5FA;
   --bg-surface: #FFFFFF;
-  --bg-subtle: #F3EFE8;
-  --border-default: #E3DDD3;
-  --border-strong: #C7BFB2;
+  --bg-subtle: #EBF0F6;
+  --border-default: #DCE3EC;
+  --border-strong: #BFCAD8;
+  /* gradients: page headers, primary buttons, icon tiles */
+  --grad-hero: radial-gradient(ellipse 45% 120% at 85% 30%, rgba(108,170,240,.55), rgba(47,123,214,0) 70%), linear-gradient(100deg, #0C2343 0%, #163D6C 50%, #2A72CB 100%);
+  --grad-primary: linear-gradient(100deg, #2F7BD6 0%, #1D5AA6 55%, #173F70 100%);
+  --grad-tile: linear-gradient(145deg, #4C93E3 0%, #1D5AA6 100%);
+  --shadow-raised: 0 10px 30px rgba(15, 42, 74, .14);
   /* text */
   --text-primary: #1B2430;
   --text-secondary: #5A6472;
   --text-on-brand: #FFFFFF;
   --text-link: #1A63BE;
   /* status */
-  --status-success: #2E7D32;
+  --status-success: #276C2B;      /* darkened from #2E7D32 to pass 4.5:1 on --brand-grass-tint */
   --status-warning: #8A5300;      /* darkened from Figma #B26A00 to pass 4.5:1 on the tint */
   --status-warning-tint: #FFF4E0;
   --status-critical: #B3261E;

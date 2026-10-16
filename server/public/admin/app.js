@@ -43,7 +43,7 @@ const officeOptions = (sel, { blank = false } = {}) => (blank ? '<option value="
 // ------------------------------------------------------------------ auth
 function renderLogin(msg = '') {
   root.innerHTML = `<div class="login"><form class="card" id="login" autocomplete="on">
-    <div class="row"><div class="seal">CM</div><div><b>City Hall Kiosk</b><div class="muted small">Admin panel · City of Malaybalay</div></div></div>
+    <div class="row"><img class="seal" src="/img/malaybalay-seal.jpg" alt="Official seal of the City of Malaybalay"><div><b>Malaybalay City Hall</b><div class="muted small">Kiosk admin panel</div></div></div>
     <h1 style="font-size:22px;margin:8px 0 0">Sign in</h1>
     ${msg ? `<div class="notice bad" role="alert">${icon('alert', 18)}<span>${esc(msg)}</span></div>` : ''}
     <label class="f">Email<input name="email" type="email" required autocomplete="username" value="admin@kiosk.local"></label>
@@ -75,7 +75,7 @@ const NAV = [
 ];
 function shell(active, inner) {
   root.innerHTML = `<div class="app">
-    <aside class="side"><div class="brand"><div class="seal">CM</div><div><b>Kiosk Admin</b><small>City of Malaybalay</small></div></div>
+    <aside class="side"><a class="brand" href="#/dashboard" aria-label="Dashboard"><img class="seal" src="/img/malaybalay-seal.jpg" alt="Official seal of the City of Malaybalay"><div><b>Malaybalay City Hall</b><small>Kiosk admin</small></div></a>
       <nav class="nav" aria-label="Sections">${NAV.filter(n => can(n[3])).map(([k, label, ic]) =>
         `<a href="#/${k}" class="${active === k ? 'on' : ''}" ${active === k ? 'aria-current="page"' : ''}>${icon(ic, 18)}${label}${k === 'approvals' && S.pending ? `<span class="count">${S.pending}</span>` : ''}</a>`).join('')}
         <h6>Open</h6>
@@ -177,6 +177,7 @@ async function serviceEditor(id) {
         <label class="f">Total fee<input name="total_fees" value="${esc(s.total_fees)}" ${ro ? 'disabled' : ''}></label>
         <label class="f">Total processing time<input name="total_processing_time" value="${esc(s.total_processing_time)}" ${ro ? 'disabled' : ''}></label>
         <label class="f full">Description<textarea name="description" rows="3" ${ro ? 'disabled' : ''}>${esc(s.description)}</textarea></label>
+        <label class="f full">Notes and fee schedules (one line per item; table rows use " | " between columns)<textarea name="notes" rows="3" ${ro ? 'disabled' : ''}>${esc(s.notes)}</textarea></label>
         <label class="f full" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" name="is_citizen_facing" ${s.is_citizen_facing ? 'checked' : ''} ${ro ? 'disabled' : ''}> Show on the public kiosk (untick for government-to-government services)</label>
       </div></div>
       <div class="card"><div class="row"><h2 class="grow">What to bring (${data.requirements.length})</h2>${ro ? '' : `<button type="button" class="btn sm" data-add="requirements">${icon('plus', 16)}Add requirement</button>`}</div><div class="rep" id="rep-requirements">${data.requirements.map(reqItem).join('') || '<p class="muted">No requirements.</p>'}</div></div>

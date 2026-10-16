@@ -1,0 +1,12 @@
+{
+  "name": "cityhallkiosk-charter-import",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Imports the Citizen's Charter PDF into server/data/charter-2023.json using text positions and table borders",
+  "scripts": {
+    "import": "node import.js"
+  },
+  "dependencies": {
+    "pdfjs-dist": "3.11.174"
+  }
+}

@@ -15,6 +15,9 @@ const COLORS = {
 };
 const WALK = 4.5;        // preview speed (m/s) — faster than real walking so the preview is short
 const FLOOR_PAUSE = 0.8; // seconds to linger on a stairs transition
+const CAM_HEIGHT = 26;   // minimum camera height (m) above the walker
+const LOOKAHEAD_M = 24;  // how far ahead on the route the camera keeps in view (m)
+const CAM_MARGIN = 6;    // space kept around the walker and the look-ahead point (m)
 
 export function createNav3D(container, bundle, route, { onProgress, onArrive } = {}) {
   // ---------- renderer
@@ -151,9 +154,17 @@ export function createNav3D(container, bundle, route, { onProgress, onArrive } =
       }
     }
 
-    // follow camera: fixed elevated offset on the entrance side (steady, no motion sickness)
-    const desired = wp.clone().add(new THREE.Vector3(0, 26, 9));
-    const look = wp.clone().add(new THREE.Vector3(0, .5, -1));
+    // follow camera: elevated, on the entrance side (steady, no motion sickness). It frames the walker
+    // and the route up to LOOKAHEAD_M ahead, rising only as far as needed to keep both on screen at this aspect ratio.
+    const ah = sample(Math.min(total, elapsed + LOOKAHEAD_M / WALK)).p;
+    const aheadW = ah.floor === p.floor ? U(ah.x, ah.y, ah.z) : wp;
+    const focus = wp.clone().lerp(aheadW, .5);
+    const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    const height = Math.max(CAM_HEIGHT,
+      (Math.abs(aheadW.x - wp.x) / 2 + CAM_MARGIN) / (tanHalf * camera.aspect),
+      (Math.abs(aheadW.z - wp.z) / 2 + CAM_MARGIN) / tanHalf);
+    const desired = focus.clone().add(new THREE.Vector3(0, height, height * 9 / CAM_HEIGHT));
+    const look = focus.clone().add(new THREE.Vector3(0, .5, -1));
     if (!camInit) { camPos.copy(desired); camLook.copy(look); camInit = true; }
     camPos.lerp(desired, 1 - Math.pow(.02, dt)); camLook.lerp(look, 1 - Math.pow(.02, dt));
     camera.position.copy(camPos); camera.lookAt(camLook);

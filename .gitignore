@@ -1,6 +1,7 @@
 node_modules/
 server/data/kiosk.sqlite
 server/data/*.tmp
+tools/charter/.cache/
 *.log
 .DS_Store
 # Unity
