@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { AssetManager } from './asset-manager.js';
 import { glbRootMatrix, gltfToRender } from './coordinates.js';
 import { RoutePlayer } from './route-player.js';
+import { FloorView } from './floor-view.js';
 import { FloorVisibility } from './floor-visibility.js';
 import { DynamicSigns } from './dynamic-signs.js';
 
@@ -26,7 +27,7 @@ export class BuildingViewer {
     this.container = null; this.ro = null;
     this.raf = 0; this.dirty = true; this.animating = new Set();
     this.contextLost = false; this.listeners = new Set();
-    this.player = null; this.floors = null; this.signs = null;
+    this.player = null; this.floorView = null; this.floors = null; this.signs = null;
     this.stats = { frames: 0, loads: 0 };
     document.addEventListener('visibilitychange', () => { if (!document.hidden) this.invalidate(); });
   }
@@ -116,6 +117,7 @@ export class BuildingViewer {
     const w = this.container.clientWidth || 1, h = this.container.clientHeight || 1;
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
+    this.floorView?.resized();
     this.invalidate();
   }
 
@@ -141,9 +143,17 @@ export class BuildingViewer {
 
   playRoute(route, opts) {
     if (!this.release) throw new Error('Model is not loaded');
-    this.player?.dispose();
+    this.player?.dispose(); this.floorView?.dispose();
     this.player = new RoutePlayer(this, route, opts);
     return this.player;
+  }
+
+  /** Map screen: one floor in 3D, everything above it cut away (three/floor-view.js). */
+  showFloor(opts) {
+    if (!this.release) throw new Error('Model is not loaded');
+    this.player?.dispose(); this.floorView?.dispose();
+    this.floorView = new FloorView(this, opts);
+    return this.floorView;
   }
 
   /** Camera exactly as a source VIEW_ marker (for reference comparisons). */
@@ -160,13 +170,6 @@ export class BuildingViewer {
     this.invalidate();
   }
 
-  async showScenery(on, { signal } = {}) {
-    if (!on) { if (this.release?.scenery) this.release.scenery.visible = false; this.invalidate(); return; }
-    const s = await this.release.loadScenery({ signal });
-    if (!s.parent) this.modelRoot.add(s);
-    s.visible = true;
-    this.invalidate();
-  }
 
   /** Renderer counters for performance reports. */
   info() {
@@ -177,7 +180,7 @@ export class BuildingViewer {
 
   /** Full shutdown (application exit / tests). Routes never call this. */
   dispose() {
-    this.player?.dispose(); this.player = null;
+    this.player?.dispose(); this.player = null; this.floorView?.dispose();
     this.signs?.dispose(); this.release?.dispose(); this.release = null; this.releaseKey = null;
     this.detach();
     this.renderer?.dispose(); this.renderer = null;

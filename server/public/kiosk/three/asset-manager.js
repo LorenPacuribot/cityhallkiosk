@@ -8,7 +8,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { bakedMaterial, pbrMaterial, projectedMaterial, prepareBakedGeometry, prepareProjectedGeometry } from './materials.js';
+import { bakedMaterial, pbrMaterial, prepareBakedGeometry } from './materials.js';
 
 export class AssetError extends Error {
   constructor(message, code = 'ASSET_INVALID', detail = null) { super(message); this.code = code; this.detail = detail; }
@@ -106,7 +106,7 @@ export class AssetManager {
   }
 
   /**
-   * Loads the release's building (not the scenery). Resolves with a Release; rejects with AssetError / AbortError.
+   * Loads the release's building. The exterior scenery cards in the release are not used by the kiosk (the welcome photo shows the outside). Resolves with a Release; rejects with AssetError / AbortError.
    * @param {string} baseUrl e.g. '/models/cityhall/r09-web01/'
    */
   async loadRelease(baseUrl, { expectedVersion, signal, onProgress, renderer } = {}) {
@@ -202,38 +202,15 @@ export class AssetManager {
 function assetOwner(o) { while (o && !o.userData?.assetId) o = o.parent; return o; }
 
 export class Release {
-  constructor(p) { Object.assign(this, p); this.scenery = null; this.disposed = false; }
+  constructor(p) { Object.assign(this, p); this.disposed = false; }
   get modelVersion() { return this.manifest.modelVersion; }
 
-  /** Lazily loads the six projected scenery cards (exterior presentation only, not used for navigation). */
-  async loadScenery({ signal } = {}) {
-    if (this.scenery) return this.scenery;
-    const m = this.manifest, entry = this.files.get(m.scenery);
-    const buf = await this.manager.bytes(new URL(m.scenery, this.base), entry, { signal });
-    const gltf = await new Promise((res, rej) => new GLTFLoader().parse(buf, this.base.href, res, rej));
-    const b = this.materials.bindings.find(x => x.kind === 'projected');
-    const texEntry = this.files.get(b.baseTexture);
-    const url = new URL(b.baseTexture, this.base).href;
-    const map = await this.manager.texture(this.base, texEntry, this.materials.textureRules.projected, { signal });
-    this.ownedTextures.push(url);
-    const mat = projectedMaterial(b, { map });
-    this.ownedMaterials.push(mat);
-    gltf.scene.traverse(o => {
-      if (o.userData?.assetId) this.index.set(o.userData.assetId, o);
-      if (!o.isMesh) return;
-      o.material?.dispose?.();
-      prepareProjectedGeometry(o.geometry, o.name);
-      o.material = mat;
-    });
-    this.scenery = gltf.scene;
-    return this.scenery;
-  }
 
   dispose() {
     if (this.disposed) return;
     this.disposed = true;
     const geos = new Set();
-    for (const r of [this.root, this.scenery]) r?.traverse(o => { if (o.geometry) geos.add(o.geometry); });
+    for (const r of [this.root]) r?.traverse(o => { if (o.geometry) geos.add(o.geometry); });
     geos.forEach(g => g.dispose());
     this.ownedMaterials.forEach(m => m.dispose());
     this.envMap?.dispose();

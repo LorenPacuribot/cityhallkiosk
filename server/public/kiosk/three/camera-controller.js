@@ -1,53 +1,29 @@
-// Camera for route playback.
-//   overview  elevated follow camera looking down at the walker and the route ahead, upper floors cut away.
-//   eye       eye level ON the route polyline, looking along it. The route comes from the verified graph, so a
-//             camera that stays on it never passes through walls; corners turn the view, never cut the corner.
+// Camera rig for route playback. It is driven by a POSE (canonical position on the route + yaw/pitch), never by
+// the route directly, so a future on-screen character can share the same pose:
+//   first-person  the eye stands on the route at eye height and looks along the pose's view direction.
+//   (follow)      planned: a camera behind and above a character placed at the pose. Corridors are narrow, so that
+//                 mode will need a collision-aware boom; it is deliberately not offered until it exists.
 import * as THREE from 'three';
+import { toRender } from './coordinates.js';
+import { viewDirection } from '../../shared/walk-path.js';
 
-const EYE = 1.6;
-const OVERVIEW = { minHeight: 14, maxHeight: 40, back: 0.62, margin: 5 };
+export const EYE_HEIGHT = 1.6;     // m above the floor
+const H_FOV = 72;                  // horizontal field of view (degrees) aimed for at any aspect ratio
+const V_FOV_RANGE = [48, 74];      // vertical limits: portrait screens get a taller view, landscape a wider one
 
-export class CameraController {
-  constructor(camera) {
-    this.camera = camera;
-    this.mode = 'overview';
-    this.pos = new THREE.Vector3(); this.look = new THREE.Vector3();
-    this.init = false;
-  }
-  setMode(mode) { if (mode !== this.mode) { this.mode = mode; this.init = false; } }
+export class CameraRig {
+  constructor(camera) { this.camera = camera; this.mode = 'first-person'; this.eye = new THREE.Vector3(); this.look = new THREE.Vector3(); }
 
-  /**
-   * @param {THREE.Vector3} walker render-space position on the route
-   * @param {THREE.Vector3} ahead render-space point further along the route (same floor when possible)
-   * @param {THREE.Vector3} heading render-space unit direction of travel
-   * @param {number} dt seconds since last frame
-   */
-  update(walker, ahead, heading, dt) {
+  /** @param {{x,y,z,yaw,pitch}} pose canonical */
+  update(pose) {
     const cam = this.camera;
-    let desiredPos, desiredLook;
-    if (this.mode === 'eye') {
-      desiredPos = walker.clone().add(new THREE.Vector3(0, EYE, 0));
-      desiredLook = ahead.clone().add(new THREE.Vector3(0, EYE * 0.9, 0));
-      if (desiredLook.distanceTo(desiredPos) < 0.5) desiredLook = desiredPos.clone().add(heading.clone().multiplyScalar(3));
-      cam.fov = 60; cam.near = 0.05;
-      // position is never smoothed off the line (that could leave the corridor); only the view direction eases
-      this.pos.copy(desiredPos);
-      this.look.lerp(desiredLook, this.init ? 1 - Math.pow(0.004, dt) : 1);
-    } else {
-      const focus = walker.clone().lerp(ahead, 0.5);
-      const span = walker.distanceTo(ahead) / 2 + OVERVIEW.margin;
-      const tanHalf = Math.tan(THREE.MathUtils.degToRad(45 / 2));
-      const h = THREE.MathUtils.clamp(span / (tanHalf * Math.min(1, cam.aspect)), OVERVIEW.minHeight, OVERVIEW.maxHeight);
-      // stand behind the walker (opposite the travel direction) and look down at the focus
-      const back = new THREE.Vector3(-heading.x, 0, -heading.z).normalize().multiplyScalar(h * OVERVIEW.back);
-      desiredPos = focus.clone().add(back).add(new THREE.Vector3(0, h, 0));
-      desiredLook = focus;
-      cam.fov = 45; cam.near = 0.3;
-      const k = this.init ? 1 - Math.pow(0.03, dt) : 1;
-      this.pos.lerp(desiredPos, k); this.look.lerp(desiredLook, k);
-    }
-    if (!this.init) { this.pos.copy(desiredPos); this.look.copy(desiredLook); this.init = true; }
-    cam.position.copy(this.pos);
+    const v = 2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(H_FOV / 2)) / (cam.aspect || 1));
+    cam.fov = THREE.MathUtils.clamp(THREE.MathUtils.radToDeg(v), ...V_FOV_RANGE);
+    cam.near = 0.05; cam.far = 600;
+    toRender({ x: pose.x, y: pose.y + EYE_HEIGHT, z: pose.z }, this.eye);
+    const d = viewDirection(pose.yaw, pose.pitch);
+    this.look.set(this.eye.x + d.x, this.eye.y + d.y, this.eye.z - d.z);
+    cam.position.copy(this.eye);
     cam.up.set(0, 1, 0);
     cam.lookAt(this.look);
     cam.updateProjectionMatrix();

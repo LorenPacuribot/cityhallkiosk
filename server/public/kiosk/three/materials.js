@@ -3,10 +3,10 @@
 //   baked      Shaders/BakedAfternoon.shader:  irradiance = rgbm.rgb * rgbm.a * lightRange
 //              linearSurface = irradiance * linearBase(uv0) * linearVertexColour;  display = AfternoonLUT(linearSurface)
 //   pbr        glass / metal / emissive fixtures from the binding's linear values (approximation, see pbrMaterial)
-//   projected  Shaders/ProjectedEnvironment.shader: uv = projXY / max(depth, .001) * projection.xy + projection.zw
+//   (the release also carries projected exterior scenery cards; the kiosk does not use them)
 //
-// Renderer contract: outputColorSpace = SRGBColorSpace, toneMapping = NoToneMapping. The baked/projected
-// shaders produce linear values and use the installed colorspace_fragment chunk for the single output encode.
+// Renderer contract: outputColorSpace = SRGBColorSpace, toneMapping = NoToneMapping. The baked
+// shader produces linear values and uses the installed colorspace_fragment chunk for the single output encode.
 import * as THREE from 'three';
 
 const SRGB_TO_LINEAR = /* glsl */`
@@ -64,25 +64,6 @@ void main() {
   #include <colorspace_fragment>
 }`;
 
-const PROJ_VERT = /* glsl */`
-attribute float _proj_x;
-attribute float _proj_y;
-attribute float _proj_depth;
-varying vec3 vProj;
-void main() {
-  vProj = vec3(_proj_x, _proj_y, _proj_depth);         // interpolated, divided per fragment
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}`;
-
-const PROJ_FRAG = /* glsl */`
-uniform sampler2D map;
-uniform vec4 projection;
-varying vec3 vProj;
-void main() {
-  vec2 uvBottom = vProj.xy / max(vProj.z, 0.001) * projection.xy + projection.zw;
-  gl_FragColor = vec4(texture2D(map, vec2(uvBottom.x, 1.0 - uvBottom.y)).rgb, 1.0);
-  #include <colorspace_fragment>
-}`;
 
 let WHITE = null;
 function whiteTexture() {
@@ -159,21 +140,3 @@ export function pbrMaterial(binding, { envMap } = {}) {
   return m;
 }
 
-/** Projected scenery card: needs scalar attributes _proj_x, _proj_y, _proj_depth (GLTFLoader lowercases names). */
-export function projectedMaterial(binding, { map }) {
-  const m = new THREE.ShaderMaterial({
-    name: binding.name,
-    uniforms: { map: { value: map }, projection: { value: new THREE.Vector4(...binding.projection) } },
-    vertexShader: PROJ_VERT,
-    fragmentShader: PROJ_FRAG,
-    side: THREE.DoubleSide,
-  });
-  m.toneMapped = false;
-  m.userData.binding = binding.name;
-  m.userData.kind = 'projected';
-  return m;
-}
-
-export function prepareProjectedGeometry(geometry, label) {
-  for (const a of ['_proj_x', '_proj_y', '_proj_depth']) if (!geometry.getAttribute(a)) throw new Error(`${label}: projected card is missing ${a}`);
-}
