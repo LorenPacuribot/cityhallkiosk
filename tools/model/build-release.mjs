@@ -86,6 +86,7 @@ try {
     counts: { buildingMeshObjects: report.building_mesh_objects, buildingTriangles: report.building_triangles,
       meshObjects: report.mesh_objects, triangles: report.triangles, roles: report.role_counts },
     calibration: 'not included: published separately as versioned data (see model_calibrations); never assume identity',
+    sourceCorrections: report.source_corrections || [],
     createdAt: new Date().toISOString(),
     files: files.sort((a, b) => a.path.localeCompare(b.path)),
   };

@@ -95,7 +95,8 @@ export class AssetManager {
       t.flipY = false;                       // ImageBitmaps ignore flipY; glTF UVs are top-origin
       t.premultiplyAlpha = false;
       t.colorSpace = rule.colorSpace === 'srgb' ? THREE.SRGBColorSpace : THREE.NoColorSpace;
-      t.wrapS = t.wrapT = rule.wrap === 'repeat' ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
+      // glTF / Unity default is repeat (tiled floor textures rely on it); lightmaps and the LUT say 'clamp' explicitly
+      t.wrapS = t.wrapT = rule.wrap === 'clamp' ? THREE.ClampToEdgeWrapping : THREE.RepeatWrapping;
       t.generateMipmaps = rule.mipmaps !== false;
       t.minFilter = rule.mipmaps === false ? THREE.LinearFilter : THREE.LinearMipmapLinearFilter;
       t.magFilter = THREE.LinearFilter;

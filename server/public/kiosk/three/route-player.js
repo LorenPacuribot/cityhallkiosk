@@ -11,6 +11,11 @@ const WALK = 4.5;          // preview speed (m/s) on level ground
 const STAIRS = 2.2;        // slower on stairs so the landings are visible
 const FLOOR_PAUSE = 0.8;   // extra seconds on a floor change
 const LOOKAHEAD_S = 4;     // the camera keeps this much of the route ahead in view
+// Overview cutaway: a horizontal clipping plane this far above the walker's feet removes ceilings, upper floors and
+// the roof. Hiding whole floor zones instead exposed never-baked (black) ceiling tops, because the export groups
+// ceilings with the floor below (guide §6). The plane follows the walker up the stairs.
+const CUT_ABOVE_FEET = 2.2;
+const PIN_HEIGHT = 2.0;    // below the cut, above a door head
 const COLORS = { route: 0x1a63be, routeDone: 0x8fb4e3, walker: 0x12355b, pin: 0xb8432f };
 
 export class RoutePlayer {
@@ -62,7 +67,8 @@ export class RoutePlayer {
     const end = this.route.to?.door || wps[wps.length - 1];
     this.pin = new THREE.Mesh(this.track(new THREE.ConeGeometry(0.35, 1.0, 20)), this.track(new THREE.MeshBasicMaterial({ color: COLORS.pin, toneMapped: false })));
     this.pin.rotation.x = Math.PI;
-    this.pinBase = toRender({ x: end.x, y: (end.y ?? wps[wps.length - 1].y) + 2.6, z: end.z });
+    this.pinBase = toRender({ x: end.x, y: (end.y ?? wps[wps.length - 1].y) + PIN_HEIGHT, z: end.z });
+    this.clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);
     this.pin.position.copy(this.pinBase);
     this.group.add(this.pin);
   }
@@ -94,13 +100,12 @@ export class RoutePlayer {
     if (Math.hypot(dir.x, dir.z) > 1e-3) this.walker.rotation.y = Math.atan2(-dir.x, dir.z);
     this.pin.position.y = this.pinBase.y + Math.sin(now / 300) * 0.15;
 
-    // cutaway: show the walker's floor and below; during a floor change show both connected floors
-    const fl = this.viewer.floors;
-    if (fl) {
-      const s = this.segs[seg];
-      const level = Math.max(s.a.floor, s.b.floor);
-      if (fl.showUpTo(level)) this.viewer.invalidate();
-    }
+    // cutaway (overview only): clip everything higher than CUT_ABOVE_FEET over the walker; eye level sees the ceiling
+    const r = this.viewer.renderer;
+    if (this.camera.mode === 'overview') {
+      this.clip.constant = p.y + CUT_ABOVE_FEET; // keeps points with y <= constant
+      if (r.clippingPlanes[0] !== this.clip) r.clippingPlanes = [this.clip];
+    } else if (r.clippingPlanes.length) r.clippingPlanes = [];
     const ah = this.sample(Math.min(this.total, this.elapsed + LOOKAHEAD_S)).p;
     const ahead = ah.floor === p.floor || this.camera.mode === 'eye' ? toRender(ah) : wp.clone();
     const heading = new THREE.Vector3(dir.x, 0, -dir.z);
@@ -125,7 +130,7 @@ export class RoutePlayer {
     this.viewer.animating.delete(this);
     this.group.removeFromParent();
     this.disposables.forEach(d => d.dispose?.());
-    this.viewer.floors?.showAll();
+    if (this.viewer.renderer) this.viewer.renderer.clippingPlanes = [];
     if (this.viewer.player === this) this.viewer.player = null;
     this.viewer.invalidate();
   }

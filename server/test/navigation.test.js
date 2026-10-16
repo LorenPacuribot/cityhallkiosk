@@ -91,14 +91,14 @@ test('graph import validates and refuses to accept claims of verification', asyn
 test('publication needs a registered model release; then the graph is the only routing authority', async () => {
   const p1 = await j('POST', `/admin/navigation/${pilot.navigationVersion}/publish`);
   assert.equal(p1.status, 422);
-  registerModelRelease({ modelVersion: 'r09-web01', baseUrl: '/models/cityhall/r09-web01/', sourceBlendSha256: '6b861ed900092188ac6ff359f4c003d72b437cc375baff6819baa6bd6d648c37' });
+  registerModelRelease({ modelVersion: pilot.modelVersion, baseUrl: `/models/cityhall/${pilot.modelVersion}/`, sourceBlendSha256: '6b861ed900092188ac6ff359f4c003d72b437cc375baff6819baa6bd6d648c37' });
   const p2 = await j('POST', `/admin/navigation/${pilot.navigationVersion}/publish`);
   assert.equal(p2.status, 200);
 
   const bundle = (await j('GET', '/kiosk/bundle')).body;
   assert.equal(bundle.navigation.publication.navigationVersion, pilot.navigationVersion);
   assert.equal(bundle.navigation.calibration.status, 'draft');
-  assert.equal(bundle.navigation.model.baseUrl, '/models/cityhall/r09-web01/');
+  assert.equal(bundle.navigation.model.baseUrl, `/models/cityhall/${pilot.modelVersion}/`);
 
   // no prototype fallback once a graph is published
   const office = await anOffice();

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds the DRAFT pilot navigation graph for model r09-web01 from cited model evidence.
+// Builds the DRAFT pilot navigation graph for model r09-web02 from cited model evidence.
 //
 //   node tools/model/pilot-graph.mjs [out.json]      (default server/data/navigation/r09-pilot-draft.json)
 //
@@ -28,7 +28,7 @@ const SRC = {
 // facade line (x=0, y=-17.5, z=0). Front faces -Y, so +Y is "into the building" (canonical +Z) and +X is the
 // visitor's right. Needs field anchors (entrance centre, left/right points, upstairs landing, one known distance).
 export const DRAFT_CALIBRATION = {
-  modelVersion: 'r09-web01', calibrationVersion: 'r09-cal-draft-1', status: 'draft', units: 'metres',
+  modelVersion: 'r09-web02', calibrationVersion: 'r09-cal-draft-1', status: 'draft', units: 'metres',
   description: 'Model-derived draft. Origin = midpoint of the two entrance doorways on the facade line; NOT surveyed.',
   // column-major: canonical = A * blender ; x'=x, y'=z, z'=y+17.5
   matrixBlenderToCanonical: [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 17.5, 1],
@@ -120,7 +120,7 @@ edge('L-RIGHT-GF-F2', 'lift', 'GF-LIFT', 'F2-LIFT', [[15.5, -8.9, 0], [15.5, -8.
 edge('E-F2LIFT-RFOYER', 'walk', 'F2-LIFT', 'F2-R-FOYER', [], { source: `${SRC.walk} (2F foyer mirror of GF)`, isPublic: false });
 
 const graph = {
-  schemaVersion: 1, modelVersion: 'r09-web01', navigationVersion: 'r09-nav-pilot-draft-1', status: 'draft',
+  schemaVersion: 1, modelVersion: 'r09-web02', navigationVersion: 'r09-nav-pilot-draft-1', status: 'draft',
   calibrationVersion: DRAFT_CALIBRATION.calibrationVersion,
   note: 'Draft pilot graph from model evidence. No edge is verified; step-free status is unknown everywhere. Do not publish as verified directions.',
   floors: [{ level: 1, name: '1st floor' }, { level: 2, name: '2nd floor' }],

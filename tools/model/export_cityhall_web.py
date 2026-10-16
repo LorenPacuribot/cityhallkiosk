@@ -25,8 +25,9 @@ from mathutils import Matrix, Vector
 
 argv = sys.argv[sys.argv.index('--') + 1:]
 SRC, EXPECTED_SHA, OUT = argv[0], argv[1].lower(), argv[2]
+MODEL_VERSION = argv[3] if len(argv) > 3 else 'r09-web02'
 SCENE, COLL = 'UNITY_Baked_Optimized', 'UNITY_Optimized_Geometry'
-MODEL_VERSION = 'r09-web01'
+FRONT_CAMERA = 'LAYERED_Front_Composition'
 UV_BASE, UV_LIGHT, COLOR = 'BaseUV', 'LightmapUV', 'Albedo'
 os.makedirs(OUT, exist_ok=True)
 
@@ -51,6 +52,8 @@ with bpy.data.libraries.load(SRC, link=False) as (src, dst):
     if SCENE not in src.scenes:
         fail(f'scene {SCENE} not in source: {src.scenes}')
     dst.scenes = [SCENE]
+    if FRONT_CAMERA in src.objects:
+        dst.objects = [FRONT_CAMERA]
 appended = bpy.data.scenes[SCENE]
 coll = bpy.data.collections.get(COLL)
 if coll is None:
@@ -93,7 +96,34 @@ def asset_id(o):
 
 unknown = [o.name for o in objects if role_of(o) == 'unknown']
 
-# ------------------------------------------------------------------ 3. projector scalars on ENV_ cards
+# ------------------------------------------------------------------ 3. front camera correction + projector scalars
+# The source's LAYERED_Front_Composition camera has a STALE stored matrix_world (identity): it was never evaluated in
+# the scene the Unity assembly ran from. Its own data (location, rotation, no parent, no constraints) evaluates to the
+# intended camera. The delivery copied the stale identity into VIEW_LAYERED_Front_Composition and computed every
+# ENV_ projector coordinate against it. We recompute exactly those values from the evaluated camera with the
+# delivery's own formula (assemble_unity_export.py: p = cam.matrix_world.inverted() @ ob.matrix_world @ v.co;
+# ProjectorXY = (p.x, p.y), ProjectorDepth = -p.z). Geometry, UVs, colours and lighting are not touched.
+corrections = []
+front_cam = bpy.data.objects.get(FRONT_CAMERA)
+cam_mw = None
+if front_cam is not None:
+    if front_cam.parent is not None or len(front_cam.constraints):
+        fail(f'{FRONT_CAMERA} has a parent or constraints; the correction assumes neither')
+    cam_mw = front_cam.matrix_basis.copy()  # == evaluated world matrix without parent/constraints
+    marker = bpy.data.objects.get('VIEW_' + FRONT_CAMERA)
+    if marker is None:
+        fail(f'VIEW_{FRONT_CAMERA} marker missing')
+    # evidence of the defect: the delivered marker does not sit where the camera's own transform puts it
+    if any(abs(a - b) > 1e-4 for ra, rb in zip(cam_mw, marker.matrix_world) for a, b in zip(ra, rb)):
+        before = [list(r) for r in marker.matrix_world]
+        marker.matrix_world = cam_mw.copy()
+        corrections.append(dict(object=marker.name, field='matrix_world', reason='source marker held a stale (identity) camera matrix_world; set to the camera\'s own evaluated transform',
+                                before=before, after=[list(r) for r in cam_mw]))
+        corrections.append(dict(object='ENV_* (6 cards)', field='projector XY / depth', reason='recomputed against the camera\'s evaluated transform with the delivery formula (assemble_unity_export.py line 164)'))
+    else:
+        cam_mw = None  # marker already matches the camera: keep the delivery's projector values
+    bpy.context.view_layer.update()
+
 env = [o for o in objects if o.type == 'MESH' and o.name.startswith('ENV_')]
 for o in env:
     me = o.data
@@ -103,6 +133,12 @@ for o in env:
     n = len(me.loops)
     xy = np.empty(n * 2, dtype=np.float32); uvs[0].data.foreach_get('uv', xy)
     dz = np.empty(n * 2, dtype=np.float32); uvs[1].data.foreach_get('uv', dz)
+    if cam_mw is not None:
+        inv = cam_mw.inverted() @ o.matrix_world
+        for li in me.loops:
+            p = inv @ me.vertices[li.vertex_index].co
+            xy[li.index * 2], xy[li.index * 2 + 1] = p.x, p.y
+            dz[li.index * 2] = -p.z
     for name, values in (('_PROJ_X', xy[0::2]), ('_PROJ_Y', xy[1::2]), ('_PROJ_DEPTH', dz[0::2])):
         if name in me.attributes:
             me.attributes.remove(me.attributes[name])
@@ -293,7 +329,7 @@ for n in nodes:
 json.dump(dict(schemaVersion=1, modelVersion=MODEL_VERSION, source=dict(file=os.path.basename(SRC), sha256=SRC_SHA, bytes=SRC_BYTES,
                                                                        scene=SCENE, collection=COLL),
                blender=bpy.app.version_string, exporter_options={**common, **color_opts},
-               axis_conversion='gltf = (bx, bz, -by)', role_counts=counts, unknown_roles=unknown,
+               axis_conversion='gltf = (bx, bz, -by)', role_counts=counts, unknown_roles=unknown, source_corrections=corrections,
                mesh_objects=len(report_objects), building_mesh_objects=sum(1 for k in report_objects if not k.startswith('ENV_')),
                triangles=sum(v['triangles'] for v in report_objects.values()),
                building_triangles=sum(v['triangles'] for k, v in report_objects.items() if not k.startswith('ENV_')),

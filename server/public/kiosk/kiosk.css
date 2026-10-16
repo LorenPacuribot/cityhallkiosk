@@ -471,6 +471,7 @@ h1, h2, h3, p { margin: 0; }
 .vp-tools { position: absolute; left: 24px; top: 24px; z-index: 2; display: flex; flex-wrap: wrap; gap: 12px; max-width: calc(100% - 420px); }
 .vp-tools .chip { min-height: 72px; display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,.94); box-shadow: 0 6px 16px rgba(18,53,91,.12); }
 .vp-tools .chip[hidden] { display: none; }
+.vp-tools .chip[aria-pressed="true"] { background: var(--brand-navy); color: #fff; }
 .routemap { width: 100%; height: auto; }
 .narrow .vp-tools { left: 12px; top: 12px; max-width: calc(100% - 270px); }
 .narrow .vp-tools .chip { min-height: 56px; }

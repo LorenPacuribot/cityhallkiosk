@@ -1,6 +1,6 @@
 {
  "schemaVersion": 1,
- "modelVersion": "r09-web01",
+ "modelVersion": "r09-web02",
  "navigationVersion": "r09-nav-pilot-draft-1",
  "status": "draft",
  "calibrationVersion": "r09-cal-draft-1",
@@ -1194,7 +1194,7 @@
   }
  ],
  "calibration": {
-  "modelVersion": "r09-web01",
+  "modelVersion": "r09-web02",
   "calibrationVersion": "r09-cal-draft-1",
   "status": "draft",
   "units": "metres",
@@ -1252,272 +1252,272 @@
  ],
  "signs": [
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W001-D187_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W001-D187_Face_B",
    "openingId": "R2-W001-D187",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W001-D187_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W001-D187_Face_A",
    "openingId": "R2-W001-D187",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W002-D188_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W002-D188_Face_B",
    "openingId": "R2-W002-D188",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W002-D188_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W002-D188_Face_A",
    "openingId": "R2-W002-D188",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W032-D208_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D208_Face_B",
    "openingId": "R2-W032-D208",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W032-D208_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D208_Face_A",
    "openingId": "R2-W032-D208",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W032-D209_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D209_Face_B",
    "openingId": "R2-W032-D209",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W032-D209_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D209_Face_A",
    "openingId": "R2-W032-D209",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W032-D210_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D210_Face_B",
    "openingId": "R2-W032-D210",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W032-D210_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D210_Face_A",
    "openingId": "R2-W032-D210",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W040-D216_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W040-D216_Face_B",
    "openingId": "R2-W040-D216",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W040-D216_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W040-D216_Face_A",
    "openingId": "R2-W040-D216",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W041-D217_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W041-D217_Face_B",
    "openingId": "R2-W041-D217",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W041-D217_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W041-D217_Face_A",
    "openingId": "R2-W041-D217",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W057-D229_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D229_Face_B",
    "openingId": "R2-W057-D229",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W057-D229_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D229_Face_A",
    "openingId": "R2-W057-D229",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W057-D230_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D230_Face_B",
    "openingId": "R2-W057-D230",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W057-D230_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D230_Face_A",
    "openingId": "R2-W057-D230",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W057-D231_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D231_Face_B",
    "openingId": "R2-W057-D231",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W057-D231_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D231_Face_A",
    "openingId": "R2-W057-D231",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W001-D105_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W001-D105_Face_B",
    "openingId": "R1-W001-D105",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W001-D105_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W001-D105_Face_A",
    "openingId": "R1-W001-D105",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W001-D106_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W001-D106_Face_B",
    "openingId": "R1-W001-D106",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W001-D106_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W001-D106_Face_A",
    "openingId": "R1-W001-D106",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W002-D108_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W002-D108_Face_B",
    "openingId": "R1-W002-D108",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W002-D108_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W002-D108_Face_A",
    "openingId": "R1-W002-D108",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W023-D122_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D122_Face_B",
    "openingId": "R1-W023-D122",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W023-D122_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D122_Face_A",
    "openingId": "R1-W023-D122",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W023-D123_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D123_Face_B",
    "openingId": "R1-W023-D123",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W023-D123_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D123_Face_A",
    "openingId": "R1-W023-D123",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W023-D124_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D124_Face_B",
    "openingId": "R1-W023-D124",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W023-D124_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D124_Face_A",
    "openingId": "R1-W023-D124",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W076-D166_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W076-D166_Face_B",
    "openingId": "R1-W076-D166",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W076-D166_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W076-D166_Face_A",
    "openingId": "R1-W076-D166",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W082-D171_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W082-D171_Face_B",
    "openingId": "R1-W082-D171",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W082-D171_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W082-D171_Face_A",
    "openingId": "R1-W082-D171",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W038-D133_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W038-D133_Face_B",
    "openingId": "R1-W038-D133",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W038-D133_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W038-D133_Face_A",
    "openingId": "R1-W038-D133",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W038-D134_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W038-D134_Face_B",
    "openingId": "R1-W038-D134",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W038-D134_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W038-D134_Face_A",
    "openingId": "R1-W038-D134",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W039-D136_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W039-D136_Face_B",
    "openingId": "R1-W039-D136",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W039-D136_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W039-D136_Face_A",
    "openingId": "R1-W039-D136",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W057-D149_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D149_Face_B",
    "openingId": "R1-W057-D149",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W057-D149_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D149_Face_A",
    "openingId": "R1-W057-D149",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W057-D150_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D150_Face_B",
    "openingId": "R1-W057-D150",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W057-D150_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D150_Face_A",
    "openingId": "R1-W057-D150",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W057-D151_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D151_Face_B",
    "openingId": "R1-W057-D151",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W057-D151_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D151_Face_A",
    "openingId": "R1-W057-D151",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W057-D152_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D152_Face_B",
    "openingId": "R1-W057-D152",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R1-W057-D152_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D152_Face_A",
    "openingId": "R1-W057-D152",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W002-D189_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W002-D189_Face_B",
    "openingId": "R2-W002-D189",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W002-D189_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W002-D189_Face_A",
    "openingId": "R2-W002-D189",
    "face": "A"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W071-D241_Face_B",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W071-D241_Face_B",
    "openingId": "R2-W071-D241",
    "face": "B"
   },
   {
-   "assetId": "r09-web01:SIGNFACE_SIGN_R2-W071-D241_Face_A",
+   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W071-D241_Face_A",
    "openingId": "R2-W071-D241",
    "face": "A"
   }
@@ -1531,7 +1531,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W001-D105",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W001-D105_leaf_1"
+    "r09-web02:DOOR_R1-W001-D105_leaf_1"
    ]
   },
   {
@@ -1542,7 +1542,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W001-D106",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W001-D106_leaf_1"
+    "r09-web02:DOOR_R1-W001-D106_leaf_1"
    ]
   },
   {
@@ -1557,7 +1557,7 @@
    },
    "label": "Ground floor, left wing — doorway R1-W002-D108",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W002-D108_leaf_1"
+    "r09-web02:DOOR_R1-W002-D108_leaf_1"
    ]
   },
   {
@@ -1568,7 +1568,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W023-D122",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W023-D122_leaf_1"
+    "r09-web02:DOOR_R1-W023-D122_leaf_1"
    ]
   },
   {
@@ -1579,7 +1579,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W023-D123",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W023-D123_leaf_1"
+    "r09-web02:DOOR_R1-W023-D123_leaf_1"
    ]
   },
   {
@@ -1590,7 +1590,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W023-D124",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W023-D124_leaf_1"
+    "r09-web02:DOOR_R1-W023-D124_leaf_1"
    ]
   },
   {
@@ -1605,7 +1605,7 @@
    },
    "label": "Ground floor, right wing — doorway R1-W038-D133",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W038-D133_leaf_1"
+    "r09-web02:DOOR_R1-W038-D133_leaf_1"
    ]
   },
   {
@@ -1616,7 +1616,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W038-D134",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W038-D134_leaf_1"
+    "r09-web02:DOOR_R1-W038-D134_leaf_1"
    ]
   },
   {
@@ -1627,7 +1627,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W039-D136",
    "doorAssetIds": [
-    "r09-web01:DOOR_GF_Glazed_R1-W039-D136_leaf_1"
+    "r09-web02:DOOR_GF_Glazed_R1-W039-D136_leaf_1"
    ]
   },
   {
@@ -1638,7 +1638,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W057-D149",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W057-D149_leaf_1"
+    "r09-web02:DOOR_R1-W057-D149_leaf_1"
    ]
   },
   {
@@ -1649,7 +1649,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W057-D150",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W057-D150_leaf_1"
+    "r09-web02:DOOR_R1-W057-D150_leaf_1"
    ]
   },
   {
@@ -1660,7 +1660,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W057-D151",
    "doorAssetIds": [
-    "r09-web01:DOOR_GF_Glazed_R1-W057-D151_leaf_1"
+    "r09-web02:DOOR_GF_Glazed_R1-W057-D151_leaf_1"
    ]
   },
   {
@@ -1671,7 +1671,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W057-D152",
    "doorAssetIds": [
-    "r09-web01:DOOR_GF_Glazed_R1-W057-D152_leaf_1"
+    "r09-web02:DOOR_GF_Glazed_R1-W057-D152_leaf_1"
    ]
   },
   {
@@ -1682,7 +1682,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W076-D166",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W076-D166_leaf_1"
+    "r09-web02:DOOR_R1-W076-D166_leaf_1"
    ]
   },
   {
@@ -1693,7 +1693,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W082-D171",
    "doorAssetIds": [
-    "r09-web01:DOOR_R1-W082-D171_leaf_1"
+    "r09-web02:DOOR_R1-W082-D171_leaf_1"
    ]
   },
   {
@@ -1704,7 +1704,7 @@
    "doorPoint": null,
    "label": "Doorway R2-W001-D187",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W001-D187_leaf_1"
+    "r09-web02:DOOR_R2-W001-D187_leaf_1"
    ]
   },
   {
@@ -1715,7 +1715,7 @@
    "doorPoint": null,
    "label": "Doorway R2-W002-D188",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W002-D188_leaf_1"
+    "r09-web02:DOOR_R2-W002-D188_leaf_1"
    ]
   },
   {
@@ -1726,7 +1726,7 @@
    "doorPoint": null,
    "label": "Doorway R2-W002-D189",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W002-D189_leaf_1"
+    "r09-web02:DOOR_R2-W002-D189_leaf_1"
    ]
   },
   {
@@ -1737,7 +1737,7 @@
    "doorPoint": null,
    "label": "Doorway R2-W032-D208",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W032-D208_leaf_1"
+    "r09-web02:DOOR_R2-W032-D208_leaf_1"
    ]
   },
   {
@@ -1748,7 +1748,7 @@
    "doorPoint": null,
    "label": "Doorway R2-W032-D209",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W032-D209_leaf_1"
+    "r09-web02:DOOR_R2-W032-D209_leaf_1"
    ]
   },
   {
@@ -1763,7 +1763,7 @@
    },
    "label": "2nd floor, left wing — doorway R2-W032-D210",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W032-D210_leaf_1"
+    "r09-web02:DOOR_R2-W032-D210_leaf_1"
    ]
   },
   {
@@ -1774,8 +1774,8 @@
    "doorPoint": null,
    "label": "Doorway R2-W040-D216",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W040-D216_leaf_1",
-    "r09-web01:DOOR_R2-W040-D216_leaf_2"
+    "r09-web02:DOOR_R2-W040-D216_leaf_1",
+    "r09-web02:DOOR_R2-W040-D216_leaf_2"
    ]
   },
   {
@@ -1786,7 +1786,7 @@
    "doorPoint": null,
    "label": "Doorway R2-W041-D217",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W041-D217_leaf_1"
+    "r09-web02:DOOR_R2-W041-D217_leaf_1"
    ]
   },
   {
@@ -1801,7 +1801,7 @@
    },
    "label": "2nd floor, right wing — doorway R2-W057-D229",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W057-D229_leaf_1"
+    "r09-web02:DOOR_R2-W057-D229_leaf_1"
    ]
   },
   {
@@ -1812,7 +1812,7 @@
    "doorPoint": null,
    "label": "Doorway R2-W057-D230",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W057-D230_leaf_1"
+    "r09-web02:DOOR_R2-W057-D230_leaf_1"
    ]
   },
   {
@@ -1823,7 +1823,7 @@
    "doorPoint": null,
    "label": "Doorway R2-W057-D231",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W057-D231_leaf_1"
+    "r09-web02:DOOR_R2-W057-D231_leaf_1"
    ]
   },
   {
@@ -1834,8 +1834,8 @@
    "doorPoint": null,
    "label": "Doorway R2-W071-D241",
    "doorAssetIds": [
-    "r09-web01:DOOR_R2-W071-D241_leaf_1",
-    "r09-web01:DOOR_R2-W071-D241_leaf_2"
+    "r09-web02:DOOR_R2-W071-D241_leaf_1",
+    "r09-web02:DOOR_R2-W071-D241_leaf_2"
    ]
   }
  ]
