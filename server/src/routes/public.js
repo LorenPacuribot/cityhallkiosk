@@ -4,7 +4,8 @@ import QRCode from 'qrcode';
 import { all, get, run, setting } from '../db.js';
 import { search } from '../search.js';
 import { serviceDetail, officesWithLocation, officeLocation, locationPayload, floorsWithRooms, kioskBundle, activeAnnouncements, popularServiceIds } from '../lib/data.js';
-import { planRoute } from '../lib/route.js';
+import { planRoute, DEFAULT_KIOSK } from '../lib/route.js';
+import { publicNavigation } from '../lib/navigation.js';
 
 export const publicApi = express.Router();
 const int = v => (v === null || v === undefined || v === '' ? null : Number.isFinite(Number(v)) ? Number(v) : null);
@@ -15,7 +16,9 @@ publicApi.get('/health', (req, res) => res.json({ ok: true, content_version: Num
 publicApi.get('/kiosk/version', (req, res) => res.json({ content_version: Number(setting('content_version', '1')) }));
 publicApi.get('/kiosk/bundle', (req, res) => {
   res.set('Cache-Control', 'no-store');
-  res.json(kioskBundle(req.query.kiosk || 'KIOSK-LOBBY-1'));
+  const b = kioskBundle(req.query.kiosk || DEFAULT_KIOSK);
+  if (!b.kiosk) return res.status(404).json({ status: 'error', reason: 'UNKNOWN_KIOSK', error: `Kiosk ${req.query.kiosk} is not registered.` });
+  res.json(b);
 });
 publicApi.post('/kiosks/:code/heartbeat', (req, res) => {
   const { app_version = null, content_version = null } = req.body || {};
@@ -61,6 +64,12 @@ publicApi.get('/offices/:id', (req, res) => {
 });
 
 publicApi.get('/floors', (req, res) => res.json({ items: floorsWithRooms() }));
+// Published walkable network for the phone's 2D maps (public, open edges only). 404 while in prototype mode.
+publicApi.get('/navigation', (req, res) => {
+  const n = publicNavigation();
+  if (!n) return res.status(404).json({ status: 'error', reason: 'NO_GRAPH', error: 'No navigation graph is published.' });
+  res.json(n);
+});
 publicApi.get('/announcements', (req, res) => res.json({ items: activeAnnouncements() }));
 
 // --- locations for the 3D app ----------------------------------------------------
@@ -88,17 +97,23 @@ publicApi.get('/rooms', (req, res) => {
                            FROM rooms r JOIN floors f ON f.id = r.floor_id WHERE r.is_active = 1 ORDER BY r.code`) });
 });
 
+// Route from a registered kiosk to an office / room (or, in labelled preview mode only, a bare doorway).
+//   ?kiosk=CODE            origin; defaults to KIOSK-LOBBY-1 only when omitted. Unknown codes are an error, never substituted.
+//   ?office_id | service_id | room_id | opening_id
+//   ?preference=step_free  (or legacy accessible=1): never falls back to stairs
+//   ?preview=1             draft preview: may use unverified graph data when the server enables it; result says so
+// 200 = route; 404 = unknown kiosk/destination; 422 = valid request that cannot be routed. Body always has status/reason.
+const NOT_FOUND = new Set(['UNKNOWN_KIOSK', 'UNKNOWN_DESTINATION']);
 publicApi.get('/route', (req, res) => {
-  let roomId = int(req.query.room_id);
-  if (!roomId && req.query.office_id) roomId = officeLocation(int(req.query.office_id))?.room_id;
-  if (!roomId && req.query.service_id) {
-    const s = get('SELECT office_id FROM services WHERE id = ?', [int(req.query.service_id)]);
-    roomId = s && officeLocation(s.office_id)?.room_id;
-  }
-  if (!roomId) return res.status(404).json({ error: 'This office has no room in this building yet.' });
-  const r = planRoute({ kioskCode: req.query.kiosk || 'KIOSK-LOBBY-1', roomId, accessible: req.query.accessible === '1' });
-  if (!r) return res.status(404).json({ error: 'Route not available' });
-  if (req.query.log !== '0') run('INSERT INTO session_logs(kiosk_code, navigated_room_id) VALUES (?,?)', [req.query.kiosk || null, roomId]);
+  let officeId = int(req.query.office_id);
+  if (!officeId && req.query.service_id) officeId = get('SELECT office_id FROM services WHERE id = ?', [int(req.query.service_id)])?.office_id ?? null;
+  const roomId = int(req.query.room_id), openingId = req.query.opening_id ? String(req.query.opening_id).slice(0, 64) : null;
+  if (!officeId && !roomId && !openingId) return res.status(404).json({ status: 'no_route', reason: 'UNKNOWN_DESTINATION', error: 'No destination given.' });
+  const preference = req.query.preference === 'step_free' || req.query.accessible === '1' ? 'step_free' : 'any';
+  const kioskCode = req.query.kiosk ? String(req.query.kiosk).slice(0, 64) : DEFAULT_KIOSK;
+  const r = planRoute({ kioskCode, officeId, roomId, openingId, preference, preview: req.query.preview === '1' });
+  if (r.status !== 'ok') return res.status(NOT_FOUND.has(r.reason) ? 404 : 422).json({ ...r, error: r.message });
+  if (req.query.log !== '0') run('INSERT INTO session_logs(kiosk_code, navigated_room_id) VALUES (?,?)', [kioskCode, r.to?.room_id ?? null]);
   res.json(r);
 });
 

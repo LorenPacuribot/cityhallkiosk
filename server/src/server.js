@@ -2,10 +2,11 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import express from 'express';
-import { openDb, DB_FILE, ROOT } from './db.js';
+import { openDb, DB_FILE, ROOT, MODELS_ROOT } from './db.js';
 import { seed } from './seed.js';
 import { publicApi } from './routes/public.js';
 import { authApi, adminApi } from './routes/admin.js';
+import { navAdminApi } from './routes/navigation-admin.js';
 
 const PORT = Number(process.env.PORT || 3000);
 
@@ -37,10 +38,19 @@ export async function createApp() {
   app.get('/api/config', (req, res) => res.json({ public_base_url: PUBLIC_BASE_URL }));
   app.use('/api/auth', authApi);
   app.use('/api/admin', adminApi);
+  app.use('/api/admin', navAdminApi);
   app.use('/api', publicApi);
   app.use('/api', (req, res) => res.status(404).json({ error: 'Unknown API route' }));
 
   const pub = path.join(ROOT, 'public');
+  // Model releases are immutable: cache hard, except the manifest. GLB gets its registered media type.
+  app.use('/models', express.static(MODELS_ROOT, {
+    fallthrough: false, index: false, dotfiles: 'deny',
+    setHeaders(res, file) {
+      if (file.endsWith('.glb')) res.set('Content-Type', 'model/gltf-binary');
+      res.set('Cache-Control', path.basename(file) === 'manifest.json' ? 'no-cache' : 'public, max-age=31536000, immutable');
+    },
+  }));
   app.use('/vendor/three', express.static(path.join(ROOT, 'node_modules', 'three')));
   app.use('/vendor/fonts/jakarta', express.static(path.join(ROOT, 'node_modules', '@fontsource', 'plus-jakarta-sans')));
   app.use(express.static(pub, { extensions: ['html'] }));

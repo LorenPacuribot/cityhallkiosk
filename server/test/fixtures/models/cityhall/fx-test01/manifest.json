@@ -1,0 +1,71 @@
+{
+ "schemaVersion": 1,
+ "modelVersion": "fx-test01",
+ "sourceBlendSha256": "0000000000000000000000000000000000000000000000000000000000000000",
+ "units": "metres",
+ "assetCoordinates": "gltf-y-up-right-handed",
+ "uvConvention": "gltf-top-left",
+ "building": "building.glb",
+ "scenery": "scenery.glb",
+ "materials": "materials.json",
+ "nodes": "nodes.json",
+ "viewpoints": "viewpoints.json",
+ "note": "TEST FIXTURE — not the City Hall model",
+ "files": [
+  {
+   "path": "building.glb",
+   "bytes": 29288,
+   "sha256": "006186cc0537344c84e2087d858d1d572d244e8be466964096192bc85eb5c767"
+  },
+  {
+   "path": "export-report.json",
+   "bytes": 6091,
+   "sha256": "53a1fe2d187b5633285e45e095dbe95a841ca581c7a1ce47793cf2eca7f648d1"
+  },
+  {
+   "path": "materials.json",
+   "bytes": 2572,
+   "sha256": "8dee3a8eff5eddcf14bd9b1923d416f1dac4ba556aefdddebbe3c904a29937a2"
+  },
+  {
+   "path": "nodes.json",
+   "bytes": 11234,
+   "sha256": "574f631e39484ae2193c6b99b6d1975da149b31f0916ef99d3a8cd0febb0b7eb"
+  },
+  {
+   "path": "scenery.glb",
+   "bytes": 1976,
+   "sha256": "4ed912376dcad7a36aef79419d81c04034bbc9433dc45b50ed8a20be52c433cc"
+  },
+  {
+   "path": "textures/AgX_Afternoon_LUT.png",
+   "bytes": 110591,
+   "sha256": "b2f311097a30a4fc4c5f8ea61d1b1899918bc68410a9288c5d208b6fd0de4c08"
+  },
+  {
+   "path": "textures/FX_F2_RGBM.png",
+   "bytes": 381,
+   "sha256": "fea528a8a9b305c31f1b993a182fbfd3d8a4a818f3148512cd1a38bda002368d"
+  },
+  {
+   "path": "textures/FX_GF_RGBM.png",
+   "bytes": 377,
+   "sha256": "b499267c5c18db9afbc762b6af333cb67882b53a1a3256351c3e2032de1057e5"
+  },
+  {
+   "path": "textures/FX_Sky.png",
+   "bytes": 313,
+   "sha256": "5f30a10657b135c8634c545cce3a2ac401d262b47c9ee7099994e5c9659217cd"
+  },
+  {
+   "path": "textures/FX_Tile.png",
+   "bytes": 163,
+   "sha256": "0224c744d94e3ae6560af9f0d92ea7998be48df83fe217963970bd41f85a62bb"
+  },
+  {
+   "path": "viewpoints.json",
+   "bytes": 515,
+   "sha256": "a282616c78e676b6de6d3ae9f1f6fd84f8320f9d4b57cff37659b6c64e342b3a"
+  }
+ ]
+}

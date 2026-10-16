@@ -4,10 +4,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import initSqlJs from 'sql.js';
+import { migrate } from './migrations.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const ROOT = path.resolve(__dirname, '..');
 export const DB_FILE = process.env.KIOSK_DB || path.join(ROOT, 'data', 'kiosk.sqlite');
+// Browser model releases (<root>/cityhall/<modelVersion>/). Tests point this at isolated fixtures.
+export const MODELS_ROOT = process.env.KIOSK_MODELS_ROOT || path.join(ROOT, 'public', 'models');
 
 let SQL;
 let db;
@@ -23,6 +26,7 @@ export async function openDb({ fresh = false } = {}) {
   db.run('PRAGMA foreign_keys = ON;');
   db.run(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
   upgrade();
+  if (migrate(db).length) saveNow();
   return db;
 }
 

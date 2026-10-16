@@ -2,6 +2,7 @@
 // /m/service/:id  → requirements checklist (saved on the phone), steps, where to go.
 // /m              → search.
 import { icon } from '/shared/icons.js';
+import { routeFloorSVG } from '/shared/route-map.js';
 
 const $ = s => document.querySelector(s);
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -30,11 +31,17 @@ async function servicePage(id) {
   document.title = `${s.display_title} — Malaybalay City Hall`;
   const key = `chk:${s.id}`; const done = new Set(store.get(key) || []);
   const loc = s.location;
-  let floor = null, route = null;
+  // QR context from the kiosk: origin kiosk, step-free preference, the room and versions when the code was made
+  const q = new URLSearchParams(location.search);
+  const origin = q.get('k'), stepFree = q.get('p') === 'sf', qrRoom = Number(q.get('r')) || null;
+  const moved = qrRoom && loc?.room_id !== qrRoom;
+  let floor = null, route = null, nav = null;
   if (loc?.room_id) {
-    [floor, route] = await Promise.all([
+    // directions follow the office's CURRENT room; without an origin kiosk there is no "from" — never assume the lobby
+    [floor, route, nav] = await Promise.all([
       getJSON('/api/floors').then(d => d.items.find(f => f.id === loc.floor_id)).catch(() => null),
-      getJSON(`/api/route?room_id=${loc.room_id}&log=0`).catch(() => null),
+      origin ? fetch(`/api/route?office_id=${s.office_id}&kiosk=${encodeURIComponent(origin)}${stepFree ? '&preference=step_free' : ''}&log=0`).then(r => r.json()).catch(() => null) : null,
+      getJSON('/api/navigation').catch(() => null),
     ]);
   }
   app.innerHTML = `${header(true)}<main>
@@ -54,7 +61,8 @@ async function servicePage(id) {
     ${s.notes ? `<section><h2>Notes and fees</h2>${notesHTML(s.notes)}</section>` : ''}
 
     <section id="where"><h2>How to get there</h2>
-      ${floor && loc ? `${planSVG(floor, loc.room_id, route)}<ol class="dirs">${(route?.directions || []).map(d => `<li>${esc(d.text)}</li>`).join('')}</ol><p class="muted small">Directions start at the kiosk in the main lobby.</p>` : `<p>${loc?.type === 'offsite' ? `This office is <b>not inside City Hall</b>: ${esc(loc.offsite_address || 'ask the information desk for the address')}.` : 'The room is not confirmed yet. Please ask at the information desk.'}</p>`}
+      ${moved ? `<p class="notice">This office has moved since the code was made. The directions below are for where it is now: <b>${esc(loc.floor_name)} · Room ${esc(loc.room_code)}</b>.</p>` : ''}
+      ${whereHTML({ loc, floor, route, nav, origin, stepFree })}
     </section>
 
     <section class="contact">${s.office_phone ? `<a class="btn" href="tel:${esc(s.office_phone.replace(/[^\d+]/g, ''))}">${icon('phone', 18)}Call ${esc(s.office_phone)}</a>` : ''}<p class="muted small">${esc(s.office_hours || '')}</p></section>
@@ -76,6 +84,29 @@ async function servicePage(id) {
     await fetch('/api/feedback', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ service_id: s.id, helpful, reason, kiosk_code: 'PHONE' }) }).catch(() => {});
     $('#fb').innerHTML = `<p><b>Salamat!</b> Thank you — the office will see this.</p>`;
   }
+}
+
+const REASONS = {
+  UNVERIFIED_DESTINATION: 'Step-by-step directions to this office have not been checked on site yet.',
+  UNVERIFIED_ROUTE: 'The way to this office has not been checked on site yet.',
+  NO_STEP_FREE_ROUTE: 'There is no checked step-free way to this office.',
+  ROUTE_CLOSED: 'The way to this office is closed right now.',
+  UNKNOWN_KIOSK: 'The kiosk this code came from is not set up for directions.',
+};
+function whereHTML({ loc, floor, route, nav, origin, stepFree }) {
+  if (!loc?.room_id) return `<p>${loc?.type === 'offsite' ? `This office is <b>not inside City Hall</b>: ${esc(loc.offsite_address || 'ask the information desk for the address')}.` : 'The room is not confirmed yet. Please ask at the information desk.'}</p>`;
+  const place = `<p><b>${esc(loc.floor_name)} · Room ${esc(loc.room_code)}</b></p>`;
+  if (!origin) return `${place}<p class="muted small">Scan the code on a City Hall kiosk to get step-by-step directions from where you are standing.</p>`;
+  if (!route || route.status !== 'ok') return `${place}<p>${esc(REASONS[route?.reason] || 'Directions are not available right now.')} Please ask at the information desk.</p>`;
+  const pref = stepFree ? ' · avoiding stairs' : '';
+  const dirs = `<ol class="dirs">${route.directions.map(d => `<li>${esc(d.text)}</li>`).join('')}</ol>`;
+  if (route.routeSource === 'navigation_graph' && nav?.graph) {
+    // one map per floor the route uses, from the published walkable network
+    const maps = route.floors_used.map(l => `<figure class="plan-fig"><figcaption>${esc(nav.graph.floors.find(f => f.level === l)?.name || `Floor ${l}`)}</figcaption>${routeFloorSVG({ graph: nav.graph, route, level: l, labels: { you: 'Kiosk' } })}</figure>`).join('');
+    const draft = route.verification !== 'verified' ? '<p class="notice">Draft route: not yet checked on site. Please confirm at the information desk.</p>' : '';
+    return `${place}${draft}${maps}${dirs}<p class="muted small">From kiosk ${esc(origin)}${pref} · about ${route.distance_m} m · map version ${esc(route.navigationVersion || '')}.</p>`;
+  }
+  return `${place}${floor ? planSVG(floor, loc.room_id, route) : ''}${dirs}<p class="muted small">Sample route on a placeholder map, not the real building. From kiosk ${esc(origin)}${pref}.</p>`;
 }
 
 function planSVG(fl, roomId, route) {

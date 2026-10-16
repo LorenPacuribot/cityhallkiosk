@@ -9,7 +9,8 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "seed": "node src/seed.js --reset",
-    "test": "node --test test/api.test.js"
+    "test": "node --test test/api.test.js test/route.test.js test/navigation.test.js test/model.test.js",
+    "test:e2e": "node --test --test-concurrency=1 test/e2e/kiosk-3d.e2e.mjs"
   },
   "engines": {
     "node": ">=18.17"
@@ -20,5 +21,8 @@
     "qrcode": "^1.5.4",
     "sql.js": "^1.14.2",
     "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.48.2"
   }
 }

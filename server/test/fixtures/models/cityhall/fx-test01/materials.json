@@ -1,0 +1,157 @@
+{
+ "schemaVersion": 1,
+ "modelVersion": "fx-test01",
+ "source": "fixture",
+ "lut": {
+  "path": "textures/AgX_Afternoon_LUT.png",
+  "size": [
+   4096,
+   64
+  ],
+  "slices": 64,
+  "encoding": "neutral fixture LUT"
+ },
+ "textureRules": {
+  "lightmap": {
+   "colorSpace": "none",
+   "flipY": false,
+   "premultiplyAlpha": false,
+   "wrap": "clamp",
+   "mipmaps": true
+  },
+  "lut": {
+   "colorSpace": "none",
+   "flipY": false,
+   "filter": "linear",
+   "mipmaps": false,
+   "wrap": "clamp"
+  },
+  "base": {
+   "colorSpace": "srgb",
+   "flipY": false,
+   "uv": 0,
+   "wrap": "repeat"
+  },
+  "projected": {
+   "colorSpace": "srgb",
+   "flipY": false
+  }
+ },
+ "bindings": [
+  {
+   "name": "BAKED_Centre_GF_VertexColor",
+   "kind": "baked",
+   "lightmap": "textures/FX_GF_RGBM.png",
+   "lightRange": 4,
+   "baseTexture": "",
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 0,
+   "roughness": 1,
+   "emission": 0,
+   "transmission": 0,
+   "usedInExport": true
+  },
+  {
+   "name": "BAKED_Centre_GF_Tile",
+   "kind": "baked",
+   "lightmap": "textures/FX_GF_RGBM.png",
+   "lightRange": 4,
+   "baseTexture": "textures/FX_Tile.png",
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 0,
+   "roughness": 1,
+   "emission": 0,
+   "transmission": 0,
+   "usedInExport": true
+  },
+  {
+   "name": "BAKED_Centre_F2_VertexColor",
+   "kind": "baked",
+   "lightmap": "textures/FX_F2_RGBM.png",
+   "lightRange": 8,
+   "baseTexture": "",
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 0,
+   "roughness": 1,
+   "emission": 0,
+   "transmission": 0,
+   "usedInExport": true
+  },
+  {
+   "name": "BAKED_Centre_F3Roof_VertexColor",
+   "kind": "baked",
+   "lightmap": "textures/FX_F2_RGBM.png",
+   "lightRange": 8,
+   "baseTexture": "",
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "metallic": 0,
+   "roughness": 1,
+   "emission": 0,
+   "transmission": 0,
+   "usedInExport": true
+  },
+  {
+   "name": "PBR_Clear_Glass",
+   "kind": "pbr",
+   "lightmap": "",
+   "lightRange": 1,
+   "baseTexture": "",
+   "baseColor": [
+    0.96,
+    0.98,
+    1,
+    1
+   ],
+   "metallic": 0,
+   "roughness": 0.075,
+   "emission": 0,
+   "transmission": 1,
+   "emissionColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "usedInExport": true
+  },
+  {
+   "name": "ENVIRONMENT_Projected_Cards",
+   "kind": "projected",
+   "baseTexture": "textures/FX_Sky.png",
+   "baseColor": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "projection": [
+    0.008333333333333333,
+    0.022222222222222223,
+    0.5,
+    0.1111111111111111
+   ],
+   "lightmap": "",
+   "usedInExport": true
+  }
+ ]
+}

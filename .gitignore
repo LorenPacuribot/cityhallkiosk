@@ -11,3 +11,11 @@ unity/[Oo]bj/
 unity/[Bb]uild*/
 unity/[Ll]ogs/
 unity/[Uu]ser[Ss]ettings/
+
+# 3D integration: local backups, test output, Blender logs, and built model releases (large; rebuilt by tools/model)
+server/data/backups/
+test-results/
+tools/model/.logs/
+server/public/models/cityhall/*/
+server/public/models/cityhall/.*
+

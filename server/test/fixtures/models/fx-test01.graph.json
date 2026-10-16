@@ -1,0 +1,324 @@
+{
+ "schemaVersion": 1,
+ "modelVersion": "fx-test01",
+ "navigationVersion": "fx-nav-1",
+ "calibrationVersion": "fx-cal-1",
+ "status": "draft",
+ "floors": [
+  {
+   "level": 1,
+   "name": "1st floor"
+  },
+  {
+   "level": 2,
+   "name": "2nd floor"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "ENT",
+   "floor": 1,
+   "role": "entrance",
+   "label": "Entrance",
+   "x": 0,
+   "y": 0,
+   "z": 1,
+   "source": "fixture geometry"
+  },
+  {
+   "id": "HALL",
+   "floor": 1,
+   "role": "junction",
+   "label": null,
+   "x": 0,
+   "y": 0,
+   "z": 10,
+   "source": "fixture geometry"
+  },
+  {
+   "id": "L-DOOR-C",
+   "floor": 1,
+   "role": "junction",
+   "label": null,
+   "x": -8,
+   "y": 0,
+   "z": 10,
+   "source": "fixture geometry"
+  },
+  {
+   "id": "L-DOOR",
+   "floor": 1,
+   "role": "door_approach",
+   "label": "Fixture office",
+   "x": -8,
+   "y": 0,
+   "z": 13,
+   "source": "fixture geometry"
+  },
+  {
+   "id": "ST-FOOT",
+   "floor": 1,
+   "role": "stair_foot",
+   "label": null,
+   "x": 11,
+   "y": 0,
+   "z": 9,
+   "source": "fixture geometry"
+  },
+  {
+   "id": "ST-TOP",
+   "floor": 2,
+   "role": "stair_top",
+   "label": null,
+   "x": 13,
+   "y": 4,
+   "z": 10,
+   "source": "fixture geometry"
+  },
+  {
+   "id": "F2-HALL",
+   "floor": 2,
+   "role": "junction",
+   "label": null,
+   "x": 0,
+   "y": 4,
+   "z": 10,
+   "source": "fixture geometry"
+  }
+ ],
+ "edges": [
+  {
+   "id": "E1",
+   "kind": "walk",
+   "from": "ENT",
+   "to": "HALL",
+   "polyline": [
+    {
+     "x": 0,
+     "y": 0,
+     "z": 1
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "z": 10
+    }
+   ],
+   "length_m": 9,
+   "bidirectional": true,
+   "verified": false,
+   "public": true,
+   "step_free": null,
+   "closed": false,
+   "label": null,
+   "source": "fixture"
+  },
+  {
+   "id": "E2",
+   "kind": "walk",
+   "from": "HALL",
+   "to": "L-DOOR-C",
+   "polyline": [
+    {
+     "x": 0,
+     "y": 0,
+     "z": 10
+    },
+    {
+     "x": -8,
+     "y": 0,
+     "z": 10
+    }
+   ],
+   "length_m": 8,
+   "bidirectional": true,
+   "verified": false,
+   "public": true,
+   "step_free": null,
+   "closed": false,
+   "label": null,
+   "source": "fixture"
+  },
+  {
+   "id": "E3",
+   "kind": "door",
+   "from": "L-DOOR-C",
+   "to": "L-DOOR",
+   "polyline": [
+    {
+     "x": -8,
+     "y": 0,
+     "z": 10
+    },
+    {
+     "x": -8,
+     "y": 0,
+     "z": 13
+    }
+   ],
+   "length_m": 3,
+   "bidirectional": true,
+   "verified": false,
+   "public": true,
+   "step_free": null,
+   "closed": false,
+   "label": null,
+   "source": "fixture"
+  },
+  {
+   "id": "E4",
+   "kind": "walk",
+   "from": "HALL",
+   "to": "ST-FOOT",
+   "polyline": [
+    {
+     "x": 0,
+     "y": 0,
+     "z": 10
+    },
+    {
+     "x": 11,
+     "y": 0,
+     "z": 10
+    },
+    {
+     "x": 11,
+     "y": 0,
+     "z": 9
+    }
+   ],
+   "length_m": 12,
+   "bidirectional": true,
+   "verified": false,
+   "public": true,
+   "step_free": null,
+   "closed": false,
+   "label": null,
+   "source": "fixture"
+  },
+  {
+   "id": "S1",
+   "kind": "stairs",
+   "from": "ST-FOOT",
+   "to": "ST-TOP",
+   "polyline": [
+    {
+     "x": 11,
+     "y": 0,
+     "z": 9
+    },
+    {
+     "x": 11,
+     "y": 1.95,
+     "z": 13
+    },
+    {
+     "x": 13,
+     "y": 1.95,
+     "z": 13.5
+    },
+    {
+     "x": 13,
+     "y": 4,
+     "z": 10
+    }
+   ],
+   "length_m": 10.568,
+   "bidirectional": true,
+   "verified": false,
+   "public": true,
+   "step_free": false,
+   "closed": false,
+   "label": "fixture stairs",
+   "source": "fixture"
+  },
+  {
+   "id": "E5",
+   "kind": "walk",
+   "from": "ST-TOP",
+   "to": "F2-HALL",
+   "polyline": [
+    {
+     "x": 13,
+     "y": 4,
+     "z": 10
+    },
+    {
+     "x": 0,
+     "y": 4,
+     "z": 10
+    }
+   ],
+   "length_m": 13,
+   "bidirectional": true,
+   "verified": false,
+   "public": true,
+   "step_free": null,
+   "closed": false,
+   "label": null,
+   "source": "fixture"
+  }
+ ],
+ "kiosks": {
+  "KIOSK-LOBBY-1": "ENT"
+ },
+ "openings": [
+  {
+   "openingId": "R1-W001-D001",
+   "roomId": null,
+   "status": "unresolved",
+   "approachNodeId": "L-DOOR",
+   "doorPoint": {
+    "x": -8,
+    "y": 0,
+    "z": 14
+   },
+   "label": "Fixture doorway",
+   "doorAssetIds": [
+    "fx-test01:DOOR_R1-W001-D001_leaf_1"
+   ]
+  }
+ ],
+ "signs": [
+  {
+   "assetId": "fx-test01:SIGNFACE_SIGN_R1-W001-D001_Face_A",
+   "openingId": "R1-W001-D001",
+   "face": "A"
+  },
+  {
+   "assetId": "fx-test01:SIGNFACE_SIGN_R1-W001-D001_Face_B",
+   "openingId": "R1-W001-D001",
+   "face": "B"
+  }
+ ],
+ "calibration": {
+  "modelVersion": "fx-test01",
+  "calibrationVersion": "fx-cal-1",
+  "status": "draft",
+  "units": "metres",
+  "description": "fixture",
+  "matrixBlenderToCanonical": [
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   10,
+   1
+  ],
+  "anchors": [],
+  "floorElevations": {
+   "1": 0,
+   "2": 4
+  }
+ }
+}

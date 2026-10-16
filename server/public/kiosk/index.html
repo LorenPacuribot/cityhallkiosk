@@ -10,6 +10,15 @@
 </head>
 <body>
   <div id="viewport"><main id="stage" aria-live="polite"></main></div>
+  <!-- local three.js 0.160.0 (server/node_modules) and its matching addons: no CDN, one copy of the core -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "/vendor/three/build/three.module.js",
+      "three/addons/": "/vendor/three/examples/jsm/"
+    }
+  }
+  </script>
   <script type="module" src="/kiosk/app.js"></script>
 </body>
 </html>

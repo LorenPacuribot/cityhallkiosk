@@ -1,4 +1,5 @@
 import { all, get, setting } from '../db.js';
+import { publishedNavigation } from './navigation.js';
 
 export function officeLocation(officeId) {
   return get('SELECT * FROM v_office_current_location WHERE office_id = ?', [officeId]);
@@ -76,13 +77,18 @@ export function popularServiceIds(limit = 6) {
   return [...new Set([...viewed, ...defaults])].slice(0, limit);
 }
 
+// The kiosk's offline bundle. An unknown kiosk code gives kiosk: null (the API answers 404); it is never
+// replaced by another kiosk's position.
 export function kioskBundle(kioskCode) {
   const kiosk = get(`SELECT k.id, k.code, k.name, k.floor_id, k.x, k.y, k.z, k.facing_deg, f.level AS floor_level
-                       FROM kiosks k JOIN floors f ON f.id = k.floor_id WHERE k.code = ?`, [kioskCode])
-    || get(`SELECT k.id, k.code, k.name, k.floor_id, k.x, k.y, k.z, k.facing_deg, f.level AS floor_level FROM kiosks k JOIN floors f ON f.id = k.floor_id ORDER BY k.id LIMIT 1`);
+                       FROM kiosks k JOIN floors f ON f.id = k.floor_id WHERE k.code = ?`, [kioskCode]);
+  if (!kiosk) return { kiosk: null };
   const ids = all(`SELECT id FROM services WHERE status='published' AND is_citizen_facing=1 ORDER BY id`).map(r => r.id);
+  const nav = publishedNavigation();
   return {
     content_version: Number(setting('content_version', '1')),
+    // published navigation tuple (model release, calibration, graph, opening/sign mappings); null = prototype mode
+    navigation: nav,
     generated_at: new Date().toISOString(),
     settings: Object.fromEntries(all('SELECT key, value FROM settings').map(r => [r.key, r.value])),
     kiosk,

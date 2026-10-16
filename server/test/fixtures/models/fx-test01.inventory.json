@@ -1,0 +1,29 @@
+{
+ "building_meshes": 12,
+ "building_triangles": 114,
+ "total_meshes": 13,
+ "total_triangles": 116,
+ "closed_door_roots": 1,
+ "blank_sign_faces": 2,
+ "environment_cards": 1,
+ "material_kinds": {
+  "baked": 4,
+  "pbr": 1,
+  "projected": 1
+ },
+ "viewpoints": [
+  {
+   "marker": "VIEW_FX_Front",
+   "sourceCamera": "FX_Front",
+   "verticalFov": 35,
+   "aspect": 1.7777777777777777
+  }
+ ],
+ "source_assets": [
+  {
+   "path": "fixture/09_Unity_Baked_Optimized.blend",
+   "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+   "bytes": 0
+  }
+ ]
+}

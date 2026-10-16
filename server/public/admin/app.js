@@ -67,6 +67,7 @@ const NAV = [
   ['offices', 'Offices', 'building', 'viewer'],
   ['rooms', 'Floors & rooms', 'map', 'viewer'],
   ['kiosks', 'Kiosks', 'monitor', 'viewer'],
+  ['navigation', 'Navigation', 'map', 'viewer'],
   ['announcements', 'Announcements', 'megaphone', 'viewer'],
   ['feedback', 'Feedback', 'message', 'viewer'],
   ['searches', 'Search insights', 'search', 'viewer'],
@@ -523,6 +524,82 @@ PAGES.audit = async () => {
   shell('audit', `<div class="head"><h1>Audit log</h1></div><p class="sub">Every change, who made it and when (last 200).</p>
     <div class="card"><table class="tbl"><thead><tr><th>When</th><th>Who</th><th>Action</th><th>What</th></tr></thead><tbody>
     ${d.items.map(a => `<tr><td class="small">${when(a.created_at)}</td><td>${esc(a.user_name || '—')}</td><td><span class="badge info">${esc(a.action)}</span></td><td>${esc(a.entity)} ${a.entity_id ?? ''}</td></tr>`).join('')}</tbody></table></div>`);
+};
+
+// ---------------- navigation (real building): mapping, field verification, publication
+const navBadge = s => s === 'verified' ? '<span class="badge ok">Verified</span>' : s === 'draft' ? '<span class="badge warn">Draft</span>' : '<span class="badge bad">Unresolved</span>';
+PAGES.navigation = async (version) => {
+  const d = await api('/api/admin/navigation');
+  const pub = d.publication;
+  const head = `<div class="head"><h1>Navigation</h1>${isAdmin() && pub ? `<button class="btn" data-act="navrollback">Roll back publication</button>` : ''}</div>
+    <p class="sub">Routes in the real building come only from this published graph. Nothing is shown to visitors as verified until staff have walked it and marked it here.</p>
+    <div class="card"><div class="grid g2">
+      <div><b>Published</b><div class="small">${pub ? `Model ${esc(pub.model_version)} · calibration ${esc(pub.calibration_version)} · graph ${esc(pub.navigation_version)} · ${when(pub.published_at)}` : '<span class="muted">Nothing published: kiosks use the labelled prototype routes.</span>'}</div></div>
+      <div><b>Draft-route preview</b><div class="small">${d.previewUnverified ? '<span class="badge warn">On</span> kiosks opened with <code>?preview=1</code> may show unverified routes, always labelled as drafts.' : '<span class="badge">Off</span> visitors only ever see verified routes.'}
+        ${isAdmin() ? ` <button class="btn sm" data-act="navpreview" data-on="${d.previewUnverified ? 0 : 1}">${d.previewUnverified ? 'Turn off' : 'Turn on'}</button>` : ''}</div></div>
+    </div></div>
+    <div class="card"><h2>Graph revisions</h2><table class="tbl"><thead><tr><th>Version</th><th>Model / calibration</th><th>Segments verified</th><th>Doorways verified</th><th>Status</th><th></th></tr></thead><tbody>
+    ${d.revisions.map(r => `<tr data-href="#/navigation/${esc(r.navigation_version)}"><td><b>${esc(r.navigation_version)}</b><div class="small muted">${esc(r.note || '')}</div></td>
+      <td class="small">${esc(r.model_version)}<br>${esc(r.calibration_version)} ${navBadge(d.calibrations.find(c => c.calibration_version === r.calibration_version)?.status)}</td>
+      <td class="num">${r.verified_edges} / ${r.edges}</td><td class="num">${r.verified_openings} / ${r.openings}</td><td>${statusBadge(r.status)}</td>
+      <td class="right">${isAdmin() && r.status !== 'published' ? `<button class="btn sm primary" data-act="navpublish" data-v="${esc(r.navigation_version)}">Publish</button>` : ''}</td></tr>`).join('') || '<tr><td class="muted">No graph imported yet (POST /api/admin/navigation/import with tools/model/pilot-graph.mjs output).</td></tr>'}
+    </tbody></table></div>`;
+  if (!version) return shell('navigation', head);
+
+  const [{ graph: g, report: rep, calibration: cal }, rooms] = [await api(`/api/admin/navigation/${encodeURIComponent(version)}`), (await api('/api/admin/rooms')).items];
+  S.navVersion = version; S.navGraph = g;
+  const roomOpts = sel => `<option value="">— not mapped —</option>` + rooms.map(r => `<option value="${r.id}" ${r.id === sel ? 'selected' : ''}>${esc(r.code)} · ${esc(r.name)}</option>`).join('');
+  const issues = [
+    ...rep.structural.map(s => `Structure: ${s}`),
+    rep.calibration?.status !== 'verified' ? `Calibration ${rep.calibration?.version || ''} is not verified: the 3D view is only shown for labelled draft routes.` : null,
+    ...rep.floorElevationMismatch,
+    rep.unresolvedOpenings.length ? `${rep.unresolvedOpenings.length} doorways have no confirmed office.` : null,
+    rep.unmappedSigns ? `${rep.unmappedSigns} sign faces stay blank until their doorway is verified.` : null,
+    rep.activeKiosksWithoutNode.length ? `Kiosks without a start position in this graph: ${rep.activeKiosksWithoutNode.join(', ')}.` : null,
+  ].filter(Boolean);
+  shell('navigation', `${head}
+    <div class="card"><h2>${esc(g.navigationVersion)} — what still needs checking</h2>
+      ${issues.length ? `<ul class="small">${issues.map(i => `<li>${esc(i)}</li>`).join('')}</ul>` : '<p class="small">No open issues.</p>'}
+      ${g.fieldVerificationNeeded?.length ? `<h3>Field checks</h3><ol class="small">${g.fieldVerificationNeeded.map(f => `<li>${esc(f)}</li>`).join('')}</ol>` : ''}
+    </div>
+    <div class="card"><h2>Route checks</h2><table class="tbl"><thead><tr><th>From</th><th>To doorway</th><th>Visitors (verified only)</th><th>Draft preview</th><th>Step-free</th></tr></thead><tbody>
+      ${rep.routes.map(r => `<tr><td>${esc(r.kiosk)}</td><td>${esc(r.opening)}</td><td>${r.strict === 'ok' ? '<span class="badge ok">Route</span>' : `<span class="badge bad">${esc(r.strict)}</span>`}</td><td class="small">${esc(r.preview)}</td><td>${r.stepFree === 'ok' ? '<span class="badge ok">Route</span>' : `<span class="badge">${esc(r.stepFree)}</span>`}</td></tr>`).join('') || '<tr><td class="muted">No doorway has an approach point yet.</td></tr>'}
+    </tbody></table></div>
+    <div class="card"><h2>Doorways → offices</h2><p class="sub">Map a doorway only after confirming on site which office uses it. "Verified" needs a room and an approach point; the sign faces follow.</p>
+      <table class="tbl"><thead><tr><th>Doorway</th><th>Room</th><th>Status</th><th></th></tr></thead><tbody>
+      ${g.openings.map(o => `<tr><td><b>${esc(o.openingId)}</b><div class="small muted">${esc(o.label || '')}${o.approachNodeId ? ` · approach ${esc(o.approachNodeId)}` : ' · no approach point'}</div></td>
+        <td><select data-oroom="${esc(o.openingId)}" ${isAdmin() ? '' : 'disabled'}>${roomOpts(o.roomId)}</select></td>
+        <td><select data-ostatus="${esc(o.openingId)}" ${isAdmin() ? '' : 'disabled'}>${['unresolved', 'draft', 'verified'].map(s => `<option ${o.status === s ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+        <td class="right">${isAdmin() ? `<button class="btn sm" data-act="navopening" data-o="${esc(o.openingId)}">Save</button>` : ''}</td></tr>`).join('')}
+      </tbody></table></div>
+    <div class="card"><h2>Segments</h2><p class="sub">Mark a segment verified after walking it. Step-free stays "unknown" until checked; unknown is never offered to visitors who avoid stairs.</p>
+      <table class="tbl"><thead><tr><th>Segment</th><th>Kind</th><th>Length</th><th>Verified</th><th>Step-free</th><th>Open</th></tr></thead><tbody>
+      ${g.edges.map(e => `<tr><td><b>${esc(e.id)}</b><div class="small muted">${esc(e.from)} → ${esc(e.to)}${e.label ? ` · ${esc(e.label)}` : ''}${e.public ? '' : ' · <b>not public</b>'}</div></td>
+        <td>${esc(e.kind)}</td><td class="num">${e.length_m.toFixed(1)} m</td>
+        <td>${isAdmin() ? `<button class="btn sm ${e.verified ? 'ok' : ''}" data-act="navedge" data-e="${esc(e.id)}" data-f="verified" data-val="${e.verified ? 0 : 1}">${e.verified ? 'Verified' : 'Mark verified'}</button>` : e.verified ? 'yes' : 'no'}</td>
+        <td>${e.kind === 'stairs' ? '<span class="badge">No (stairs)</span>' : isAdmin() ? `<select data-esf="${esc(e.id)}">${[['', 'unknown'], ['1', 'yes'], ['0', 'no']].map(([v, l]) => `<option value="${v}" ${String(e.step_free === null ? '' : e.step_free ? 1 : 0) === v ? 'selected' : ''}>${l}</option>`).join('')}</select>` : esc(String(e.step_free ?? 'unknown'))}</td>
+        <td>${isAdmin() ? `<button class="btn sm ${e.closed ? 'danger' : ''}" data-act="navedge" data-e="${esc(e.id)}" data-f="closed" data-val="${e.closed ? 0 : 1}">${e.closed ? 'Closed — reopen' : 'Close'}</button>` : e.closed ? 'closed' : 'open'}</td></tr>`).join('')}
+      </tbody></table></div>`);
+  document.querySelectorAll('[data-esf]').forEach(sel => sel.addEventListener('change', async () => {
+    const v = sel.value === '' ? null : sel.value === '1';
+    try { await api(`/api/admin/navigation/${encodeURIComponent(S.navVersion)}/edges/${encodeURIComponent(sel.dataset.esf)}`, { method: 'PUT', body: { step_free: v } }); toast('Saved.'); } catch (err) { toast(err.message, true); }
+  }));
+};
+ACTIONS.navpublish = async b => {
+  if (!confirmInline(b, 'Publish to kiosks?')) return;
+  try { await api(`/api/admin/navigation/${encodeURIComponent(b.dataset.v)}/publish`, { method: 'POST' }); toast('Published. Kiosks pick it up on their next sync.'); route(); } catch (err) { toast(err.message, true); }
+};
+ACTIONS.navrollback = async b => {
+  if (!confirmInline(b, 'Roll back?')) return;
+  try { const r = await api('/api/admin/navigation/rollback', { method: 'POST' }); toast(r.nowPublished ? `Back to ${r.nowPublished}.` : 'Nothing published now: kiosks use prototype routes.'); route(); } catch (err) { toast(err.message, true); }
+};
+ACTIONS.navpreview = async b => { await api('/api/admin/navigation-preview', { method: 'PUT', body: { enabled: b.dataset.on === '1' } }); route(); };
+ACTIONS.navedge = async b => {
+  try { await api(`/api/admin/navigation/${encodeURIComponent(S.navVersion)}/edges/${encodeURIComponent(b.dataset.e)}`, { method: 'PUT', body: { [b.dataset.f]: b.dataset.val === '1' } }); route(); } catch (err) { toast(err.message, true); }
+};
+ACTIONS.navopening = async b => {
+  const o = b.dataset.o, room = document.querySelector(`[data-oroom="${CSS.escape(o)}"]`).value, status = document.querySelector(`[data-ostatus="${CSS.escape(o)}"]`).value;
+  try { await api(`/api/admin/navigation/${encodeURIComponent(S.navVersion)}/openings/${encodeURIComponent(o)}`, { method: 'PUT', body: { room_id: room ? Number(room) : null, status } }); toast('Saved.'); route(); } catch (err) { toast(err.message, true); }
 };
 
 // ------------------------------------------------------------------ router

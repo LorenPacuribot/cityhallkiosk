@@ -1,0 +1,32 @@
+{
+ "schemaVersion": 1,
+ "modelVersion": "fx-test01",
+ "viewpoints": {
+  "VIEW_FX_Front": {
+   "marker": "VIEW_FX_Front",
+   "sourceCamera": "FX_Front",
+   "verticalFov": 35,
+   "aspect": 1.7777777777777777,
+   "assetId": "fx-test01:VIEW_FX_Front",
+   "targetAssetId": "fx-test01:VIEW_FX_Front_TARGET",
+   "upAssetId": "fx-test01:VIEW_FX_Front_UP",
+   "gltf": {
+    "position": [
+     0,
+     6,
+     40
+    ],
+    "target": [
+     0,
+     5.7,
+     37
+    ],
+    "up": [
+     0,
+     7,
+     40
+    ]
+   }
+  }
+ }
+}

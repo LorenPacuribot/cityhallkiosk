@@ -56,6 +56,10 @@ const T = {
     d_stairs_up: 'Take the stairs up to the {floor}.', d_stairs_down: 'Take the stairs down to the {floor}.',
     d_elevator_up: 'Take the elevator up to the {floor}.', d_elevator_down: 'Take the elevator down to the {floor}.',
     d_arrive_left: '{room} is on your left ({code}).', d_arrive_right: '{room} is on your right ({code}).', d_arrive_ahead: '{room} is straight ahead ({code}).',
+    d_landings_right: 'At each landing, turn right.', d_landings_left: 'At each landing, turn left.', d_landings_mixed: 'Follow the stairs around the landings.', d_ramp_up: 'Take the ramp up to the {floor}.', d_ramp_down: 'Take the ramp down to the {floor}.',
+    route_unavailable: 'Directions not available', route_unverified_destination: 'Step-by-step directions to this office have not been checked on site yet.', route_unverified_route: 'The way to this office has not been checked on site yet.', route_no_step_free_route: 'There is no checked step-free way to this office.', route_route_closed: 'The way to this office is closed right now.', route_disconnected: 'We cannot find a way to this office from here.', route_unknown_kiosk: 'This kiosk’s position has not been set up yet.', route_unknown_destination: 'We could not find this place.', route_offsite: 'This office is not in this building.', route_version_mismatch: 'The map is being updated. Please try again in a moment.', route_no_graph: 'Directions are not set up yet.',
+    ask_info_desk: 'Please ask at the information desk.', step_free_note: 'We never send you up stairs when you ask to avoid them.', allow_stairs: 'Show a route with stairs', avoid_stairs: 'Avoid stairs',
+    draft_route: 'Draft route: not yet checked on site. Please confirm at the information desk.', prototype_route: 'Sample route on a placeholder map, not the real building.', loading_building: 'Loading the building…', map_2d_fallback: 'Showing the 2D map.', view_walk: 'Walk view', view_overview: 'Overview', office_moved: 'Directions were updated.', pilot_doorways: 'Pilot doorways (staff preview)', pilot_doorways_note: 'Draft routes to model doorways. The office behind each door is not confirmed.', draft: 'draft', slip_directions: 'Directions from {kiosk}:',
     view_requirements: 'View requirements', none: 'None',
   },
   fil: {
@@ -107,6 +111,10 @@ const T = {
     d_stairs_up: 'Umakyat sa hagdan papunta sa {floor}.', d_stairs_down: 'Bumaba sa hagdan papunta sa {floor}.',
     d_elevator_up: 'Sumakay sa elevator paakyat sa {floor}.', d_elevator_down: 'Sumakay sa elevator pababa sa {floor}.',
     d_arrive_left: 'Ang {room} ay nasa kaliwa mo ({code}).', d_arrive_right: 'Ang {room} ay nasa kanan mo ({code}).', d_arrive_ahead: 'Ang {room} ay nasa harap mo ({code}).',
+    d_landings_right: 'Sa bawat landing, kumanan.', d_landings_left: 'Sa bawat landing, kumaliwa.', d_landings_mixed: 'Sundan ang hagdan sa mga landing.', d_ramp_up: 'Umakyat sa rampa papunta sa {floor}.', d_ramp_down: 'Bumaba sa rampa papunta sa {floor}.',
+    route_unavailable: 'Walang direksyon', route_unverified_destination: 'Hindi pa nasusuri sa lugar ang direksyon papunta sa opisinang ito.', route_unverified_route: 'Hindi pa nasusuri sa lugar ang daan papunta sa opisinang ito.', route_no_step_free_route: 'Walang nasuring daan na walang hagdan papunta sa opisinang ito.', route_route_closed: 'Sarado ngayon ang daan papunta sa opisinang ito.', route_disconnected: 'Hindi namin mahanap ang daan mula rito.', route_unknown_kiosk: 'Hindi pa naitatakda ang posisyon ng kiosk na ito.', route_unknown_destination: 'Hindi namin mahanap ang lugar na ito.', route_offsite: 'Wala sa gusaling ito ang opisinang ito.', route_version_mismatch: 'Ina-update ang mapa. Subukan muli mamaya.', route_no_graph: 'Hindi pa handa ang direksyon.',
+    ask_info_desk: 'Magtanong po sa information desk.', step_free_note: 'Hindi ka namin padadaanin sa hagdan kapag hiniling mong iwasan ito.', allow_stairs: 'Ipakita ang daan na may hagdan', avoid_stairs: 'Iwasan ang hagdan',
+    draft_route: 'Draft na daan: hindi pa nasusuri sa lugar. Kumpirmahin sa information desk.', prototype_route: 'Halimbawang daan sa pansamantalang mapa, hindi ang tunay na gusali.', loading_building: 'Nilo-load ang gusali…', map_2d_fallback: 'Ipinapakita ang 2D na mapa.', view_walk: 'Tingin habang naglalakad', view_overview: 'Tanaw mula sa itaas', office_moved: 'Na-update ang direksyon.', pilot_doorways: 'Mga pilot na pinto (para sa staff)', pilot_doorways_note: 'Draft na daan papunta sa mga pinto sa modelo. Hindi pa kumpirmado kung aling opisina ang nasa likod.', draft: 'draft', slip_directions: 'Direksyon mula sa {kiosk}:',
     view_requirements: 'Tingnan ang requirements', none: 'Wala',
   },
   ceb: {
@@ -158,6 +166,10 @@ const T = {
     d_stairs_up: 'Saka sa hagdan paingon sa {floor}.', d_stairs_down: 'Kanaog sa hagdan paingon sa {floor}.',
     d_elevator_up: 'Sakay sa elevator pasaka sa {floor}.', d_elevator_down: 'Sakay sa elevator pakanaog sa {floor}.',
     d_arrive_left: 'Ang {room} naa sa imong wala ({code}).', d_arrive_right: 'Ang {room} naa sa imong tuo ({code}).', d_arrive_ahead: 'Ang {room} naa sa imong atubangan ({code}).',
+    d_landings_right: 'Sa matag landing, liko sa tuo.', d_landings_left: 'Sa matag landing, liko sa wala.', d_landings_mixed: 'Sunda ang hagdan sa mga landing.', d_ramp_up: 'Saka sa rampa paingon sa {floor}.', d_ramp_down: 'Kanaog sa rampa paingon sa {floor}.',
+    route_unavailable: 'Walay direksyon', route_unverified_destination: 'Wala pa masusi sa lugar ang direksyon paingon niining opisinaha.', route_unverified_route: 'Wala pa masusi sa lugar ang agianan paingon niining opisinaha.', route_no_step_free_route: 'Walay nasusi nga agianan nga walay hagdan paingon niining opisinaha.', route_route_closed: 'Sirado karon ang agianan paingon niining opisinaha.', route_disconnected: 'Dili namo makit-an ang agianan gikan dinhi.', route_unknown_kiosk: 'Wala pa matakda ang posisyon niining kiosk.', route_unknown_destination: 'Dili namo makit-an kining lugara.', route_offsite: 'Wala niining bilding kining opisinaha.', route_version_mismatch: 'Gi-update ang mapa. Sulayi pag-usab unya.', route_no_graph: 'Wala pa andam ang direksyon.',
+    ask_info_desk: 'Palihug pangutana sa information desk.', step_free_note: 'Dili ka namo paagion sa hagdan kung gihangyo nimo nga likayan kini.', allow_stairs: 'Ipakita ang agianan nga adunay hagdan', avoid_stairs: 'Likayi ang hagdan',
+    draft_route: 'Draft nga agianan: wala pa masusi sa lugar. Kumpirmaha sa information desk.', prototype_route: 'Pananglitan nga agianan sa temporaryong mapa, dili ang tinuod nga bilding.', loading_building: 'Gi-load ang bilding…', map_2d_fallback: 'Gipakita ang 2D nga mapa.', view_walk: 'Tan-aw samtang naglakaw', view_overview: 'Tan-aw gikan sa ibabaw', office_moved: 'Na-update ang direksyon.', pilot_doorways: 'Mga pilot nga pultahan (para sa staff)', pilot_doorways_note: 'Draft nga agianan paingon sa mga pultahan sa modelo. Wala pa makumpirma kung unsang opisina ang naa sa luyo.', draft: 'draft', slip_directions: 'Direksyon gikan sa {kiosk}:',
     view_requirements: 'Tan-awa ang requirements', none: 'Wala',
   },
 };
@@ -169,7 +181,9 @@ export function t(key, vars = {}) {
   const s = (T[lang] && T[lang][key]) ?? T.en[key] ?? key;
   return s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] ?? `{${k}}`));
 }
+export const has = key => (T[lang] && T[lang][key]) !== undefined || T.en[key] !== undefined;
+// Translated direction sentence; falls back to the planner's own English text for a key we have no string for.
 export function direction(leg) {
   const k = `d_${leg.key}`;
-  return t(k, { d: leg.distance_m, floor: leg.floor_name, room: leg.room_name, code: leg.room_code }) || leg.text;
+  return has(k) ? t(k, { d: leg.distance_m, floor: leg.floor_name, room: leg.room_name, code: leg.room_code, n: leg.n, stairs: leg.edge_label }) : leg.text;
 }

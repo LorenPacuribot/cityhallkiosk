@@ -1,0 +1,786 @@
+{
+ "schemaVersion": 1,
+ "modelVersion": "fx-test01",
+ "nodes": [
+  {
+   "assetId": "fx-test01:STATIC_Centre_GF_Floor",
+   "sourceName": "STATIC_Centre_GF_Floor",
+   "objectType": "MESH",
+   "role": "static",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": "GF",
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": "GF",
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {},
+   "triangles": 12,
+   "boundsGltf": [
+    [
+     -20,
+     -0.2,
+     -10
+    ],
+    [
+     20,
+     0,
+     10
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_GF_Tile"
+   ]
+  },
+  {
+   "assetId": "fx-test01:STATIC_Centre_GF_WallNorth",
+   "sourceName": "STATIC_Centre_GF_WallNorth",
+   "objectType": "MESH",
+   "role": "static",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": "GF",
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": "GF",
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {},
+   "triangles": 12,
+   "boundsGltf": [
+    [
+     -20,
+     0,
+     -4.2
+    ],
+    [
+     20,
+     3.8,
+     -4
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_GF_VertexColor"
+   ]
+  },
+  {
+   "assetId": "fx-test01:STATIC_Centre_GF_WallSouth",
+   "sourceName": "STATIC_Centre_GF_WallSouth",
+   "objectType": "MESH",
+   "role": "static",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": "GF",
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": "GF",
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {},
+   "triangles": 12,
+   "boundsGltf": [
+    [
+     -20,
+     0,
+     4
+    ],
+    [
+     -2,
+     3.8,
+     4.2
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_GF_VertexColor"
+   ]
+  },
+  {
+   "assetId": "fx-test01:STATIC_Centre_GF_WallSouthR",
+   "sourceName": "STATIC_Centre_GF_WallSouthR",
+   "objectType": "MESH",
+   "role": "static",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": "GF",
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": "GF",
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {},
+   "triangles": 12,
+   "boundsGltf": [
+    [
+     2,
+     0,
+     4
+    ],
+    [
+     20,
+     3.8,
+     4.2
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_GF_VertexColor"
+   ]
+  },
+  {
+   "assetId": "fx-test01:STATIC_Centre_GF_Stair1",
+   "sourceName": "STATIC_Centre_GF_Stair1",
+   "objectType": "MESH",
+   "role": "static",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": "GF",
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": "GF",
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {},
+   "triangles": 12,
+   "boundsGltf": [
+    [
+     10,
+     0,
+     -3
+    ],
+    [
+     12,
+     1,
+     0
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_GF_VertexColor"
+   ]
+  },
+  {
+   "assetId": "fx-test01:STATIC_Centre_GF_Landing",
+   "sourceName": "STATIC_Centre_GF_Landing",
+   "objectType": "MESH",
+   "role": "static",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": "GF",
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": "GF",
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {},
+   "triangles": 12,
+   "boundsGltf": [
+    [
+     10,
+     1.9,
+     -4
+    ],
+    [
+     14,
+     2,
+     -3
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_GF_VertexColor"
+   ]
+  },
+  {
+   "assetId": "fx-test01:STATIC_Centre_F2_Floor",
+   "sourceName": "STATIC_Centre_F2_Floor",
+   "objectType": "MESH",
+   "role": "static",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": "F2",
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": "F2",
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {},
+   "triangles": 12,
+   "boundsGltf": [
+    [
+     -20,
+     3.8,
+     -10
+    ],
+    [
+     20,
+     4,
+     10
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_F2_VertexColor"
+   ]
+  },
+  {
+   "assetId": "fx-test01:STATIC_Centre_F3Roof_Slab",
+   "sourceName": "STATIC_Centre_F3Roof_Slab",
+   "objectType": "MESH",
+   "role": "static",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": "F3Roof",
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": "F3Roof",
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {},
+   "triangles": 12,
+   "boundsGltf": [
+    [
+     -20,
+     7.8,
+     -10
+    ],
+    [
+     20,
+     8,
+     10
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_F3Roof_VertexColor"
+   ]
+  },
+  {
+   "assetId": "fx-test01:STATIC_PBR_Glass",
+   "sourceName": "STATIC_PBR_Glass",
+   "objectType": "MESH",
+   "role": "static",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": null,
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": null,
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {},
+   "triangles": 2,
+   "boundsGltf": [
+    [
+     -6,
+     0.5,
+     10
+    ],
+    [
+     -2,
+     3,
+     10
+    ]
+   ],
+   "materials": [
+    "PBR_Clear_Glass"
+   ]
+  },
+  {
+   "assetId": "fx-test01:DOOR_R1-W001-D001_leaf_1",
+   "sourceName": "DOOR_R1-W001-D001_leaf_1",
+   "objectType": "EMPTY",
+   "role": "door_root",
+   "parent": null,
+   "openingId": "R1-W001-D001",
+   "dynamicFace": null,
+   "assetZone": null,
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": null,
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    -8.5,
+    0,
+    -4,
+    1
+   ],
+   "props": {
+    "openingId": "R1-W001-D001",
+    "door_state": "CLOSED; local Z pivot at hinge"
+   }
+  },
+  {
+   "assetId": "fx-test01:DOORGEO_R1-W001-D001_leaf_1",
+   "sourceName": "DOORGEO_R1-W001-D001_leaf_1",
+   "objectType": "MESH",
+   "role": "door_geometry",
+   "parent": "fx-test01:DOOR_R1-W001-D001_leaf_1",
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": null,
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": null,
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    -8.5,
+    0,
+    -4,
+    1
+   ],
+   "props": {},
+   "triangles": 12,
+   "boundsGltf": [
+    [
+     -8.5,
+     0,
+     -4.05
+    ],
+    [
+     -7.5,
+     2.2,
+     -3.95
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_GF_VertexColor"
+   ]
+  },
+  {
+   "assetId": "fx-test01:SIGNFACE_SIGN_R1-W001-D001_Face_A",
+   "sourceName": "SIGNFACE_SIGN_R1-W001-D001_Face_A",
+   "objectType": "MESH",
+   "role": "sign_face",
+   "parent": null,
+   "openingId": "R1-W001-D001",
+   "dynamicFace": "Face_A",
+   "assetZone": null,
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": null,
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {
+    "opening_id": "R1-W001-D001",
+    "dynamic_face": "Face_A",
+    "label": ""
+   },
+   "triangles": 2,
+   "boundsGltf": [
+    [
+     -9,
+     2.4,
+     -3.88
+    ],
+    [
+     -7,
+     2.9,
+     -3.88
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_GF_VertexColor"
+   ]
+  },
+  {
+   "assetId": "fx-test01:SIGNFACE_SIGN_R1-W001-D001_Face_B",
+   "sourceName": "SIGNFACE_SIGN_R1-W001-D001_Face_B",
+   "objectType": "MESH",
+   "role": "sign_face",
+   "parent": null,
+   "openingId": "R1-W001-D001",
+   "dynamicFace": "Face_B",
+   "assetZone": null,
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": null,
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {
+    "opening_id": "R1-W001-D001",
+    "dynamic_face": "Face_B",
+    "label": ""
+   },
+   "triangles": 2,
+   "boundsGltf": [
+    [
+     -9,
+     2.4,
+     -4.32
+    ],
+    [
+     -7,
+     2.9,
+     -4.32
+    ]
+   ],
+   "materials": [
+    "BAKED_Centre_GF_VertexColor"
+   ]
+  },
+  {
+   "assetId": "fx-test01:VIEW_FX_Front",
+   "sourceName": "VIEW_FX_Front",
+   "objectType": "EMPTY",
+   "role": "viewpoint",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": null,
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": null,
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    6,
+    40,
+    1
+   ],
+   "props": {}
+  },
+  {
+   "assetId": "fx-test01:VIEW_FX_Front_TARGET",
+   "sourceName": "VIEW_FX_Front_TARGET",
+   "objectType": "EMPTY",
+   "role": "viewpoint_target",
+   "parent": "fx-test01:VIEW_FX_Front",
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": null,
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": null,
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    5.7,
+    37,
+    1
+   ],
+   "props": {}
+  },
+  {
+   "assetId": "fx-test01:VIEW_FX_Front_UP",
+   "sourceName": "VIEW_FX_Front_UP",
+   "objectType": "EMPTY",
+   "role": "viewpoint_up",
+   "parent": "fx-test01:VIEW_FX_Front",
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": null,
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": null,
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    7,
+    40,
+    1
+   ],
+   "props": {}
+  },
+  {
+   "assetId": "fx-test01:ENV_FX_Card_0",
+   "sourceName": "ENV_FX_Card_0",
+   "objectType": "MESH",
+   "role": "scenery",
+   "parent": null,
+   "openingId": null,
+   "dynamicFace": null,
+   "assetZone": null,
+   "modelWing": "Centre",
+   "floorLevel": null,
+   "cutawayGroup": null,
+   "classification": "fixture",
+   "worldGltf": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+   ],
+   "props": {},
+   "triangles": 2,
+   "boundsGltf": [
+    [
+     -60,
+     -5,
+     -40
+    ],
+    [
+     60,
+     40,
+     -40
+    ]
+   ],
+   "materials": [
+    "ENVIRONMENT_Projected_Cards"
+   ]
+  }
+ ]
+}

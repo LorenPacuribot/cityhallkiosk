@@ -2,7 +2,10 @@
 // Input is plain data from the database, so the result is identical in both places.
 //
 // It walks: kiosk -> main corridor -> (stairs -> other floor -> corridor) -> door of the room.
-// The Unity build replaces this with a real NavMesh path between the same two points.
+//
+// PROTOTYPE ONLY: these corridor routes come from placeholder coordinates, not from the building. They are used
+// only while no navigation graph is published, are labelled routeSource 'prototype_placeholder', and are never
+// drawn over the real building model. Verified routing is shared/nav-graph.js.
 
 const WALK_SPEED = 1.1; // m/s
 
@@ -41,7 +44,9 @@ export function planRouteCore({ kiosk, room, floors, rooms, accessible = false, 
     const sideSign = target.x < 0 ? -1 : 1;
     const movers = rooms.filter(r => ['stairs', 'elevator', 'ramp'].includes(r.room_type) && r.is_active !== 0 && r.floor_level === start.floor);
     const usable = movers.filter(c => !accessible || c.room_type !== 'stairs');
-    stairs = (usable.length ? usable : movers).sort((a, b) => Math.abs(a.x - sideSign * 10) - Math.abs(b.x - sideSign * 10))[0] || null;
+    // a step-free request never falls back to stairs
+    if (accessible && !usable.length) return { status: 'no_route', reason: 'NO_STEP_FREE_ROUTE', message: 'There is no step-free way to this floor.', routePreference: 'step_free', originKioskCode: kiosk.code };
+    stairs = usable.sort((a, b) => Math.abs(a.x - sideSign * 10) - Math.abs(b.x - sideSign * 10))[0] || null;
   }
 
   push({ x: start.x, y: start.y, z: corridorZ, floor: start.floor }, 'corridor');
@@ -91,6 +96,8 @@ export function planRouteCore({ kiosk, room, floors, rooms, accessible = false, 
     afterFloor = false;
   }
   return {
+    status: 'ok', routeSource: 'prototype_placeholder', verification: 'unverified',
+    routePreference: accessible ? 'step_free' : 'any', originKioskCode: kiosk.code, modelVersion: null, navigationVersion: null,
     from: { kiosk_code: kiosk.code, floor_level: start.floor, x: start.x, y: start.y, z: start.z },
     to: { room_id: room.id, room_code: room.code, room_name: room.name, floor_level: room.floor_level, floor_name: room.floor_name || floorName(room.floor_level), ...target, facing_deg: room.facing_deg },
     waypoints: path.map(({ x, y, z, floor, label }) => ({ x, y, z, floor, label })),

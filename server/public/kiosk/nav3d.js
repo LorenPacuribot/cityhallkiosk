@@ -1,12 +1,43 @@
-// 3D "show me the way" preview for the web kiosk.
+// 3D "show me the way" preview for the web kiosk: the public navigation adapter.
 //
-// This is a GREYBOX built at runtime from the database (floors + rooms with x/y/z),
-// so when an admin moves a room or an office, the 3D scene follows on the next bundle sync.
-// The production Unity build swaps this greybox for the real City Hall model; the
-// coordinates are the same (metres, Unity convention: Y up, +X right, +Z into the building).
+//   const ctrl = await createNav3D(container, bundle, route, { signal, onProgress, onArrive, onLoadProgress });
+//   ctrl.pause() / replay() / skip() / dispose() / setCameraMode('overview'|'eye') / updateContent(bundle)
 //
-// three.js is right-handed, Unity is left-handed, so we map Unity (x, y, z) -> three (x, y, -z).
-import * as THREE from '/vendor/three/build/three.module.js';
+// Routes from the published navigation graph play inside the REAL building (three/building-viewer.js), loaded
+// once per session. Prototype routes (no graph published) keep the database GREYBOX below: they come from
+// placeholder coordinates and must never be drawn over the real building, where they would cross walls.
+// onProgress(fraction, canonicalPosition, directionIndex) always reports canonical database coordinates.
+import * as THREE from 'three';
+
+export class Nav3DError extends Error { constructor(message, code) { super(message); this.code = code; } }
+
+export async function createNav3D(container, bundle, route, { signal, onProgress, onArrive, onLoadProgress, cameraMode, onFallback } = {}) {
+  const nav = bundle.navigation;
+  if (route.routeSource !== 'navigation_graph' || !nav?.model) return createGreyboxNav(container, bundle, route, { onProgress, onArrive });
+  if (nav.graph?.modelVersion !== nav.model.modelVersion) throw new Nav3DError('Navigation graph and model release do not match.', 'VERSION_MISMATCH');
+  const { getViewer } = await import('./three/building-viewer.js');
+  const viewer = getViewer();
+  // a draft calibration is acceptable only for a route that is itself labelled unverified
+  await viewer.ensureModel(nav, { signal, onLoadProgress, allowDraftCalibration: route.verification !== 'verified' });
+  if (signal?.aborted) throw Object.assign(new Error('Navigation was cancelled.'), { name: 'AbortError', code: 'ABORTED' });
+  viewer.attach(container);
+  viewer.updateContent(bundle);
+  const player = viewer.playRoute(route, { onProgress, onArrive, cameraMode });
+  // WebGL context lost mid-route (driver reset, GPU memory pressure): hand the route to the 2D map
+  const off = viewer.on(ev => { if (ev.type === 'contextlost') onFallback?.(Object.assign(new Error('WebGL context lost'), { code: 'CONTEXT_LOST' })); });
+  return {
+    kind: 'building',
+    draft: route.verification !== 'verified' || viewer.calibration?.status !== 'verified',
+    pause: () => player.pause(),
+    replay: () => player.replay(),
+    skip: () => player.skip(),
+    setCameraMode: m => player.setCameraMode(m),
+    updateContent: b => viewer.updateContent(b),
+    info: () => viewer.info(),
+    // releases this route only: the building, textures and WebGL context stay for the next route
+    dispose() { off(); player.dispose(); viewer.detach(); },
+  };
+}
 
 const U = (x, y, z) => new THREE.Vector3(x, y, -z);
 const COLORS = {
@@ -19,9 +50,10 @@ const CAM_HEIGHT = 26;   // minimum camera height (m) above the walker
 const LOOKAHEAD_M = 24;  // how far ahead on the route the camera keeps in view (m)
 const CAM_MARGIN = 6;    // space kept around the walker and the look-ahead point (m)
 
-export function createNav3D(container, bundle, route, { onProgress, onArrive } = {}) {
+// Prototype greybox built from the database rooms (placeholder coordinates). Used only for prototype routes.
+export function createGreyboxNav(container, bundle, route, { onProgress, onArrive } = {}) {
   // ---------- renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: false });
   if (!renderer.getContext()) throw new Error('WebGL unavailable');
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true;
@@ -194,6 +226,7 @@ export function createNav3D(container, bundle, route, { onProgress, onArrive } =
   function roundRect(x, l, t, w, h, r) { x.beginPath(); x.roundRect ? x.roundRect(l, t, w, h, r) : x.rect(l, t, w, h); }
 
   return {
+    kind: 'greybox', draft: true,
     pause() { paused = !paused; return paused; },
     replay() { elapsed = 0; arrived = false; paused = false; },
     skip() { elapsed = total; },
