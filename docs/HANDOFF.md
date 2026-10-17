@@ -12,7 +12,7 @@
 
 | | |
 |---|---|
-| Updated | 2026-10-17, by Claude (after Codex's release-readiness pass) |
+| Updated | 2026-10-17, by Claude (office logos, arrival map, CSWDO bench moved → model r09-web03) |
 | Repo | `Desktop\cityhallkiosk_codex\City Hall Code\cityhallkiosk`, GitHub `LorenPacuribot/cityhallkiosk` (this repo uses the LorenPacuribot account) |
 | Branch | `codex/3d-building-r09` (not merged to `main`) |
 | Last commit | `85ce67f`. Release-readiness changes after it are uncommitted. No commit/push requested. |
@@ -159,6 +159,11 @@ Product brief (users, purpose, principles, brand rules): [`PRODUCT.md`](../PRODU
 - **Destination labels name the office, not "Room N" (owner, 2026-10-17):** 3D beacon (`route-player.js`), route-map door label (`route-map.js`, kiosk + phone), arrival door illustration and `arrived_body`. "Room N" stays on door signs, office pages and the route info line. Phone page no longer prints "Room Room N" (`roomLabel` in `m/app.js`). Arrival check icon centred.
 
 ### In progress
+
+**Done 2026-10-17 (owner): bench moved off the CSWDO door; the model release is now `r09-web03`.**
+- `GF_WaitingBench_Wall_03` covered door `R1-W002-D108` (CSWDO, Room 2; opening x -35.225..-34.175). Moved +2.0 m along the wall to x -32.89..-31.11 (1.29 m clear of the door, 1.22 m before the next bench) in the model workspace's `09_Bake_Working.blend` (`scripts/move_cswdo_bench.py`, receipt `bench_move/move_receipt.json`). Rebaked West_GF + West_GF_Detail only; `web_source_r09/Rebake_Scope.json` lists the 14 reused maps, and `assemble_baked_export.py` now accepts reused maps only for that exact working-file hash. Assemble, validate and texture checks passed. New delivery .blend SHA-256 `0776458a…fbb5`. Backup of all prior files: `backups/r09-before-cswdo-bench-move-20261017/`.
+- Kiosk: release `server/public/models/cityhall/r09-web03` (validated ok), plans `models/plans/r09-web03`, `source-inventory.json` hashes updated (6 files + 2 lightmap stats). Draft graph regenerated as `r09-nav-draft-4` / calibration `r09-cal-draft-2` (identical apart from version labels). Room guide retagged to r09-web03 (all 24 doorway ids exist unchanged). `applyPlanReferenceRooms` now also links an existing room's doorways for a newer graph revision (drafts only, offices untouched); tested. Tests: 62/62 unit, 23/23 browser. Evidence: `.impeccable/review/bench-moved-*.png`.
+- **Live DB not changed:** its unpublished draft rows still reference `r09-web02` / `r09-nav-draft-3` / `r09-cal-draft-1`, so `r09-web02` stays on disk. When live navigation is set up, import `r09-nav-draft-4` (back up first) so the kiosk loads r09-web03.
 
 **Software pass completed: public deployment readiness (owner's eight-point request).** The checklist below records verified completion. Remaining work is the public-launch gates under **Next** and `RELEASE_QA.md`. Current implementation is uncommitted. The owner explicitly wants these checklists kept current so another AI account can resume.
 

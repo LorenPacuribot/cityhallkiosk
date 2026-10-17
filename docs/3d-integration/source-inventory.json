@@ -98,9 +98,9 @@
         1024
       ],
       "range": 4,
-      "maximum": 3.0304203033447266,
-      "mean_absolute_error": 0.000604218861553818,
-      "max_absolute_error": 0.00575709342956543,
+      "maximum": 3.030423164367676,
+      "mean_absolute_error": 0.0006043959292583168,
+      "max_absolute_error": 0.005753755569458008,
       "packed_half_float_max_error": 0.0009765625
     },
     {
@@ -170,10 +170,10 @@
         1024
       ],
       "range": 8,
-      "maximum": 4.539184093475342,
-      "mean_absolute_error": 0.000583349377848208,
-      "max_absolute_error": 0.008257389068603516,
-      "packed_half_float_max_error": 0.0019407272338867188
+      "maximum": 4.539371967315674,
+      "mean_absolute_error": 0.0005827830755151808,
+      "max_absolute_error": 0.008289098739624023,
+      "packed_half_float_max_error": 0.0019087791442871094
     },
     {
       "zone": "Centre_GF_Detail",
@@ -257,13 +257,15 @@
   "source_assets": [
     {
       "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\web_source_r09\\09_Baked_Optimized.blend",
-      "bytes": 91389023,
-      "sha256": "6b861ed900092188ac6ff359f4c003d72b437cc375baff6819baa6bd6d648c37"
+      "bytes": 91389444,
+      "sha256": "0776458a81daa5c68b8c66335a7aa85ed43b04d1e5dc5c16b63942121257fbb5",
+      "revised": "2026-10-17: CSWDO-door bench moved +2.0 m (West_GF + West_GF_Detail rebaked); see model workspace bench_move/move_receipt.json"
     },
     {
       "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\web_source_r09\\Export_Report.json",
-      "bytes": 47540,
-      "sha256": "0231d3c55adc519b0804f9614459a377437b1593386b304343bf08e62a9a8f22"
+      "bytes": 47505,
+      "sha256": "c0c27c52ff9d1cbef2c0cb6a807db7fe97ca93df4ebda6a1451f501aafefce24",
+      "revised": "2026-10-17: CSWDO-door bench moved +2.0 m (West_GF + West_GF_Detail rebaked); see model workspace bench_move/move_receipt.json"
     },
     {
       "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\web_source_r09\\Validation_Report.json",
@@ -272,13 +274,15 @@
     },
     {
       "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\web_source_r09\\Texture_Validation.json",
-      "bytes": 5274,
-      "sha256": "c4bc0316d5821ef39660cfeba4f5c45dd485a7bed3f302ecbf10e9f599ed8c77"
+      "bytes": 5276,
+      "sha256": "38cc84e22dd99fc58d4fd001e749ff789aee6ac8fdc5024ce9a772b4894d77ff",
+      "revised": "2026-10-17: CSWDO-door bench moved +2.0 m (West_GF + West_GF_Detail rebaked); see model workspace bench_move/move_receipt.json"
     },
     {
       "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\web_source_r09\\Bake_Manifest.json",
-      "bytes": 2393998,
-      "sha256": "56a299e7c6e53f09016720bb63c16a96e802bfc7464c71732d9810e3ad869cbd"
+      "bytes": 2112915,
+      "sha256": "0c3f8b9bcb59657803519b4f7b53b5d655ed3c173d4fe709b9d9cf358121c534",
+      "revised": "2026-10-17: CSWDO-door bench moved +2.0 m (West_GF + West_GF_Detail rebaked); see model workspace bench_move/move_receipt.json"
     },
     {
       "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\web_source_r09\\sidecars\\MaterialBindings.json",
@@ -388,12 +392,14 @@
     {
       "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\web_source_r09\\sidecars\\Textures\\West_GF_Detail_RGBM.png",
       "bytes": 2754784,
-      "sha256": "b9e3bc38c5da9800ffea30284d2cb7a954ce200625163316f224605d80267794"
+      "sha256": "6637b05fd0841d1ba908040f518b001fdf44a4f9ae7fc01cde8e7c51cf1f454f",
+      "revised": "2026-10-17: CSWDO-door bench moved +2.0 m (West_GF + West_GF_Detail rebaked); see model workspace bench_move/move_receipt.json"
     },
     {
       "path": "C:\\Users\\Administrator\\Documents\\ChatGPT\\CityHallKiosk_Codex\\web_source_r09\\sidecars\\Textures\\West_GF_RGBM.png",
-      "bytes": 2665201,
-      "sha256": "791caa39545c23a47009542b17cb73d64c0ddefc153ee0a32345c8440276b98b"
+      "bytes": 2665018,
+      "sha256": "9e8e518ba3f812f674d9320522d23eda90401a7ba2dcb0c71d28e7f6f6d5a99d",
+      "revised": "2026-10-17: CSWDO-door bench moved +2.0 m (West_GF + West_GF_Detail rebaked); see model workspace bench_move/move_receipt.json"
     }
   ],
   "code_baseline": [

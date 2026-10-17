@@ -3,7 +3,7 @@
 // viewer in headless Edge, and writes them with plans.json to <models>/plans/<modelVersion>/.
 // The kiosk minimap, the 2D fallback, the map screen and the phone page all use these images.
 //
-//   node tools/model/render-plans.mjs                       (r09 pilot graph -> server/public/models/plans/r09-web02/)
+//   node tools/model/render-plans.mjs                       (r09 pilot graph -> server/public/models/plans/r09-web03/)
 //   node tools/model/render-plans.mjs --fixture             (test fixture -> server/test/fixtures/models/plans/fx-test01/)
 //   options: --graph <file> --bounds minX,maxX,minZ,maxZ --px <pixels per metre> --cut <m above floor> --force
 //

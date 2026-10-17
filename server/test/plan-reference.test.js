@@ -53,4 +53,13 @@ test("the owner's room guide places every office, links its doorways as drafts, 
   run("UPDATE office_locations SET valid_to = datetime('now') WHERE office_id = ? AND valid_to IS NULL", [office.id]);
   assert.deepEqual(applyPlanReferenceRooms(graph), []);
   assert.equal(get('SELECT count(*) AS n FROM office_locations WHERE office_id = ? AND valid_to IS NULL', [office.id]).n, 0);
+
+  // a newer graph revision of the same model gets the existing rooms' doorways as drafts; offices stay where they are
+  const next = { ...graph, navigationVersion: graph.navigationVersion + '-next' };
+  importGraph(next, null);
+  assert.deepEqual(applyPlanReferenceRooms(next), []);
+  const rev = revisionByVersion(next.navigationVersion).id;
+  const room2 = get("SELECT id FROM rooms WHERE code = 'Room 2'").id;
+  assert.deepEqual(get('SELECT room_id, status FROM room_openings WHERE revision_id = ? AND opening_id = ?', [rev, 'R1-W002-D108']), { room_id: room2, status: 'draft' });
+  assert.equal(get('SELECT count(*) AS n FROM office_locations WHERE office_id = ? AND valid_to IS NULL', [office.id]).n, 0, 'later moves kept');
 });

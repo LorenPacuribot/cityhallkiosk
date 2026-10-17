@@ -1,9 +1,9 @@
 {
  "schemaVersion": 1,
- "modelVersion": "r09-web02",
- "navigationVersion": "r09-nav-draft-3",
+ "modelVersion": "r09-web03",
+ "navigationVersion": "r09-nav-draft-4",
  "status": "draft",
- "calibrationVersion": "r09-cal-draft-1",
+ "calibrationVersion": "r09-cal-draft-2",
  "note": "Draft pilot graph from model evidence. No edge is verified; step-free status is unknown everywhere. Do not publish as verified directions.",
  "floors": [
   {
@@ -109,7 +109,7 @@
     -5,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W002-D108 x, on the GF-L corridor line y=-5.0 (CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified))",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W002-D108 x, on the GF-L corridor line y=-5.0 (CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified))",
    "verified": false
   },
   {
@@ -125,7 +125,7 @@
     -3.8,
     0
    ],
-   "source": "1.3 m in front of door leaf centre (-34.7,-2.5) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.3 m in front of door leaf centre (-34.7,-2.5) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -189,7 +189,7 @@
     -4,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W038-D133 x, on the GF-R corridor line y=-4.0 (CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified))",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W038-D133 x, on the GF-R corridor line y=-4.0 (CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified))",
    "verified": false
   },
   {
@@ -205,7 +205,7 @@
     -3.5,
     0
    ],
-   "source": "1 m in front of door leaf centre (27.0,-2.5) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1 m in front of door leaf centre (27.0,-2.5) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -317,7 +317,7 @@
     -5,
     4
    ],
-   "source": "on the 2F-L corridor line, 1.726 m from door leaf centre (-25.9,-6.726) in server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "on the 2F-L corridor line, 1.726 m from door leaf centre (-25.9,-6.726) in server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -365,7 +365,7 @@
     -4.75,
     4
    ],
-   "source": "on the 2F-R corridor, 1.976 m from door leaf centre (26.1,-6.726) in server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "on the 2F-R corridor, 1.976 m from door leaf centre (26.1,-6.726) in server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -381,7 +381,7 @@
     -5,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W023-D124 x, on the GF-L walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W023-D124 x, on the GF-L walking line",
    "verified": false
   },
   {
@@ -397,7 +397,7 @@
     -6.526,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (-27,-7.526) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (-27,-7.526) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -413,7 +413,7 @@
     -5,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W001-D106 x, on the GF-L walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W001-D106 x, on the GF-L walking line",
    "verified": false
   },
   {
@@ -429,7 +429,7 @@
     -3.526,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (-40.9,-2.526) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (-40.9,-2.526) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -445,7 +445,7 @@
     -5,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W023-D123 x, on the GF-L walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W023-D123 x, on the GF-L walking line",
    "verified": false
   },
   {
@@ -461,7 +461,7 @@
     -6.526,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (-41.5,-7.526) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (-41.5,-7.526) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -477,7 +477,7 @@
     -5,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W001-D105 x, on the GF-L walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W001-D105 x, on the GF-L walking line",
    "verified": false
   },
   {
@@ -493,7 +493,7 @@
     -3.526,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (-45.7,-2.526) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (-45.7,-2.526) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -509,7 +509,7 @@
     -5,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W023-D122 x, on the GF-L walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W023-D122 x, on the GF-L walking line",
    "verified": false
   },
   {
@@ -525,7 +525,7 @@
     -6.526,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (-48.2,-7.526) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (-48.2,-7.526) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -541,7 +541,7 @@
     -4,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W057-D149 x, on the GF-R walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W057-D149 x, on the GF-R walking line",
    "verified": false
   },
   {
@@ -557,7 +557,7 @@
     -6.526,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (22.7,-7.526) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (22.7,-7.526) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -573,7 +573,7 @@
     -4,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W057-D150 x, on the GF-R walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W057-D150 x, on the GF-R walking line",
    "verified": false
   },
   {
@@ -589,7 +589,7 @@
     -6.526,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (25.6,-7.526) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (25.6,-7.526) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -605,7 +605,7 @@
     -4,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W038-D134 x, on the GF-R walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W038-D134 x, on the GF-R walking line",
    "verified": false
   },
   {
@@ -621,7 +621,7 @@
     -3.526,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (33.2,-2.526) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (33.2,-2.526) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -637,7 +637,7 @@
     -4,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W057-D151 x, on the GF-R walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W057-D151 x, on the GF-R walking line",
    "verified": false
   },
   {
@@ -653,7 +653,7 @@
     -6.5,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (41.4,-7.5) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (41.4,-7.5) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -669,7 +669,7 @@
     -4,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W057-D152 x, on the GF-R walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W057-D152 x, on the GF-R walking line",
    "verified": false
   },
   {
@@ -685,7 +685,7 @@
     -6.5,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (49,-7.5) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (49,-7.5) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -701,7 +701,7 @@
     -4,
     0
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W039-D136 x, on the GF-R walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R1-W039-D136 x, on the GF-R walking line",
    "verified": false
   },
   {
@@ -717,7 +717,7 @@
     -3.5,
     0
    ],
-   "source": "1.0 m in front of door leaf centre (50.8,-2.5) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (50.8,-2.5) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -733,7 +733,7 @@
     -5,
     4
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W002-D188 x, on the F2-L walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W002-D188 x, on the F2-L walking line",
    "verified": false
   },
   {
@@ -749,7 +749,7 @@
     -4.326,
     4
    ],
-   "source": "1.0 m in front of door leaf centre (-25.2,-3.326) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (-25.2,-3.326) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -765,7 +765,7 @@
     -5,
     4
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W001-D187 x, on the F2-L walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W001-D187 x, on the F2-L walking line",
    "verified": false
   },
   {
@@ -781,7 +781,7 @@
     -4.326,
     4
    ],
-   "source": "1.0 m in front of door leaf centre (-40.1,-3.326) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (-40.1,-3.326) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -797,7 +797,7 @@
     -5,
     4
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W032-D209 x, on the F2-L walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W032-D209 x, on the F2-L walking line",
    "verified": false
   },
   {
@@ -813,7 +813,7 @@
     -5.726,
     4
    ],
-   "source": "1.0 m in front of door leaf centre (-42.1,-6.726) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (-42.1,-6.726) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -829,7 +829,7 @@
     -5,
     4
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W032-D208 x, on the F2-L walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W032-D208 x, on the F2-L walking line",
    "verified": false
   },
   {
@@ -845,7 +845,7 @@
     -5.726,
     4
    ],
-   "source": "1.0 m in front of door leaf centre (-46.3,-6.726) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (-46.3,-6.726) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -861,7 +861,7 @@
     -4.5,
     4
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W041-D217 x, on the F2-R walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W041-D217 x, on the F2-R walking line",
    "verified": false
   },
   {
@@ -877,7 +877,7 @@
     -3.326,
     4
    ],
-   "source": "1.0 m in front of door leaf centre (40,-2.326) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (40,-2.326) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -893,7 +893,7 @@
     -4.5,
     4
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W057-D230 x, on the F2-R walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W057-D230 x, on the F2-R walking line",
    "verified": false
   },
   {
@@ -909,7 +909,7 @@
     -5.726,
     4
    ],
-   "source": "1.0 m in front of door leaf centre (42,-6.726) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (42,-6.726) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -925,7 +925,7 @@
     -4.5,
     4
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W057-D231 x, on the F2-R walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W057-D231 x, on the F2-R walking line",
    "verified": false
   },
   {
@@ -941,7 +941,7 @@
     -5.726,
     4
    ],
-   "source": "1.0 m in front of door leaf centre (49.2,-6.726) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (49.2,-6.726) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -957,7 +957,7 @@
     -4,
     4
    ],
-   "source": "walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web02/floor-2.webp",
+   "source": "walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web03/floor-2.webp",
    "verified": false
   },
   {
@@ -973,7 +973,7 @@
     -4,
     4
    ],
-   "source": "walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web02/floor-2.webp",
+   "source": "walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web03/floor-2.webp",
    "verified": false
   },
   {
@@ -989,7 +989,7 @@
     -4.77,
     4
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W002-D189 x, on the F2-L walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W002-D189 x, on the F2-L walking line",
    "verified": false
   },
   {
@@ -1005,7 +1005,7 @@
     -4.326,
     4
    ],
-   "source": "1.0 m in front of door leaf centre (-15.5,-3.326) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (-15.5,-3.326) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -1021,7 +1021,7 @@
     -4,
     4
    ],
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W071-D241 x, on the F2-C walking line",
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y) R2-W071-D241 x, on the F2-C walking line",
    "verified": false
   },
   {
@@ -1037,7 +1037,7 @@
     -3.5,
     4
    ],
-   "source": "1.0 m in front of door leaf centre (3.7,-2.5) from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
+   "source": "1.0 m in front of door leaf centre (3.7,-2.5) from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)",
    "verified": false
   },
   {
@@ -1212,7 +1212,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-LOBBY-RSTAIRAPP",
@@ -1321,7 +1321,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-LSTAIRAPP-LFOOT",
@@ -1438,7 +1438,7 @@
    "step_free": false,
    "closed": false,
    "label": "left main stairs",
-   "source": "CityHallKiosk_Codex/front_facade_review/Mesh_Inventory.json lo/hi (stair flights and landings) L0_first/cross/return_tread bounds: pitch lines above tread leading edges, flat landings z 1.345 and 2.679; checked against r09-web02 GLB vertical rays"
+   "source": "CityHallKiosk_Codex/front_facade_review/Mesh_Inventory.json lo/hi (stair flights and landings) L0_first/cross/return_tread bounds: pitch lines above tread leading edges, flat landings z 1.345 and 2.679; checked against r09-web03 GLB vertical rays"
   },
   {
    "id": "E-RSTAIRAPP-RFOOT",
@@ -1555,7 +1555,7 @@
    "step_free": false,
    "closed": false,
    "label": "right main stairs",
-   "source": "CityHallKiosk_Codex/front_facade_review/Mesh_Inventory.json lo/hi (stair flights and landings) R0_first/cross/return_tread bounds: pitch lines above tread leading edges, flat landings z 1.012 and 2.679; checked against r09-web02 GLB vertical rays"
+   "source": "CityHallKiosk_Codex/front_facade_review/Mesh_Inventory.json lo/hi (stair flights and landings) R0_first/cross/return_tread bounds: pitch lines above tread leading edges, flat landings z 1.012 and 2.679; checked against r09-web03 GLB vertical rays"
   },
   {
    "id": "E-F2LTOP-FOYER",
@@ -1685,7 +1685,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-L-C1-GF-L-D124",
@@ -1711,7 +1711,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-L-D124-GF-L-D108",
@@ -1737,7 +1737,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-GF-L-D106-APP",
@@ -1763,7 +1763,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-L-D108-GF-L-D106",
@@ -1789,7 +1789,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-GF-L-D123-APP",
@@ -1815,7 +1815,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-L-D106-GF-L-D123",
@@ -1841,7 +1841,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-GF-L-D105-APP",
@@ -1867,7 +1867,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-L-D123-GF-L-D105",
@@ -1893,7 +1893,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-GF-L-D122-APP",
@@ -1919,7 +1919,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-L-D105-GF-L-D122",
@@ -1945,7 +1945,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-GF-R-D149-APP",
@@ -1971,7 +1971,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-R-C1-GF-R-D149",
@@ -1997,7 +1997,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-GF-R-D150-APP",
@@ -2023,7 +2023,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-R-D149-GF-R-D150",
@@ -2049,7 +2049,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-R-D150-GF-R-D133",
@@ -2075,7 +2075,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-GF-R-D134-APP",
@@ -2101,7 +2101,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-R-D133-GF-R-D134",
@@ -2127,7 +2127,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-GF-R-D151-APP",
@@ -2153,7 +2153,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-R-D134-GF-R-D151",
@@ -2179,7 +2179,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-GF-R-D152-APP",
@@ -2205,7 +2205,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-R-D151-GF-R-D152",
@@ -2231,7 +2231,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-GF-R-D136-APP",
@@ -2257,7 +2257,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-GF-R-D152-GF-R-D136",
@@ -2283,7 +2283,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-F2-L-D188-APP",
@@ -2309,7 +2309,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-F2-L-C1-F2-L-D188",
@@ -2335,7 +2335,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-F2-L-D188-F2-L-D210",
@@ -2361,7 +2361,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-F2-L-D187-APP",
@@ -2387,7 +2387,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-F2-L-D210-F2-L-D187",
@@ -2413,7 +2413,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-F2-L-D209-APP",
@@ -2439,7 +2439,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-F2-L-D187-F2-L-D209",
@@ -2465,7 +2465,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-F2-L-D208-APP",
@@ -2491,7 +2491,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-F2-L-D209-F2-L-D208",
@@ -2517,7 +2517,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-F2-R-C1-F2-R-D229",
@@ -2543,7 +2543,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4.5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4.5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-F2-R-D217-APP",
@@ -2569,7 +2569,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-F2-R-D229-F2-R-D217",
@@ -2595,7 +2595,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4.5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4.5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-F2-R-D230-APP",
@@ -2621,7 +2621,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-F2-R-D217-F2-R-D230",
@@ -2647,7 +2647,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4.5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4.5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-F2-R-D231-APP",
@@ -2673,7 +2673,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-F2-R-D230-F2-R-D231",
@@ -2699,7 +2699,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4.5; doorway x from server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified) corridor line y=-4.5; doorway x from server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-F2-L-D189-APP",
@@ -2725,7 +2725,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "E-F2-C-D241-APP",
@@ -2751,7 +2751,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
+   "source": "server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)"
   },
   {
    "id": "C-F2-L-FOYER-F2-L-D189",
@@ -2777,7 +2777,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified); walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web02/floor-2.webp"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified); walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web03/floor-2.webp"
   },
   {
    "id": "C-F2-L-D189-F2-C-W",
@@ -2803,7 +2803,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web02/floor-2.webp"
+   "source": "walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web03/floor-2.webp"
   },
   {
    "id": "C-F2-C-W-F2-C-D241",
@@ -2829,7 +2829,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web02/floor-2.webp"
+   "source": "walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web03/floor-2.webp"
   },
   {
    "id": "C-F2-C-D241-F2-C-E",
@@ -2855,7 +2855,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web02/floor-2.webp"
+   "source": "walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web03/floor-2.webp"
   },
   {
    "id": "C-F2-C-E-F2-R-FOYER",
@@ -2881,7 +2881,7 @@
    "step_free": null,
    "closed": false,
    "label": null,
-   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified); walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web02/floor-2.webp"
+   "source": "CityHallKiosk_Codex/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified); walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web03/floor-2.webp"
   },
   {
    "id": "E-RFOYER-LIFT",
@@ -3034,8 +3034,8 @@
   }
  ],
  "calibration": {
-  "modelVersion": "r09-web02",
-  "calibrationVersion": "r09-cal-draft-1",
+  "modelVersion": "r09-web03",
+  "calibrationVersion": "r09-cal-draft-2",
   "status": "draft",
   "units": "metres",
   "description": "Model-derived draft. Origin = midpoint of the two entrance doorways on the facade line; NOT surveyed.",
@@ -3092,272 +3092,272 @@
  ],
  "signs": [
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W001-D187_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W001-D187_Face_B",
    "openingId": "R2-W001-D187",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W001-D187_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W001-D187_Face_A",
    "openingId": "R2-W001-D187",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W002-D188_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W002-D188_Face_B",
    "openingId": "R2-W002-D188",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W002-D188_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W002-D188_Face_A",
    "openingId": "R2-W002-D188",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D208_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W032-D208_Face_B",
    "openingId": "R2-W032-D208",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D208_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W032-D208_Face_A",
    "openingId": "R2-W032-D208",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D209_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W032-D209_Face_B",
    "openingId": "R2-W032-D209",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D209_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W032-D209_Face_A",
    "openingId": "R2-W032-D209",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D210_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W032-D210_Face_B",
    "openingId": "R2-W032-D210",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W032-D210_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W032-D210_Face_A",
    "openingId": "R2-W032-D210",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W040-D216_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W040-D216_Face_B",
    "openingId": "R2-W040-D216",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W040-D216_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W040-D216_Face_A",
    "openingId": "R2-W040-D216",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W041-D217_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W041-D217_Face_B",
    "openingId": "R2-W041-D217",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W041-D217_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W041-D217_Face_A",
    "openingId": "R2-W041-D217",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D229_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W057-D229_Face_B",
    "openingId": "R2-W057-D229",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D229_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W057-D229_Face_A",
    "openingId": "R2-W057-D229",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D230_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W057-D230_Face_B",
    "openingId": "R2-W057-D230",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D230_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W057-D230_Face_A",
    "openingId": "R2-W057-D230",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D231_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W057-D231_Face_B",
    "openingId": "R2-W057-D231",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W057-D231_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W057-D231_Face_A",
    "openingId": "R2-W057-D231",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W001-D105_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W001-D105_Face_B",
    "openingId": "R1-W001-D105",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W001-D105_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W001-D105_Face_A",
    "openingId": "R1-W001-D105",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W001-D106_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W001-D106_Face_B",
    "openingId": "R1-W001-D106",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W001-D106_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W001-D106_Face_A",
    "openingId": "R1-W001-D106",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W002-D108_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W002-D108_Face_B",
    "openingId": "R1-W002-D108",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W002-D108_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W002-D108_Face_A",
    "openingId": "R1-W002-D108",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D122_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W023-D122_Face_B",
    "openingId": "R1-W023-D122",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D122_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W023-D122_Face_A",
    "openingId": "R1-W023-D122",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D123_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W023-D123_Face_B",
    "openingId": "R1-W023-D123",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D123_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W023-D123_Face_A",
    "openingId": "R1-W023-D123",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D124_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W023-D124_Face_B",
    "openingId": "R1-W023-D124",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W023-D124_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W023-D124_Face_A",
    "openingId": "R1-W023-D124",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W076-D166_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W076-D166_Face_B",
    "openingId": "R1-W076-D166",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W076-D166_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W076-D166_Face_A",
    "openingId": "R1-W076-D166",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W082-D171_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W082-D171_Face_B",
    "openingId": "R1-W082-D171",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W082-D171_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W082-D171_Face_A",
    "openingId": "R1-W082-D171",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W038-D133_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W038-D133_Face_B",
    "openingId": "R1-W038-D133",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W038-D133_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W038-D133_Face_A",
    "openingId": "R1-W038-D133",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W038-D134_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W038-D134_Face_B",
    "openingId": "R1-W038-D134",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W038-D134_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W038-D134_Face_A",
    "openingId": "R1-W038-D134",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W039-D136_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W039-D136_Face_B",
    "openingId": "R1-W039-D136",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W039-D136_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W039-D136_Face_A",
    "openingId": "R1-W039-D136",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D149_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W057-D149_Face_B",
    "openingId": "R1-W057-D149",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D149_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W057-D149_Face_A",
    "openingId": "R1-W057-D149",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D150_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W057-D150_Face_B",
    "openingId": "R1-W057-D150",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D150_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W057-D150_Face_A",
    "openingId": "R1-W057-D150",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D151_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W057-D151_Face_B",
    "openingId": "R1-W057-D151",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D151_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W057-D151_Face_A",
    "openingId": "R1-W057-D151",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D152_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W057-D152_Face_B",
    "openingId": "R1-W057-D152",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R1-W057-D152_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R1-W057-D152_Face_A",
    "openingId": "R1-W057-D152",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W002-D189_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W002-D189_Face_B",
    "openingId": "R2-W002-D189",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W002-D189_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W002-D189_Face_A",
    "openingId": "R2-W002-D189",
    "face": "A"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W071-D241_Face_B",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W071-D241_Face_B",
    "openingId": "R2-W071-D241",
    "face": "B"
   },
   {
-   "assetId": "r09-web02:SIGNFACE_SIGN_R2-W071-D241_Face_A",
+   "assetId": "r09-web03:SIGNFACE_SIGN_R2-W071-D241_Face_A",
    "openingId": "R2-W071-D241",
    "face": "A"
   }
@@ -3375,7 +3375,7 @@
    },
    "label": "Room 1 — doorway R1-W001-D105",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W001-D105_leaf_1"
+    "r09-web03:DOOR_R1-W001-D105_leaf_1"
    ]
   },
   {
@@ -3390,7 +3390,7 @@
    },
    "label": "Room 1 — doorway R1-W001-D106",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W001-D106_leaf_1"
+    "r09-web03:DOOR_R1-W001-D106_leaf_1"
    ]
   },
   {
@@ -3405,7 +3405,7 @@
    },
    "label": "Room 2 — doorway R1-W002-D108",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W002-D108_leaf_1"
+    "r09-web03:DOOR_R1-W002-D108_leaf_1"
    ]
   },
   {
@@ -3420,7 +3420,7 @@
    },
    "label": "Room 5 — doorway R1-W023-D122",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W023-D122_leaf_1"
+    "r09-web03:DOOR_R1-W023-D122_leaf_1"
    ]
   },
   {
@@ -3435,7 +3435,7 @@
    },
    "label": "Room 6 — doorway R1-W023-D123",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W023-D123_leaf_1"
+    "r09-web03:DOOR_R1-W023-D123_leaf_1"
    ]
   },
   {
@@ -3450,7 +3450,7 @@
    },
    "label": "Room 6 — doorway R1-W023-D124",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W023-D124_leaf_1"
+    "r09-web03:DOOR_R1-W023-D124_leaf_1"
    ]
   },
   {
@@ -3465,7 +3465,7 @@
    },
    "label": "Room 3 — doorway R1-W038-D133",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W038-D133_leaf_1"
+    "r09-web03:DOOR_R1-W038-D133_leaf_1"
    ]
   },
   {
@@ -3480,7 +3480,7 @@
    },
    "label": "Room 3 — doorway R1-W038-D134",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W038-D134_leaf_1"
+    "r09-web03:DOOR_R1-W038-D134_leaf_1"
    ]
   },
   {
@@ -3495,7 +3495,7 @@
    },
    "label": "Room 4 — doorway R1-W039-D136",
    "doorAssetIds": [
-    "r09-web02:DOOR_GF_Glazed_R1-W039-D136_leaf_1"
+    "r09-web03:DOOR_GF_Glazed_R1-W039-D136_leaf_1"
    ]
   },
   {
@@ -3510,7 +3510,7 @@
    },
    "label": "Room 7 — doorway R1-W057-D149",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W057-D149_leaf_1"
+    "r09-web03:DOOR_R1-W057-D149_leaf_1"
    ]
   },
   {
@@ -3525,7 +3525,7 @@
    },
    "label": "Room 7 — doorway R1-W057-D150",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W057-D150_leaf_1"
+    "r09-web03:DOOR_R1-W057-D150_leaf_1"
    ]
   },
   {
@@ -3540,7 +3540,7 @@
    },
    "label": "Room 7 — doorway R1-W057-D151",
    "doorAssetIds": [
-    "r09-web02:DOOR_GF_Glazed_R1-W057-D151_leaf_1"
+    "r09-web03:DOOR_GF_Glazed_R1-W057-D151_leaf_1"
    ]
   },
   {
@@ -3555,7 +3555,7 @@
    },
    "label": "Room 8 — doorway R1-W057-D152",
    "doorAssetIds": [
-    "r09-web02:DOOR_GF_Glazed_R1-W057-D152_leaf_1"
+    "r09-web03:DOOR_GF_Glazed_R1-W057-D152_leaf_1"
    ]
   },
   {
@@ -3566,7 +3566,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W076-D166",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W076-D166_leaf_1"
+    "r09-web03:DOOR_R1-W076-D166_leaf_1"
    ]
   },
   {
@@ -3577,7 +3577,7 @@
    "doorPoint": null,
    "label": "Doorway R1-W082-D171",
    "doorAssetIds": [
-    "r09-web02:DOOR_R1-W082-D171_leaf_1"
+    "r09-web03:DOOR_R1-W082-D171_leaf_1"
    ]
   },
   {
@@ -3592,7 +3592,7 @@
    },
    "label": "Room 9 — doorway R2-W001-D187",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W001-D187_leaf_1"
+    "r09-web03:DOOR_R2-W001-D187_leaf_1"
    ]
   },
   {
@@ -3607,7 +3607,7 @@
    },
    "label": "Room 10.1 — doorway R2-W002-D188",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W002-D188_leaf_1"
+    "r09-web03:DOOR_R2-W002-D188_leaf_1"
    ]
   },
   {
@@ -3622,7 +3622,7 @@
    },
    "label": "Room 10.2 — doorway R2-W002-D189",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W002-D189_leaf_1"
+    "r09-web03:DOOR_R2-W002-D189_leaf_1"
    ]
   },
   {
@@ -3637,7 +3637,7 @@
    },
    "label": "Room 17 — doorway R2-W032-D208",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W032-D208_leaf_1"
+    "r09-web03:DOOR_R2-W032-D208_leaf_1"
    ]
   },
   {
@@ -3652,7 +3652,7 @@
    },
    "label": "Room 16 — doorway R2-W032-D209",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W032-D209_leaf_1"
+    "r09-web03:DOOR_R2-W032-D209_leaf_1"
    ]
   },
   {
@@ -3667,7 +3667,7 @@
    },
    "label": "Room 16 — doorway R2-W032-D210",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W032-D210_leaf_1"
+    "r09-web03:DOOR_R2-W032-D210_leaf_1"
    ]
   },
   {
@@ -3678,8 +3678,8 @@
    "doorPoint": null,
    "label": "Doorway R2-W040-D216",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W040-D216_leaf_1",
-    "r09-web02:DOOR_R2-W040-D216_leaf_2"
+    "r09-web03:DOOR_R2-W040-D216_leaf_1",
+    "r09-web03:DOOR_R2-W040-D216_leaf_2"
    ]
   },
   {
@@ -3694,7 +3694,7 @@
    },
    "label": "Room 13 — doorway R2-W041-D217",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W041-D217_leaf_1"
+    "r09-web03:DOOR_R2-W041-D217_leaf_1"
    ]
   },
   {
@@ -3709,7 +3709,7 @@
    },
    "label": "Room 15 — doorway R2-W057-D229",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W057-D229_leaf_1"
+    "r09-web03:DOOR_R2-W057-D229_leaf_1"
    ]
   },
   {
@@ -3724,7 +3724,7 @@
    },
    "label": "Room 15 — doorway R2-W057-D230",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W057-D230_leaf_1"
+    "r09-web03:DOOR_R2-W057-D230_leaf_1"
    ]
   },
   {
@@ -3739,7 +3739,7 @@
    },
    "label": "Room 14 — doorway R2-W057-D231",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W057-D231_leaf_1"
+    "r09-web03:DOOR_R2-W057-D231_leaf_1"
    ]
   },
   {
@@ -3754,8 +3754,8 @@
    },
    "label": "Room 11 — doorway R2-W071-D241",
    "doorAssetIds": [
-    "r09-web02:DOOR_R2-W071-D241_leaf_1",
-    "r09-web02:DOOR_R2-W071-D241_leaf_2"
+    "r09-web03:DOOR_R2-W071-D241_leaf_1",
+    "r09-web03:DOOR_R2-W071-D241_leaf_2"
    ]
   }
  ]

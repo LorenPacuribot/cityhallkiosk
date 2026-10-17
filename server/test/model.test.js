@@ -75,8 +75,8 @@ test('a material without a binding, or a baked primitive without vertex colours,
   assert.match(validateRelease(c, { inventory: fxInventory }).errors.join('\n'), /has no extras\.assetId/);
 });
 
-const REAL = path.join(HERE, '../public/models/cityhall/r09-web02');
-test('the real r09-web02 release matches the verified source inventory', { skip: !fs.existsSync(path.join(REAL, 'manifest.json')) && 'r09-web02 has not been exported on this machine yet' }, () => {
+const REAL = path.join(HERE, '../public/models/cityhall/r09-web03');
+test('the real r09-web03 release matches the verified source inventory', { skip: !fs.existsSync(path.join(REAL, 'manifest.json')) && 'r09-web03 has not been exported on this machine yet' }, () => {
   const r = validateRelease(REAL);
   assert.deepEqual(r.errors, []);
   assert.equal(r.stats.buildingMeshObjects, 463);

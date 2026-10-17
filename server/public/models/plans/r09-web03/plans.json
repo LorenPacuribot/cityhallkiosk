@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "modelVersion": "r09-web03",
+  "sourceManifestSha256": "2772b7592464483fbda7a589e0b8d2dd8a84cfbf7f0ad9e60eed995d03505f50",
+  "calibrationVersion": "r09-cal-draft-2",
+  "generatedAt": "2026-10-17T19:06:34.329Z",
+  "generator": "tools/model/render-plans.mjs",
+  "cutHeightM": 1.3,
+  "pxPerM": 14,
+  "bounds": {
+    "minX": -59,
+    "maxX": 59,
+    "minZ": -5,
+    "maxZ": 39
+  },
+  "note": "Top-down render of the model below the cut with the section lines of the walls. Doors and dynamic signs are omitted.",
+  "levels": [
+    {
+      "level": 1,
+      "name": "1st floor",
+      "elevation": 0,
+      "file": "floor-1.webp",
+      "width": 1652,
+      "height": 616,
+      "bytes": 50154,
+      "sha256": "536df3906291af55a4494d119cb5594f25fb355f9f48afb2f967e4599e25a843",
+      "sectionSegments": 8289
+    },
+    {
+      "level": 2,
+      "name": "2nd floor",
+      "elevation": 4,
+      "file": "floor-2.webp",
+      "width": 1652,
+      "height": 616,
+      "bytes": 48072,
+      "sha256": "14dbddf21da494905f4b3a4aef861fd826171436399e676a8ce1ba4ed3f80a76",
+      "sectionSegments": 9360
+    }
+  ]
+}

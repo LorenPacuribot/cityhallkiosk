@@ -1,6 +1,7 @@
 {
   "schemaVersion": 1,
-  "modelVersion": "r09-web02",
+  "modelVersion": "r09-web03",
+  "modelVersionNote": "Retagged 2026-10-17 from r09-web02: r09-web03 only moves the waiting bench at the CSWDO door; every doorway id in this guide exists unchanged in r09-web03. Office-room-door matches are untouched.",
   "guideDate": "2026-10-17",
   "source": "Owner's floor guide (FIRST FLOOR and SECOND FLOOR room plans with office list), supplied 2026-10-17.",
   "note": "Room -> office comes from the owner's guide. Room -> doorway was matched by placing each signed model doorway on the real rendered floor plans (server/public/models/plans/r09-web02) and reading which numbered room of the guide it opens into. Door matches stay DRAFT until staff confirm them on site (Admin > Navigation).",

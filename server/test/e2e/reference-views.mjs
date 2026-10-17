@@ -35,9 +35,9 @@ page.on('pageerror', e => errors.push(e.message));
 page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
 await page.goto(`${base}/kiosk?idle=0`, { waitUntil: 'networkidle' });
 
-const manifest = JSON.parse(fs.readFileSync(path.join(REPO, 'server/public/models/cityhall/r09-web02/manifest.json'), 'utf8'));
+const manifest = JSON.parse(fs.readFileSync(path.join(REPO, 'server/public/models/cityhall/r09-web03/manifest.json'), 'utf8'));
 // interior walkthrough cameras only: the exterior composition is not part of the kiosk (the welcome photo shows the outside)
-const markers = Object.keys(JSON.parse(fs.readFileSync(path.join(REPO, 'server/public/models/cityhall/r09-web02/viewpoints.json'), 'utf8')).viewpoints).filter(m => !/Front_Composition/.test(m));
+const markers = Object.keys(JSON.parse(fs.readFileSync(path.join(REPO, 'server/public/models/cityhall/r09-web03/viewpoints.json'), 'utf8')).viewpoints).filter(m => !/Front_Composition/.test(m));
 const load = await page.evaluate(async ({ calibration, W, H }) => {
   const host = document.createElement('div');
   host.style.cssText = `position:fixed;left:0;top:0;width:${W}px;height:${H}px;z-index:99999;background:#000`;
@@ -45,7 +45,7 @@ const load = await page.evaluate(async ({ calibration, W, H }) => {
   const { getViewer } = await import('/kiosk/three/building-viewer.js');
   const v = getViewer();
   const t0 = performance.now();
-  await v.ensureModel({ model: { modelVersion: 'r09-web02', baseUrl: '/models/cityhall/r09-web02/' }, calibration }, { allowDraftCalibration: true });
+  await v.ensureModel({ model: { modelVersion: 'r09-web03', baseUrl: '/models/cityhall/r09-web03/' }, calibration }, { allowDraftCalibration: true });
   const loadMs = performance.now() - t0;
   v.renderer.setPixelRatio(1);
   v.attach(host);

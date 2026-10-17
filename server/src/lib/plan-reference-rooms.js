@@ -21,11 +21,22 @@ export function applyPlanReferenceRooms(graph) {
   const revision = get('SELECT id FROM navigation_revisions WHERE navigation_version = ?', [graph.navigationVersion]);
   if (!revision) throw new Error('Import the navigation graph first.');
   const applied = [];
+  let relinked = 0;
   tx(() => {
     const seen = new Set(); // offices already placed by an earlier room in this run
     for (const ref of planReference.rooms) {
       const code = roomCode(ref);
-      if (get('SELECT id FROM rooms WHERE code = ?', [code])) continue;
+      const existing = get('SELECT id FROM rooms WHERE code = ?', [code]);
+      if (existing) {
+        // already applied (offices stay where staff put them); a newer graph revision still needs this room's doorways,
+        // linked as drafts only where that revision has no room yet
+        for (const openingId of ref.openings) {
+          const linked = run(`UPDATE room_openings SET room_id = ?, status = 'draft', notes = ? WHERE revision_id = ? AND opening_id = ? AND room_id IS NULL`,
+            [existing.id, `Owner's room guide ${planReference.guideDate}: ${code}. ${ref.evidence}`, revision.id, openingId]).changes;
+          if (linked) { run(`UPDATE sign_bindings SET status = 'draft' WHERE revision_id = ? AND opening_id = ? AND status <> 'verified'`, [revision.id, openingId]); relinked++; }
+        }
+        continue;
+      }
       const floor = get('SELECT id FROM floors WHERE level = ?', [ref.level]);
       if (!floor) throw new Error(`No floor ${ref.level} for ${code}.`);
       const opening = graph.openings.find(o => o.openingId === ref.openings[0]);
@@ -75,7 +86,7 @@ export function applyPlanReferenceRooms(graph) {
       run(`UPDATE offices SET location_type = 'unconfirmed', updated_at = datetime('now') WHERE id = ?`, [office.id]);
       audit(null, 'room_guide', 'office', office.id, before, { ...officeLocation(office.id), source: planReference.unconfirmed.note });
     }
-    if (applied.length) bumpContentVersion();
+    if (applied.length || relinked) bumpContentVersion();
   });
   return applied;
 }

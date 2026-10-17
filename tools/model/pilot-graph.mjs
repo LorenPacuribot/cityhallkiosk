@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds the DRAFT pilot navigation graph for model r09-web02 from cited model evidence.
+// Builds the DRAFT pilot navigation graph for model r09-web03 from cited model evidence.
 //
 //   node tools/model/pilot-graph.mjs [out.json]      (default server/data/navigation/r09-pilot-draft.json)
 //
@@ -18,7 +18,7 @@ const SRC = {
   walk: `${WS}/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified)`,
   poses: `${WS}/scripts/prepare_walkthrough_poses.py (requested stair stations)`,
   stairs: `${WS}/front_facade_review/Mesh_Inventory.json lo/hi (stair flights and landings)`,
-  doors: 'server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)',
+  doors: 'server/public/models/cityhall/r09-web03/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)',
   lift: `${WS}/front_facade_review/Mesh_Inventory.json RIGHT_ELEVATOR_* and R_ELEVATOR_F*_door_gap (concept v3, dimensions estimated)`,
   facade: `${WS}/scripts/build_v3.py V3_Entrance_Wall y=-17.5; Front_Opening_Schedule.csv FRONT-017/018 x=∓3.1`,
   corridor2f: `${WS}/second_floor_revision/README.md (2F fixture rows centred y=-5.0 left, -4.5 right)`,
@@ -28,7 +28,7 @@ const SRC = {
 // facade line (x=0, y=-17.5, z=0). Front faces -Y, so +Y is "into the building" (canonical +Z) and +X is the
 // visitor's right. Needs field anchors (entrance centre, left/right points, upstairs landing, one known distance).
 export const DRAFT_CALIBRATION = {
-  modelVersion: 'r09-web02', calibrationVersion: 'r09-cal-draft-1', status: 'draft', units: 'metres',
+  modelVersion: 'r09-web03', calibrationVersion: 'r09-cal-draft-2', status: 'draft', units: 'metres',
   description: 'Model-derived draft. Origin = midpoint of the two entrance doorways on the facade line; NOT surveyed.',
   // column-major: canonical = A * blender ; x'=x, y'=z, z'=y+17.5
   matrixBlenderToCanonical: [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 17.5, 1],
@@ -86,7 +86,7 @@ edge('S-LEFT-GF-F2', 'stairs', 'GF-L-STAIRFOOT', 'F2-L-STAIRTOP',
   [[-11.45, -7.3, 0], [-11.45, -7.65, 0.179], [-11.45, -10.275, 1.345], [-11.45, -11.5, 1.345],
     [-12.875, -11.5, 1.345], [-13.3, -11.5, 1.512], [-16.275, -11.5, 2.679], [-18.55, -11.5, 2.679],
     [-18.55, -11.025, 2.679], [-18.55, -10.65, 2.845], [-18.55, -8.025, 4.012], [-18.55, -7.65, 4.012], [-18.55, -7.4, 4.0]],
-  { label: 'left main stairs', source: `${SRC.stairs} L0_first/cross/return_tread bounds: pitch lines above tread leading edges, flat landings z 1.345 and 2.679; checked against r09-web02 GLB vertical rays` });
+  { label: 'left main stairs', source: `${SRC.stairs} L0_first/cross/return_tread bounds: pitch lines above tread leading edges, flat landings z 1.345 and 2.679; checked against r09-web03 GLB vertical rays` });
 
 node('GF-R-STAIRFOOT', 1, 'stair_foot', [11.45, -4.75, 0], `${SRC.walk} R-STAIR foot`, 'Right main stairs');
 node('F2-R-STAIRTOP', 2, 'stair_top', [18.55, -6.6, 4.0], `${SRC.walk} R-STAIR arrival`, 'Right main stairs (2nd floor)');
@@ -96,7 +96,7 @@ edge('S-RIGHT-GF-F2', 'stairs', 'GF-R-STAIRFOOT', 'F2-R-STAIRTOP',
   [[11.45, -7.3, 0], [11.45, -7.65, 0.179], [11.45, -9.525, 1.012], [11.45, -11.5, 1.012],
     [12.96, -11.5, 1.012], [13.3, -11.5, 1.179], [16.36, -11.5, 2.679], [18.55, -11.5, 2.679],
     [18.55, -11.025, 2.679], [18.55, -10.65, 2.845], [18.55, -8.025, 4.012], [18.55, -7.65, 4.012], [18.55, -7.4, 4.0]],
-  { label: 'right main stairs', source: `${SRC.stairs} R0_first/cross/return_tread bounds: pitch lines above tread leading edges, flat landings z 1.012 and 2.679; checked against r09-web02 GLB vertical rays` });
+  { label: 'right main stairs', source: `${SRC.stairs} R0_first/cross/return_tread bounds: pitch lines above tread leading edges, flat landings z 1.012 and 2.679; checked against r09-web03 GLB vertical rays` });
 
 // ---------------------------------------------------------------- second floor (level 2, z = 4.0)
 node('F2-L-FOYER', 2, 'junction', [-18.55, -5.2, 4.0], `${SRC.walk} L-STAIR top foyer`);
@@ -157,8 +157,8 @@ for (const w of WINGS) {
   }
 }
 // 2F centre: walkway north of the atrium void (void edge y -4.93, centre-block north wall y -2.98; rendered plan
-// server/public/models/plans/r09-web02/floor-2.webp), joined to both stair-top foyers.
-const ATRIUM = 'walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web02/floor-2.webp';
+// server/public/models/plans/r09-web03/floor-2.webp), joined to both stair-top foyers.
+const ATRIUM = 'walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web03/floor-2.webp';
 node('F2-C-W', 2, 'junction', [-10.0, -4.0, 4.0], ATRIUM);
 node('F2-C-E', 2, 'junction', [10.0, -4.0, 4.0], ATRIUM);
 const d189 = doorApproach('F2-L', 2, 'R2-W002-D189', [-15.5, -4.77, 4.0]);
@@ -178,7 +178,7 @@ edge('L-RIGHT-GF-F2', 'lift', 'GF-LIFT', 'F2-LIFT', [[15.5, -8.9, 0], [15.5, -8.
 edge('E-F2LIFT-RFOYER', 'walk', 'F2-LIFT', 'F2-R-FOYER', [], { source: `${SRC.walk} (2F foyer mirror of GF)`, isPublic: false });
 
 const graph = {
-  schemaVersion: 1, modelVersion: 'r09-web02', navigationVersion: 'r09-nav-draft-3', status: 'draft',
+  schemaVersion: 1, modelVersion: 'r09-web03', navigationVersion: 'r09-nav-draft-4', status: 'draft',
   calibrationVersion: DRAFT_CALIBRATION.calibrationVersion,
   note: 'Draft pilot graph from model evidence. No edge is verified; step-free status is unknown everywhere. Do not publish as verified directions.',
   floors: [{ level: 1, name: '1st floor' }, { level: 2, name: '2nd floor' }],

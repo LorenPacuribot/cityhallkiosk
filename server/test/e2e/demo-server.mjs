@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Demo server for the real-building navigation, on a COPY of the live database (the live file is never opened
 // for writing). Sets up what staff would do in Admin -> Navigation: imports the draft pilot graph, registers the
-// r09-web02 model release, publishes, turns on labelled draft preview and registers the PILOT-ENTRANCE origin.
+// r09-web03 model release, publishes, turns on labelled draft preview and registers the PILOT-ENTRANCE origin.
 //
 //   cd server
 //   node test/e2e/demo-server.mjs            (port 3100; PORT=xxxx to change)

@@ -9,7 +9,7 @@ import { glbRootMatrix, toRender } from '../public/kiosk/three/coordinates.js';
 import { planGraphRoute, resolveDestination } from '../public/shared/nav-graph.js';
 import { buildWalk } from '../public/shared/walk-path.js';
 
-const file = new URL('../public/models/cityhall/r09-web02/building.glb', import.meta.url);
+const file = new URL('../public/models/cityhall/r09-web03/building.glb', import.meta.url);
 test('real pilot walks clear solid geometry and stay above the stair treads', { skip: !fs.existsSync(file) }, () => {
   const graph = JSON.parse(fs.readFileSync(new URL('../data/navigation/r09-pilot-draft.json', import.meta.url)));
   const g = readGlb(file), world = worldMatrices(g.json).world;
