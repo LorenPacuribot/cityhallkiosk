@@ -108,7 +108,7 @@ h1, h2, h3, p { margin: 0; }
 .page-head > * { position: relative; }
 .page-head .body { color: rgba(255,255,255,.85); }
 /* the City Hall photo fades in on the right of the home header */
-.head-photo { position: absolute !important; right: 0; top: 0; height: 100%; width: 62%; object-fit: cover; opacity: .38;
+.head-photo { position: absolute !important; right: 0; top: 0; height: 100%; width: 62%; object-fit: cover; object-position: 50% 27%; opacity: .38; /* frame the building, not the driveway */
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 60%); mask-image: linear-gradient(90deg, transparent, #000 60%); }
 .home-head { padding-bottom: 120px; }
 .home-content { margin-top: -88px; position: relative; padding-top: 0; }
