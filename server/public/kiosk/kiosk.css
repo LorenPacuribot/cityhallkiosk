@@ -538,3 +538,71 @@ h1, h2, h3, p { margin: 0; }
 .svc-list-h { color: var(--brand-navy); }
 .office-cols .btn-block { min-height: 112px; }
 .landscape .office-cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); }
+/* Office and service detail reference design */
+.civic-detail { background:#f3f7fc; --brand-navy:#13385f; --brand-sky:#e3eefc; --border-default:#e3ddd3; --border-strong:#c9c2b7; }
+.civic-detail .topbar { height:116px; padding-inline:64px; }
+.civic-detail .identity .label { order:2; color:#13385f; font-size:28px; }
+.civic-detail .identity .caption { order:1; font-size:24px; }
+.civic-detail .tb-btn { flex-direction:column; min-width:130px; min-height:84px; gap:2px; padding:8px; }
+.civic-detail .page-head { background:linear-gradient(115deg,#0c2340,#307dd7 85%); padding:28px 64px; gap:28px; }
+.civic-detail .page-head p { color:#b8d8f2; }
+.civic-detail .page-head .back { background:#ffffff20; border:3px solid #b8c6d7; color:white; min-height:76px; flex:none; }
+.civic-detail .card,.civic-detail .row,.civic-detail .stat,.civic-detail .helpful { border:2px solid #e3ddd3; border-radius:26px; background:white; }
+.civic-detail .seg button[aria-pressed="true"],.civic-detail .btn-primary,.civic-detail .step .num,.office-detail .chev { background:linear-gradient(145deg,#307fda,#12365b 80%); color:white; }
+.civic-detail .btn-primary { border:0; min-height:104px; font-size:34px; border-radius:24px; box-shadow:0 12px 24px #15395e26; }
+.civic-detail .helpbar { background:linear-gradient(110deg,#0b203d,#235da8); color:white; padding:22px 64px; font-size:28px; }
+.office-detail .office-cols { padding:32px 64px 0; gap:40px; }
+.office-detail .office-cols > .col-main,.office-detail .office-cols > .col-side { gap:24px; padding-right:0; }
+.office-detail .office-info { padding:28px 30px; gap:24px; }
+.office-detail .info-val { font-size:30px; }
+.office-detail .svc-list-h { font-size:36px; margin:0 0 -8px; }
+.office-detail .row { min-height:112px; padding:20px 24px; gap:22px; }
+.office-detail .row .title { font-size:30px; }
+.office-detail .row .sub { font-size:24px; }
+.office-detail .chev { width:60px; height:60px; border-radius:50%; display:grid; place-items:center; }
+.service-content { min-height:0; }
+.service-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:24px; }
+.service-bring,.service-process { display:flex; flex-direction:column; gap:24px; min-width:0; }
+.service-detail .stats { flex:none; }
+.service-detail .stat { padding:18px 24px; gap:6px; min-width:0; }
+.service-detail .stat .lbl { font-size:26px; }
+.service-detail .stat .val { font-size:34px; font-weight:800; }
+.service-detail .bring-card,.service-detail .steps-card { padding:22px 30px; }
+.service-detail .h2 { font-size:36px; color:#13385f; display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.section-number { width:44px; height:44px; display:inline-grid; place-items:center; border-radius:50%; background:#e3eefc; font-size:26px; flex:none; }
+.service-detail .req { background:#e3eefc; border:0; border-radius:20px; padding:20px 22px; margin-top:12px; }
+.service-detail .req .box { border-color:#13385f; background:white; width:46px; height:46px; }
+.service-detail .req .label,.service-detail .step .label { font-size:30px; font-weight:700; }
+.service-detail .step { border:0; padding:8px 0; gap:24px; background:transparent; }
+.service-detail .step .num { width:70px; height:70px; }
+.service-detail .step .agency { border:0; padding:0; margin-top:4px; }
+.service-detail .step .meta { display:inline-block; background:#e3eefc; color:#13385f; padding:6px 16px; border-radius:24px; margin-top:8px; }
+.service-detail .helpful { padding:12px 26px; }
+.service-detail .dock { padding:20px 64px; align-items:center; gap:20px; box-shadow:none; }
+.service-detail .dock-destination { flex:1.3; min-width:0; }
+.service-detail .dock .btn { min-height:104px; font-size:30px; padding-inline:22px; }
+.service-detail .dock .btn-secondary { flex:.9; }
+.service-detail .dock .btn-primary { flex:1.1; }
+.civic-detail :focus-visible { outline:4px solid #b36b00; outline-offset:4px; }
+.civic-detail ::selection { background:#c5ddfa; color:#102f52; }
+.landscape .civic-detail .svc-head { flex-direction:row; min-height:146px; }
+.landscape .office-detail .office-head { min-height:166px; }
+.landscape .civic-detail .h1 { font-size:60px; letter-spacing:-.025em; }
+.landscape .service-detail .service-content { padding:20px 64px 12px; gap:20px; }
+.landscape .service-grid { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px; }
+.landscape .office-detail .office-cols { grid-template-columns:minmax(0,760fr) minmax(0,992fr); }
+#stage.large .civic-detail .stat .val { font-size:40px; }
+#stage.large .civic-detail .req .label,#stage.large .civic-detail .step .label,#stage.large .office-detail .info-val { font-size:36px; }
+#stage:not(.landscape) .service-detail .dock { flex-wrap:wrap; padding-inline:40px; }
+#stage:not(.landscape) .dock-destination { flex-basis:100%; }
+#stage.narrow .civic-detail .topbar { padding-inline:24px; }
+#stage.narrow .civic-detail .tb-btn { min-width:90px; }
+#stage.narrow .service-detail .stats { grid-template-columns:1fr; }
+.landscape .service-detail .steps-card > .list { display:flex; flex-direction:column; }
+/* Portrait reading order follows the task before feedback and Charter context. */
+#stage:not(.landscape) .service-bring { display:contents; }
+#stage:not(.landscape) .service-bring > .bring-card { order:1; }
+#stage:not(.landscape) .service-process { order:2; }
+#stage:not(.landscape) .service-bring > .helpful { order:3; }
+#stage:not(.landscape) .service-bring > .service-context { order:4; }
+#stage:not(.landscape) .service-bring > p { order:5; }

@@ -12,7 +12,7 @@
 
 | | |
 |---|---|
-| Updated | 2026-10-16, by Claude (Opus) |
+| Updated | 2026-10-16, by Codex |
 | Repo | `Desktop\cityhallkiosk_codex\City Hall Code\cityhallkiosk`, GitHub `LorenPacuribot/cityhallkiosk` (this repo uses the LorenPacuribot account) |
 | Branch | `codex/3d-building-r09` (not merged to `main`) |
 | Last commit | `9c1c61a`. Work after it is uncommitted; see **In progress**. |
@@ -132,12 +132,20 @@ Product brief (users, purpose, principles, brand rules): [`PRODUCT.md`](../PRODU
    - **Prepared drafts:** English drafts for all 26 offices and 276 services are in `server/data/plain-summaries-draft.json`. **Load them** with **Admin → Plain language → Load prepared drafts**. **None is approved on the live database yet.** The demo server loads them as drafts.
    - **Tests:** `test/plain.test.js` and one e2e test.
 
+### In progress
+
+- Office and service detail redesign is complete, uncommitted. Matches the supplied blue civic references: scoped header/chrome, office information and service rows, service summary cards, requirements and process panels, and fixed QR/directions dock. Portrait places steps before feedback/context. Actual Charter text, office locations and navigation rules are preserved; live database untouched.
+- Verification: 39/39 unit/API and 15/15 browser tests pass; landscape and portrait screenshots in `.impeccable/review/`. QR, feedback and larger text smoke checks pass. Browser fixtures log missing optional `plans/fx-test01/plans.json` 404s but all tests pass. Independent visual review: ship after portrait ordering fix.
+- Design decisions documented in `DESIGN.md` and `.impeccable/design.json`.
+
 ### Known small issues
 
 - In landscape, the minimap can briefly cover the name tag while the view turns to the door.
 - On the map screen the 3D building is wide and short, so there is empty space above and below it in portrait.
 
 ## Next (in order)
+
+- Review the redesigned office and service detail pages against the supplied references; next prior critique item is reset/dead-end hardening. No commit or push without owner request.
 
 1. **Match each in-building office (15 in the live database) to its model door.**
    - Use the reference plans in the admin.

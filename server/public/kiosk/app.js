@@ -351,7 +351,7 @@ const screens = {
   office({ id }) {
     const o = idx.offices.get(Number(id));
     if (!o) return screens.home();
-    return `<section class="screen">${topbar()}
+    return `<section class="screen civic-detail office-detail">${topbar()}
       <div class="page-head svc-head office-head">${backBtn()}<div class="head-txt"><h1 class="h1">${esc(o.name)}</h1>
         <p class="body head-loc">${icon(o.location?.room_id ? 'map-pin' : 'building', 28)}<span>${esc(officeWhere(o))}</span></p></div></div>
       <div class="content cols office-cols">
@@ -367,12 +367,23 @@ const screens = {
     const verified = s.verified_at ? `<span class="badge success">${icon('circle-check', 24)}${t('verified_on', { d: new Date(s.verified_at).toLocaleDateString([], { month: 'short', year: 'numeric' }) })}</span>` : '';
     const inBuilding = s.location?.room_id;
     const govBadge = s.is_citizen_facing ? '' : `<span class="badge neutral">${icon('building', 24)}${t('gov_services')}</span>`;
-    return `<section class="screen">${topbar()}
+    return `<section class="screen civic-detail service-detail">${topbar()}
       <div class="page-head svc-head">${backBtn()}<div class="head-txt"><h1 class="h1">${esc(s.display_title)}</h1>
         <p class="body">${esc(s.office_name)} · ${esc(locText(s.location))}</p></div></div>
-      <div class="content cols svc-cols">
-        <div class="col-main">
-        <header style="display:flex;flex-direction:column;gap:16px">
+      <div class="content service-content">
+        <div class="stats">
+          ${[['wallet', 'total_fee', s.total_fees], ['clock', 'processing_time', s.total_processing_time], ['users', 'who_may_apply', s.who_may_avail]].map(([ic, k, v]) =>
+            `<div class="stat"><span class="lbl">${icon(ic, 28)}${t(k)}</span><span class="val">${esc(v || '—')}</span></div>`).join('')}
+        </div>
+        <div class="service-grid">
+          <div class="service-bring">        ${s.requirements.length ? `<section class="card bring-card"><h2 class="h2"><span class="section-number">1</span>${t('what_to_bring')} (${s.requirements.length})</h2>
+          ${s.requirements.map(r => `<div class="req"><span class="box" aria-hidden="true"></span><div><p class="label">${esc(r.requirement)}</p>${r.where_to_secure ? `<p class="caption muted">${esc(r.where_to_secure)}</p>` : ''}</div></div>`).join('')}
+        </section>` : ''}
+        <div class="helpful"><span class="label">${t('did_help')}</span><div class="btns">
+          <button data-action="fb" data-v="1" data-id="${s.id}">${icon('thumbs-up', 32)}<span>${t('yes')}</span></button>
+          <button data-action="fb" data-v="0" data-id="${s.id}">${icon('thumbs-down', 32)}<span>${t('no')}</span></button></div></div>
+
+          <div class="service-context">        <header style="display:flex;flex-direction:column;gap:16px">
           ${s.plain_title ? `<p class="caption muted">${esc(s.title)}</p>` : ''}
           ${s.description ? `<p class="body muted svc-desc">${esc(s.description)}</p>` : ''}
           <div class="badges">
@@ -380,29 +391,19 @@ const screens = {
             ${govBadge}${s.classification ? `<span class="badge neutral">${esc(s.classification)}</span>` : ''}${verified}
           </div>
         </header>
-        <div class="stats">
-          ${[['wallet', 'total_fee', s.total_fees], ['clock', 'processing_time', s.total_processing_time], ['users', 'who_may_apply', s.who_may_avail]].map(([ic, k, v]) =>
-            `<div class="stat"><span class="lbl">${icon(ic, 28)}${t(k)}</span><span class="val">${esc(v || '—')}</span></div>`).join('')}
-        </div>
-        </div>
-        <div class="col-side">
-        ${s.requirements.length ? `<section class="card" style="padding:28px 32px 12px"><h2 class="h3">${t('what_to_bring')} (${s.requirements.length})</h2>
-          ${s.requirements.map(r => `<div class="req"><span class="box" aria-hidden="true"></span><div><p class="label">${esc(r.requirement)}</p>${r.where_to_secure ? `<p class="caption muted">${esc(r.where_to_secure)}</p>` : ''}</div></div>`).join('')}
-        </section>` : ''}
-        ${s.steps.length ? `<h2 class="h3">${t('what_youll_do')}</h2>
+</div>        <p class="caption muted">${s.verified_at ? '' : t('not_verified') + ' · '}${t('from_charter', { src: esc(s.source || "Citizen's Charter") })}</p>
+</div>
+          <div class="service-process">        ${s.steps.length ? `<section class="card steps-card"><h2 class="h2"><span class="section-number">2</span>${t('what_youll_do')}</h2>
           <div class="list">${s.steps.map((st, i) => `<div class="step"><span class="num">${i + 1}</span><div style="flex:1;display:flex;flex-direction:column;gap:8px">
             ${st.client_action ? `<p class="label">${esc(st.client_action)}</p>` : ''}
             ${st.agency.length ? `<div class="agency">${st.agency.map(a => `<div><p class="caption muted">${esc(a.agency_action)}</p>
               <p class="caption meta">${stepMeta(a)}</p></div>`).join('')}</div>` : ''}
-          </div></div>`).join('')}</div>` : ''}
+          </div></div>`).join('')}</div></section>` : ''}
         ${s.notes ? `<section class="card notes"><h2 class="h3">${t('notes')}</h2>${notesHTML(s.notes)}</section>` : ''}
-        <div class="helpful"><span class="label">${t('did_help')}</span><div class="btns">
-          <button data-action="fb" data-v="1" data-id="${s.id}">${icon('thumbs-up', 32)}<span>${t('yes')}</span></button>
-          <button data-action="fb" data-v="0" data-id="${s.id}">${icon('thumbs-down', 32)}<span>${t('no')}</span></button></div></div>
-        <p class="caption muted">${s.verified_at ? '' : t('not_verified') + ' · '}${t('from_charter', { src: esc(s.source || "Citizen's Charter") })}</p>
+</div>
         </div>
       </div>
-      <div class="dock">
+      <div class="dock"><div class="dock-destination"><p class="label">${esc(s.office_name)}</p><p class="caption muted">${esc(locText(s.location))}</p></div>
         <button class="btn btn-secondary" data-action="qr" data-id="${s.id}">${icon('qr', 36)}${t('take_it')}</button>
         <button class="btn btn-primary" data-action="navservice" data-id="${s.id}">${icon('navigation', 36)}${t('show_way')}</button>
       </div></section>`;
