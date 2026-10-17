@@ -6,6 +6,7 @@
     "postinstall": "npm --prefix server install",
     "start": "npm --prefix server start",
     "dev": "npm --prefix server run dev",
+    "demo": "npm --prefix server run demo",
     "seed": "npm --prefix server run seed",
     "test": "npm --prefix server test"
   },

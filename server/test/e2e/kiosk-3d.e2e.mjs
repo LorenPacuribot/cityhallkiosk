@@ -80,6 +80,50 @@ test('repeated navigation reuses one model, one WebGL context and stable GPU res
   await page.close();
 });
 
+test('floor views, first-person pose, minimap follow and paused playback stay in sync', async () => {
+  await srv.api('POST', `/admin/calibrations/${srv.fx.graph.calibration.calibrationVersion}/verify`, {
+    anchors: ['ENTRANCE_CENTRE', 'LEFT', 'RIGHT_DEEP', 'UPSTAIRS'].map(id => ({ id, measured: [0, 0, 0], residual_m: 0.03 })) });
+  const page = await b.newPage(PORTRAIT), errors = watch(page);
+  const sceneryRequests = [];
+  page.on('request', r => { if (/scenery\.glb|scenery.*\.png/i.test(r.url())) sceneryRequests.push(r.url()); });
+  await page.goto(`${srv.base}/kiosk?idle=0&screen=map`, { waitUntil: 'networkidle' });
+  await page.waitForSelector('#floor-vp.has-building canvas');
+  for (const level of [2, 1]) {
+    await page.click(`[data-action="mapfloor"][data-l="${level}"]`);
+    await page.waitForSelector('#floor-vp.has-building canvas');
+    assert.equal(await page.evaluate(async () => (await import('/kiosk/three/building-viewer.js')).getViewer().floorView.o.level), level);
+  }
+  await page.click(`[data-action="office"][data-id="${srv.fx.office.id}"]`);
+  await startRoute(page); await waitBuilding(page);
+  await page.click('[data-action="navpause"]');
+  await page.waitForTimeout(200);
+  const pose = await page.evaluate(async () => {
+    const v = (await import('/kiosk/three/building-viewer.js')).getViewer(), p = v.player.walk.sample(v.player.elapsed);
+    return { eye: v.camera.position.toArray(), p, frames: v.info().frames, clipping: v.renderer.clippingPlanes.length };
+  });
+  assert.ok(Math.abs(pose.eye[1] - pose.p.y - 1.6) < .001);
+  assert.equal(pose.clipping, 0, 'floor cutaway removed for first-person');
+  await page.waitForTimeout(200);
+  assert.equal((await viewerInfo(page)).frames, pose.frames, 'paused route does not render continuously');
+  await page.click('[data-action="mmfloor"][data-l="2"]');
+  assert.equal(await page.getAttribute('#mm', 'data-floor'), '2');
+  assert.equal(await page.getAttribute('#mm #walker2d', 'visibility'), 'hidden');
+  await page.click('[data-action="mmfollow"]');
+  assert.equal(await page.getAttribute('#mm', 'data-floor'), '1');
+  assert.equal(await page.getAttribute('#mm #walker2d', 'visibility'), 'visible');
+  await page.click('[data-action="navreplay"]');
+  assert.match(await page.textContent('#btn-pause'), /Pause/);
+  await page.click('[data-action="toggle2d"]');
+  await page.waitForSelector('.big2d svg');
+  assert.match(await page.textContent('#t2d'), /3D/);
+  await page.click('[data-action="navpause"]');
+  await page.click('[data-action="navskip"]');
+  await page.waitForSelector('.arrived-cols', { timeout: 10000 });
+  assert.deepEqual(sceneryRequests, [], 'no exterior scenery downloads');
+  assert.deepEqual(errors, []);
+  await page.close();
+});
+
 test('leaving while the building loads cancels cleanly; a later route still works', async () => {
   const page = await b.newPage(PORTRAIT), errors = watch(page);
   let delay = 2500;
@@ -143,6 +187,8 @@ test('step-free request: explicit no-route, nothing drawn, never stairs', async 
 });
 
 test('an office move updates the active destination and the sign without reloading the building', async () => {
+  await srv.api('POST', `/admin/calibrations/${srv.fx.graph.calibration.calibrationVersion}/verify`, {
+    anchors: ['ENTRANCE_CENTRE', 'LEFT', 'RIGHT_DEEP', 'UPSTAIRS'].map(id => ({ id, measured: [0, 0, 0], residual_m: 0.03 })) });
   const page = await b.newPage(PORTRAIT), errors = watch(page);
   await openOffice(page, '&sync=1');
   await startRoute(page); await waitBuilding(page);
@@ -150,7 +196,7 @@ test('an office move updates the active destination and the sign without reloadi
   assert.ok((await signText()).every(t => t === srv.fx.office.name));
   const rooms = (await srv.api('GET', '/admin/rooms')).body.items;
   const other = rooms.find(r => r.id !== srv.fx.office.location.room_id && r.room_type === 'office');
-  await srv.api('POST', `/admin/offices/${srv.fx.office.id}/move`, { room_id: other.id, note: 'e2e move' });
+  await srv.api('POST', `/admin/offices/${srv.fx.office.id}/move`, { room_id: other.id, occupancy: 'share', note: 'e2e move' });
   // the next content sync re-resolves the office: its new room has no verified doorway -> explicit no-route
   await page.waitForFunction(() => /not been checked on site/.test(document.querySelector('.screen')?.textContent || ''), null, { timeout: 20000 });
   const titles = await signText();

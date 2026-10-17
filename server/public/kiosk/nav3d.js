@@ -1,17 +1,19 @@
 // 3D "show me the way" preview for the web kiosk: the public navigation adapter.
 //
 //   const ctrl = await createNav3D(container, bundle, route, { signal, onProgress, onArrive, onLoadProgress });
-//   ctrl.pause() / replay() / skip() / dispose() / setCameraMode('overview'|'eye') / updateContent(bundle)
+//   ctrl.pause() / replay() / skip() / dispose() / setAvatar(object3D) / updateContent(bundle)
 //
 // Routes from the published navigation graph play inside the REAL building (three/building-viewer.js), loaded
 // once per session. Prototype routes (no graph published) keep the database GREYBOX below: they come from
 // placeholder coordinates and must never be drawn over the real building, where they would cross walls.
 // onProgress(fraction, canonicalPosition, directionIndex) always reports canonical database coordinates.
 import * as THREE from 'three';
+import { CameraRig } from './three/camera-controller.js';
+import { buildWalk, activeDirection } from '../shared/walk-path.js';
 
 export class Nav3DError extends Error { constructor(message, code) { super(message); this.code = code; } }
 
-export async function createNav3D(container, bundle, route, { signal, onProgress, onArrive, onLoadProgress, cameraMode, onFallback } = {}) {
+export async function createNav3D(container, bundle, route, { signal, onProgress, onArrive, onLoadProgress, onFallback } = {}) {
   const nav = bundle.navigation;
   if (route.routeSource !== 'navigation_graph' || !nav?.model) return createGreyboxNav(container, bundle, route, { onProgress, onArrive });
   if (nav.graph?.modelVersion !== nav.model.modelVersion) throw new Nav3DError('Navigation graph and model release do not match.', 'VERSION_MISMATCH');
@@ -22,7 +24,7 @@ export async function createNav3D(container, bundle, route, { signal, onProgress
   if (signal?.aborted) throw Object.assign(new Error('Navigation was cancelled.'), { name: 'AbortError', code: 'ABORTED' });
   viewer.attach(container);
   viewer.updateContent(bundle);
-  const player = viewer.playRoute(route, { onProgress, onArrive, cameraMode });
+  const player = viewer.playRoute(route, { onProgress, onArrive });
   // WebGL context lost mid-route (driver reset, GPU memory pressure): hand the route to the 2D map
   const off = viewer.on(ev => { if (ev.type === 'contextlost') onFallback?.(Object.assign(new Error('WebGL context lost'), { code: 'CONTEXT_LOST' })); });
   return {
@@ -31,7 +33,7 @@ export async function createNav3D(container, bundle, route, { signal, onProgress
     pause: () => player.pause(),
     replay: () => player.replay(),
     skip: () => player.skip(),
-    setCameraMode: m => player.setCameraMode(m),
+    setAvatar: obj => player.setAvatar(obj),
     updateContent: b => viewer.updateContent(b),
     info: () => viewer.info(),
     // releases this route only: the building, textures and WebGL context stay for the next route
@@ -130,83 +132,27 @@ export function createGreyboxNav(container, bundle, route, { onProgress, onArriv
   nose.rotation.x = -Math.PI / 2; nose.position.set(0, 1.0, -.32); walker.add(nose);
   scene.add(walker);
 
-  // ---------- path timing (segment lengths; floor changes get a fixed pause)
-  const raw = route.waypoints;
-  const segs = [];
-  for (let i = 1; i < raw.length; i++) {
-    const a = raw[i - 1], b = raw[i];
-    const len = Math.hypot(b.x - a.x, b.z - a.z) + Math.abs(b.y - a.y);
-    const dur = a.floor !== b.floor ? Math.max(FLOOR_PAUSE, len / WALK) : len / WALK;
-    segs.push({ a, b, dur });
-  }
-  const total = segs.reduce((s, x) => s + x.dur, 0) || 0.001;
-
-  // ---------- state + loop
-  let elapsed = 0, paused = false, arrived = false, last = performance.now(), raf = 0, disposed = false;
-  const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
-  let camInit = false;
-
-  function sample(t) {
-    let acc = 0;
-    for (let i = 0; i < segs.length; i++) {
-      const s = segs[i];
-      if (t <= acc + s.dur || i === segs.length - 1) {
-        const f = s.dur ? Math.min(1, Math.max(0, (t - acc) / s.dur)) : 1;
-        const p = { x: s.a.x + (s.b.x - s.a.x) * f, y: s.a.y + (s.b.y - s.a.y) * f, z: s.a.z + (s.b.z - s.a.z) * f, floor: f < .5 ? s.a.floor : s.b.floor };
-        return { p, seg: i, f, dir: { x: s.b.x - s.a.x, z: s.b.z - s.a.z } };
-      }
-      acc += s.dur;
-    }
-    const e = raw[raw.length - 1];
-    return { p: { ...e }, seg: segs.length - 1, f: 1, dir: { x: 0, z: 1 } };
-  }
-
+  // One pose timeline drives both real-building and placeholder first-person previews.
+  const walk = buildWalk(route.waypoints, route.to?.door);
+  const rig = new CameraRig(camera);
+  walker.visible = false;
+  let elapsed = 0, paused = false, arrived = false, last = null, raf = 0, disposed = false;
   function resize() {
     const w = container.clientWidth || 1080, h = container.clientHeight || 1000;
     renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
   }
   const ro = new ResizeObserver(resize); ro.observe(container); resize();
-
   function frame(now) {
     if (disposed) return;
-    const dt = Math.min(.1, (now - last) / 1000); last = now;
-    if (!paused && !arrived) elapsed = Math.min(total, elapsed + dt);
-    const { p, seg, f, dir } = sample(elapsed);
-    const wp = U(p.x, p.y, p.z);
-    walker.position.copy(wp);
-    if (Math.hypot(dir.x, dir.z) > .01) walker.rotation.y = Math.atan2(-dir.x, dir.z) + Math.PI; // face travel direction
-    pin.position.y = endPt.y + 1.6 + Math.sin(now / 300) * .2;
-
-    // upper floors fade out when the walker is below them, so you can see inside
-    for (const [lvl, g] of floorGroups) {
-      g.visible = lvl <= p.floor;
-      if (g.userData.shownFor !== p.floor) { // labels only for the floor you are on
-        g.children.forEach(c => { if (c.isSprite) c.visible = lvl === p.floor; });
-        g.userData.shownFor = p.floor;
-      }
-    }
-
-    // follow camera: elevated, on the entrance side (steady, no motion sickness). It frames the walker
-    // and the route up to LOOKAHEAD_M ahead, rising only as far as needed to keep both on screen at this aspect ratio.
-    const ah = sample(Math.min(total, elapsed + LOOKAHEAD_M / WALK)).p;
-    const aheadW = ah.floor === p.floor ? U(ah.x, ah.y, ah.z) : wp;
-    const focus = wp.clone().lerp(aheadW, .5);
-    const tanHalf = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
-    const height = Math.max(CAM_HEIGHT,
-      (Math.abs(aheadW.x - wp.x) / 2 + CAM_MARGIN) / (tanHalf * camera.aspect),
-      (Math.abs(aheadW.z - wp.z) / 2 + CAM_MARGIN) / tanHalf);
-    const desired = focus.clone().add(new THREE.Vector3(0, height, height * 9 / CAM_HEIGHT));
-    const look = focus.clone().add(new THREE.Vector3(0, .5, -1));
-    if (!camInit) { camPos.copy(desired); camLook.copy(look); camInit = true; }
-    camPos.lerp(desired, 1 - Math.pow(.02, dt)); camLook.lerp(look, 1 - Math.pow(.02, dt));
-    camera.position.copy(camPos); camera.lookAt(camLook);
+    const dt = last === null ? 0 : Math.min(.1, (now - last) / 1000); last = now;
+    if (!paused && !arrived) elapsed = Math.min(walk.duration, elapsed + dt);
+    const pose = walk.sample(elapsed);
+    rig.update(pose);
+    for (const [lvl, g] of floorGroups) g.visible = lvl <= pose.floor;
     renderer.render(scene, camera);
-
-    const pointIdx = seg + (f >= 1 ? 1 : 0);
-    let leg = route.directions.findIndex(d => d.point_index > pointIdx);
-    if (leg === -1) leg = route.directions.length - 1;
-    onProgress?.(elapsed / total, p, leg);
-    if (!arrived && elapsed >= total) { arrived = true; onArrive?.(); }
+    const leg = activeDirection(route.directions, pose);
+    onProgress?.(elapsed / walk.duration, pose, leg);
+    if (!arrived && elapsed >= walk.duration) { arrived = true; onArrive?.(); }
     raf = requestAnimationFrame(frame);
   }
   raf = requestAnimationFrame(frame);
@@ -228,8 +174,8 @@ export function createGreyboxNav(container, bundle, route, { onProgress, onArriv
   return {
     kind: 'greybox', draft: true,
     pause() { paused = !paused; return paused; },
-    replay() { elapsed = 0; arrived = false; paused = false; },
-    skip() { elapsed = total; },
+    replay() { elapsed = 0; arrived = false; paused = false; last = null; },
+    skip() { elapsed = walk.duration; },
     dispose() {
       disposed = true; cancelAnimationFrame(raf); ro.disconnect();
       disposables.forEach(d => d.dispose?.()); renderer.dispose(); renderer.forceContextLoss?.();

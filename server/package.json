@@ -8,9 +8,10 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
+    "demo": "node test/e2e/demo-server.mjs",
     "seed": "node src/seed.js --reset",
-    "test": "node --test test/api.test.js test/route.test.js test/navigation.test.js test/model.test.js",
-    "test:e2e": "node --test --test-concurrency=1 test/e2e/kiosk-3d.e2e.mjs"
+    "test": "node --test test/api.test.js test/route.test.js test/navigation.test.js test/model.test.js test/walk.test.js test/walk-clearance.test.js test/plan-reference.test.js",
+    "test:e2e": "node --test --test-concurrency=1 test/e2e/kiosk-3d.e2e.mjs test/e2e/room-assignments.e2e.mjs"
   },
   "engines": {
     "node": ">=18.17"

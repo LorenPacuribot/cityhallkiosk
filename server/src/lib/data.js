@@ -54,8 +54,8 @@ export function officesWithLocation() {
 
 export function floorsWithRooms() {
   const floors = all('SELECT * FROM floors ORDER BY level');
-  const rooms = all(`SELECT r.*, (SELECT o.name FROM office_locations ol JOIN offices o ON o.id = ol.office_id
-                                   WHERE ol.room_id = r.id AND ol.valid_to IS NULL LIMIT 1) AS occupant
+  const rooms = all(`SELECT r.*, (SELECT group_concat(o.name, ', ') FROM office_locations ol JOIN offices o ON o.id = ol.office_id
+                                   WHERE ol.room_id = r.id AND ol.valid_to IS NULL AND ol.is_primary = 1) AS occupant
                        FROM rooms r WHERE r.is_active = 1 ORDER BY r.code`);
   return floors.map(f => ({ ...f, rooms: rooms.filter(r => r.floor_id === f.id) }));
 }

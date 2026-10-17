@@ -11,11 +11,11 @@
 import * as THREE from 'three';
 import { toRender } from './coordinates.js';
 import { CameraRig } from './camera-controller.js';
-import { buildWalk } from '../../shared/walk-path.js';
+import { buildWalk, activeDirection } from '../../shared/walk-path.js';
 
 const RIBBON_WIDTH = 0.6;    // m
 const LIFT_FLOOR = 0.025;    // ribbon height above level floors (m)
-const LIFT_STAIRS = 0.16;    // above the stair pitch line, so the ribbon rides over the nosings instead of into the treads
+const LIFT_STAIRS = 0.03;    // the route follows the upper pitch line of the model's stair treads
 const LABEL_RANGE = 16;      // m of route left when the destination label appears (it is drawn over walls)
 const COLORS = { route: new THREE.Color(0x1a63be), routeDone: new THREE.Color(0x9fb9d9), pin: 0xb8432f, ring: 0xb8432f };
 
@@ -28,6 +28,7 @@ export class RoutePlayer {
     this.elapsed = 0; this.paused = false; this.arrived = false; this.last = null; this.disposed = false; this.avatar = null;
     this.walk = buildWalk(route.waypoints, route.to?.door || null);
     this.build();
+    viewer.floors?.showAll();
     viewer.scene.add(this.group);
     if (viewer.renderer) viewer.renderer.clippingPlanes = []; // first person sees the whole building
     viewer.animating.add(this);
@@ -37,10 +38,12 @@ export class RoutePlayer {
 
   build() {
     const wps = this.route.waypoints;
+    const doorPoint = this.route.to?.door;
+    const ribbonPoints = doorPoint ? [...wps, { ...doorPoint, y: wps.at(-1).y, floor: wps.at(-1).floor }] : wps;
     // ---- ribbon on the floor (u = metres along the route, v = across)
     const pts = [], lifts = [];
-    for (let i = 0; i < wps.length; i++) {
-      const p = wps[i], prev = wps[i - 1], next = wps[i + 1];
+    for (let i = 0; i < ribbonPoints.length; i++) {
+      const p = ribbonPoints[i], prev = ribbonPoints[i - 1], next = ribbonPoints[i + 1];
       if (prev && Math.hypot(p.x - prev.x, p.y - prev.y, p.z - prev.z) < 1e-3) continue;
       const sloped = q => q && Math.abs(q.y - p.y) > 0.05;
       pts.push(p); lifts.push(sloped(prev) || sloped(next) ? LIFT_STAIRS : LIFT_FLOOR);
@@ -52,7 +55,7 @@ export class RoutePlayer {
         uniform float uTime, uDone; uniform vec3 uColor, uDoneColor; varying vec2 vUv;
         void main() {
           float u = vUv.x, v = vUv.y;
-          float edge = smoothstep(0.0, 0.1, v) * smoothstep(1.0, 0.9, v);
+          float edge = smoothstep(0.0, 0.1, v) * (1.0 - smoothstep(0.9, 1.0, v));
           float x = fract((u - uTime * 0.9) / 1.6);              // chevrons every 1.6 m, moving forward
           float c = x + abs(v - 0.5) * 0.55;                      // arms trail behind the tip: points the way
           float chev = smoothstep(0.50, 0.53, c) - smoothstep(0.70, 0.73, c);
@@ -82,10 +85,10 @@ export class RoutePlayer {
     this.ring.position.copy(toRender({ x: mk.x, y: floorY + LIFT_FLOOR + 0.005, z: mk.z }));
     this.pin = new THREE.Mesh(this.track(new THREE.ConeGeometry(0.2, 0.5, 24)), this.track(new THREE.MeshBasicMaterial({ color: COLORS.pin, toneMapped: false })));
     this.pin.rotation.x = Math.PI;
-    this.pinBase = toRender({ x: mk.x, y: floorY + 2.3, z: mk.z });
+    this.pinBase = toRender({ x: mk.x, y: floorY + 1.1, z: mk.z });
     this.pin.position.copy(this.pinBase);
     this.label = makeLabel(this.route.to?.room_code || '', this.route.to?.name || this.route.to?.room_name || '', this);
-    this.label.position.copy(toRender({ x: mk.x, y: floorY + 2.95, z: mk.z }));
+    this.label.position.copy(toRender({ x: mk.x, y: floorY + 1.85, z: mk.z }));
     this.label.visible = false;
     this.endFloor = end.floor;
     this.group.add(this.ring, this.pin, this.label);
@@ -110,19 +113,21 @@ export class RoutePlayer {
     this.ring.scale.set(pulse, pulse, 1);
     this.pin.position.y = this.pinBase.y + Math.sin(now / 320) * 0.07;
     this.label.visible = pose.floor === this.endFloor && this.walk.length - pose.s < LABEL_RANGE;
+    const labelWidth = Math.min(1.9, this.label.position.distanceTo(this.viewer.camera.position) * 0.48);
+    this.label.scale.set(labelWidth, labelWidth * 288 / 1024, 1);
+    this.pin.scale.setScalar(Math.min(1, this.pin.position.distanceTo(this.viewer.camera.position) / 2));
 
-    const pointIdx = pose.seg + (pose.f >= 1 ? 1 : 0);
-    let leg = this.route.directions.findIndex(d => d.point_index > pointIdx);
-    if (leg === -1) leg = this.route.directions.length - 1;
+    const leg = activeDirection(this.route.directions, pose);
     this.onProgress?.(this.elapsed / this.total, { x: pose.x, y: pose.y, z: pose.z, floor: pose.floor, yaw: pose.yaw }, leg);
     if (!this.arrived && this.elapsed >= this.total) { this.arrived = true; this.onArrive?.(); }
+    if (this.paused || this.arrived) this.viewer.animating.delete(this);
   }
 
-  pause() { this.paused = !this.paused; this.last = null; return this.paused; }
+  pause() { this.paused = !this.paused; this.last = null; this.viewer.animating.add(this); this.viewer.invalidate(); return this.paused; }
   replay() { this.elapsed = 0; this.arrived = false; this.paused = false; this.last = null; this.viewer.animating.add(this); this.viewer.invalidate(); }
-  skip() { this.elapsed = this.total; this.viewer.invalidate(); }
+  skip() { this.elapsed = this.total; this.viewer.animating.add(this); this.viewer.invalidate(); }
   /** Jump to a fraction of the walk (tests, staff review). */
-  seek(fraction) { this.elapsed = Math.max(0, Math.min(1, fraction)) * this.total; this.arrived = false; this.last = null; this.viewer.invalidate(); }
+  seek(fraction) { this.elapsed = Math.max(0, Math.min(1, fraction)) * this.total; this.arrived = false; this.last = null; this.viewer.animating.add(this); this.viewer.invalidate(); }
 
   dispose() {
     if (this.disposed) return;

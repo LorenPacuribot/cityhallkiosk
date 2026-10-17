@@ -25,6 +25,7 @@ const { seed } = await import('../../src/seed.js');
 const { createApp } = await import('../../src/server.js');
 const { get, run, setSetting } = await import('../../src/db.js');
 const nav = await import('../../src/lib/navigation.js');
+const { applyPlanReferenceRooms } = await import('../../src/lib/plan-reference-rooms.js');
 if (!fs.existsSync(LIVE)) await seed({ reset: false });
 const app = await createApp();
 
@@ -35,6 +36,7 @@ const manifest = JSON.parse(fs.readFileSync(release, 'utf8'));
 if (!nav.revisionByVersion(graph.navigationVersion)) nav.importGraph(graph, null);
 nav.registerModelRelease({ modelVersion: graph.modelVersion, baseUrl: `/models/cityhall/${graph.modelVersion}/`, sourceBlendSha256: manifest.sourceBlendSha256 });
 if (nav.currentPublication()?.navigation_version !== graph.navigationVersion) nav.publish(graph.navigationVersion, null);
+applyPlanReferenceRooms(graph);
 setSetting('navigation_preview_unverified', '1');
 if (!get(`SELECT 1 FROM kiosks WHERE code = 'PILOT-ENTRANCE'`)) {
   const f1 = get('SELECT id FROM floors WHERE level = 1');

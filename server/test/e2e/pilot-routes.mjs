@@ -6,6 +6,7 @@
 //
 // Every route is unverified: the kiosk shows the draft banner; nothing here is a field verification.
 import fs from 'node:fs';
+import assert from 'node:assert/strict';
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -48,26 +49,45 @@ await page.goto(`${base}/kiosk?idle=0&kiosk=PILOT-ENTRANCE&preview=1&screen=map`
 const report = { createdAt: new Date().toISOString(), layout, modelVersion: graph.modelVersion, navigationVersion: graph.navigationVersion,
   calibration: graph.calibration.calibrationVersion + ' (draft)', note: 'Draft routes from model evidence. Not field verified.', routes: [], errors };
 
+for (const level of [1, 2]) {
+  await page.click('[data-action="mapfloor"][data-l="' + level + '"]');
+  await page.waitForSelector('#floor-vp.has-building canvas', { timeout: 60000 });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: path.join(OUT, layout + '-floor-' + level + '.png') });
+  const floorInfo = await page.evaluate(async () => {
+    const v = (await import('/kiosk/three/building-viewer.js')).getViewer();
+    return { level: v.floorView.o.level, distance: v.floorView.cur.dist, calls: v.info().calls };
+  });
+  assert.equal(floorInfo.level, level);
+  assert.ok(floorInfo.distance < 400 && floorInfo.calls > 0, 'floor is framed and rendered');
+}
 for (const d of graph.destinations) {
-  await page.goto(`${base}/kiosk?idle=0&kiosk=PILOT-ENTRANCE&preview=1&screen=map`, { waitUntil: 'networkidle' });
   await page.click(`[data-action="navopening"][data-o="${d.openingId}"]`);
   await page.waitForSelector('#vp canvas', { timeout: 60000 });
   const tag = d.id.toLowerCase();
   const shots = [];
   const snap = async name => { const f = path.join(OUT, `${layout}-${tag}-${name}.png`); await page.screenshot({ path: f }); shots.push(path.relative(REPO, f).split(path.sep).join('/')); };
-  await page.click('[data-action="navpause"]'); // freeze at the start for a stable overview
-  await snap('1-start-overview');
+  await page.click('[data-action="navpause"]'); // freeze the first-person entrance pose
+  await snap('1-entrance-first-person');
   const directions = await page.$$eval('.dir', els => els.map(e => e.textContent.replace(/^\s*\d*/, '').trim()));
   const banner = await page.$eval('.draft-route', e => e.textContent.trim()).catch(() => null);
   // stair section (if any) and the arrival, sampled from the route's own timing
-  await page.evaluate(async () => { const v = (await import('/kiosk/three/building-viewer.js')).getViewer(); const p = v.player; p.elapsed = p.total * 0.5; p.last = null; v.invalidate(); });
-  await page.waitForTimeout(600); await snap('2-midway-overview');
-  await page.click('[data-action="navcam"]');
-  await page.waitForTimeout(800); await snap('3-midway-walkview');
-  await page.evaluate(async () => { const v = (await import('/kiosk/three/building-viewer.js')).getViewer(); const p = v.player; p.elapsed = p.total * 0.93; p.last = null; v.invalidate(); });
+  await page.evaluate(async () => { const v = (await import('/kiosk/three/building-viewer.js')).getViewer(); const p = v.player; p.seek(0.5); });
+  await page.waitForTimeout(600); await snap('2-midway-first-person');
+  await page.evaluate(async () => { const v = (await import('/kiosk/three/building-viewer.js')).getViewer(); const p = v.player; p.seek(0.93); });
   await page.waitForTimeout(800); await snap('4-approach-walkview');
-  await page.click('[data-action="navcam"]');
+  const poseCheck = await page.evaluate(async () => {
+    const v = (await import('/kiosk/three/building-viewer.js')).getViewer(), p = v.player, pose = p.walk.sample(p.elapsed);
+    return { eye: v.camera.position.toArray(), pose, minimap: document.querySelector('#mm').dataset.floor, hasPlan: !!document.querySelector('#mm image') };
+  });
+  assert.ok(Math.abs(poseCheck.eye[1] - poseCheck.pose.y - 1.6) < .001);
+  assert.equal(+poseCheck.minimap, poseCheck.pose.floor);
+  assert.ok(poseCheck.hasPlan, 'real plan beneath the route');
+  await page.click('[data-action="mmfloor"][data-l="1"]');
+  await page.click('[data-action="mmfollow"]');
+  assert.equal(await page.getAttribute('[data-action="mmfollow"]', 'aria-pressed'), 'true');
   const info = await page.evaluate(async () => (await import('/kiosk/three/building-viewer.js')).getViewer().info());
+  assert.equal(info.loads, 1, 'floors and all routes share one model load');
   report.routes.push({ destination: d.id, opening: d.openingId, banner, directions, shots, renderer: info });
   await page.click('[data-action="endnav"]');
 }

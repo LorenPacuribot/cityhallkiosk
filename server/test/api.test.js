@@ -88,6 +88,41 @@ test('Unity marker sync updates coordinates by room code', async () => {
   assert.equal(room.coord_source, 'unity_sync');
 });
 
+test('room reassignment requires an occupancy choice, swaps atomically, and preserves displaced history', async () => {
+  const token = await login('lgu.admin@kiosk.local');
+  const floor = (await j('GET', '/admin/floors', null, token)).body.items[0];
+  const rooms = [];
+  for (const code of ['TEST-A', 'TEST-B']) rooms.push((await j('POST', '/admin/rooms', { floor_id: floor.id, code, name: code }, token)).body);
+  const offices = [];
+  for (const name of ['Assignment Accounting', 'Assignment Mayor', 'Assignment Shared']) offices.push((await j('POST', '/admin/offices', { name, location_type: 'unconfirmed' }, token)).body);
+  const move = (office, room, body = {}) => j('POST', `/admin/offices/${office.id}/move`, { room_id: room.id, ...body }, token);
+  await move(offices[0], rooms[0]); await move(offices[1], rooms[1]);
+  const version = (await j('GET', '/kiosk/version')).body.content_version;
+  assert.equal((await move(offices[1], rooms[0])).status, 409, 'occupied room never silently becomes shared');
+  assert.equal((await move(offices[1], rooms[0], { occupancy: 'swap', expected_room_id: null })).status, 409, 'stale source rejected');
+  assert.equal((await move(offices[1], rooms[0], { occupancy: 'swap', expected_occupant_ids: [] })).status, 409, 'stale target rejected');
+  assert.equal((await j('GET', '/kiosk/version')).body.content_version, version, 'rejected edits do not publish');
+  assert.equal((await move(offices[1], rooms[0], { occupancy: 'swap', expected_room_id: rooms[1].id, expected_occupant_ids: [offices[0].id], note: 'Exchange rooms' })).status, 200);
+  const current = async id => (await j('GET', '/admin/offices', null, token)).body.items.find(o => o.id === id);
+  assert.equal((await current(offices[0].id)).location.room_id, rooms[1].id);
+  assert.equal((await current(offices[1].id)).location.room_id, rooms[0].id);
+  assert.equal((await move(offices[2], rooms[0], { occupancy: 'share' })).status, 200);
+  const occupied = (await j('GET', '/admin/floors', null, token)).body.items.flatMap(f => f.rooms).find(r => r.id === rooms[0].id);
+  assert.match(occupied.occupant, /Assignment Mayor/); assert.match(occupied.occupant, /Assignment Shared/);
+  assert.equal((await move(offices[0], rooms[0], { occupancy: 'swap' })).status, 400, 'ambiguous shared-room swap rejected');
+  assert.equal((await move(offices[0], rooms[0], { occupancy: 'replace', note: 'Reassign room' })).status, 200);
+  for (const office of offices.slice(1)) {
+    const o = await current(office.id);
+    assert.equal(o.location_type, 'unconfirmed'); assert.equal(o.location.room_id, null);
+    const hist = (await j('GET', `/admin/offices/${o.id}/history`, null, token)).body.items;
+    assert.ok(hist.length); assert.ok(hist.every(h => h.valid_to !== null));
+  }
+  const hist = (await j('GET', `/admin/offices/${offices[0].id}/history`, null, token)).body.items;
+  assert.equal(hist.filter(h => h.valid_to === null).length, 1);
+  assert.equal(hist[0].note, 'Reassign room');
+  assert.equal((await j('POST', `/admin/offices/${offices[0].id}/move`, { room_id: rooms[1].id }, await login('viewer@kiosk.local'))).status, 403);
+});
+
 test('office editor proposals wait for approval; kiosk keeps the published version', async () => {
   const editor = await login('ccro.editor@kiosk.local');
   const admin = await login('lgu.admin@kiosk.local');

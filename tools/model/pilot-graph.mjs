@@ -18,7 +18,7 @@ const SRC = {
   walk: `${WS}/interior_walkthrough/Capture_Manifest.json shots[].actual_camera_position (eye 1.60 m above floor; revision 05 geometry, lineage to r09 not re-verified)`,
   poses: `${WS}/scripts/prepare_walkthrough_poses.py (requested stair stations)`,
   stairs: `${WS}/front_facade_review/Mesh_Inventory.json lo/hi (stair flights and landings)`,
-  doors: `${WS}/interior_walkthrough_plan/Model_Area_Inventory.json candidate_doorways[].center (first leaf bbox centre)`,
+  doors: 'server/public/models/cityhall/r09-web02/nodes.json DOORGEO leaf boundsGltf midpoint (current closed door; glTF x,y,z -> Blender x,-z,y)',
   lift: `${WS}/front_facade_review/Mesh_Inventory.json RIGHT_ELEVATOR_* and R_ELEVATOR_F*_door_gap (concept v3, dimensions estimated)`,
   facade: `${WS}/scripts/build_v3.py V3_Entrance_Wall y=-17.5; Front_Opening_Schedule.csv FRONT-017/018 x=∓3.1`,
   corridor2f: `${WS}/second_floor_revision/README.md (2F fixture rows centred y=-5.0 left, -4.5 right)`,
@@ -60,8 +60,8 @@ edge('E-ENT-LOBBY', 'walk', 'GF-ENTRANCE', 'GF-LOBBY', [[0.25, -5.0, 0]], { sour
 node('GF-L-FOYER', 1, 'junction', [-13.75, -4.5, 0], `${SRC.walk} GF-L foyer`);
 node('GF-L-STAIRAPP', 1, 'junction', [-8.0, -4.5, 0], `${SRC.walk} L-STAIR approach`);
 node('GF-L-C1', 1, 'junction', [-21.75, -5.0, 0], `${SRC.walk} GF-L corridor y=-5.0`);
-node('GF-L-D108', 1, 'junction', [-35.225, -5.0, 0], `${SRC.doors} R1-W002-D108 x, on the GF-L corridor line y=-5.0 (${SRC.walk})`);
-node('GF-L-D108-APP', 1, 'door_approach', [-35.225, -3.0, 0], `1.0 m in front of door leaf centre (-35.225,-1.975) from ${SRC.doors}`, 'Doorway R1-W002-D108');
+node('GF-L-D108', 1, 'junction', [-34.7, -5.0, 0], `${SRC.doors} R1-W002-D108 x, on the GF-L corridor line y=-5.0 (${SRC.walk})`);
+node('GF-L-D108-APP', 1, 'door_approach', [-34.7, -3.8, 0], `1.3 m in front of door leaf centre (-34.7,-2.5) from ${SRC.doors}`, 'Doorway R1-W002-D108');
 edge('E-LOBBY-LSTAIRAPP', 'walk', 'GF-LOBBY', 'GF-L-STAIRAPP', [], { source: SRC.walk });
 edge('E-LSTAIRAPP-LFOYER', 'walk', 'GF-L-STAIRAPP', 'GF-L-FOYER', [], { source: SRC.walk });
 edge('E-LFOYER-LC1', 'walk', 'GF-L-FOYER', 'GF-L-C1', [[-18.25, -5.0, 0]], { source: SRC.walk });
@@ -72,8 +72,8 @@ edge('E-LD108-APP', 'door', 'GF-L-D108', 'GF-L-D108-APP', [], { source: SRC.door
 node('GF-R-STAIRAPP', 1, 'junction', [8.0, -4.5, 0], `${SRC.walk} R-STAIR approach (mirror of L-STAIR station)`);
 node('GF-R-FOYER', 1, 'junction', [13.75, -4.0, 0], `${SRC.walk} GF-R foyer`);
 node('GF-R-C1', 1, 'junction', [21.75, -4.0, 0], `${SRC.walk} GF-R corridor y=-4.0`);
-node('GF-R-D133', 1, 'junction', [26.525, -4.0, 0], `${SRC.doors} R1-W038-D133 x, on the GF-R corridor line y=-4.0 (${SRC.walk})`);
-node('GF-R-D133-APP', 1, 'door_approach', [26.525, -3.0, 0], `1.0 m in front of door leaf centre (26.525,-2.025) from ${SRC.doors}`, 'Doorway R1-W038-D133');
+node('GF-R-D133', 1, 'junction', [27.0, -4.0, 0], `${SRC.doors} R1-W038-D133 x, on the GF-R corridor line y=-4.0 (${SRC.walk})`);
+node('GF-R-D133-APP', 1, 'door_approach', [27.0, -3.5, 0], `1 m in front of door leaf centre (27.0,-2.5) from ${SRC.doors}`, 'Doorway R1-W038-D133');
 edge('E-LOBBY-RSTAIRAPP', 'walk', 'GF-LOBBY', 'GF-R-STAIRAPP', [], { source: SRC.walk });
 edge('E-RSTAIRAPP-RFOYER', 'walk', 'GF-R-STAIRAPP', 'GF-R-FOYER', [], { source: SRC.walk });
 edge('E-RFOYER-RC1', 'walk', 'GF-R-FOYER', 'GF-R-C1', [[18.25, -4.0, 0]], { source: SRC.walk });
@@ -85,28 +85,32 @@ node('GF-L-STAIRFOOT', 1, 'stair_foot', [-11.45, -4.75, 0], `${SRC.walk} L-STAIR
 node('F2-L-STAIRTOP', 2, 'stair_top', [-18.55, -6.6, 4.0], `${SRC.walk} L-STAIR arrival`, 'Left main stairs (2nd floor)');
 edge('E-LSTAIRAPP-LFOOT', 'walk', 'GF-L-STAIRAPP', 'GF-L-STAIRFOOT', [], { source: SRC.walk });
 edge('S-LEFT-GF-F2', 'stairs', 'GF-L-STAIRFOOT', 'F2-L-STAIRTOP',
-  [[-11.45, -8.0, 0.179], [-11.45, -9.1, 0.679], [-11.45, -11.3, 1.345], [-14.8, -11.5, 2.012], [-18.55, -11.5, 2.679], [-18.55, -9.4, 3.345], [-18.55, -8.1, 3.845]],
-  { label: 'left main stairs', source: `${SRC.poses}; ${SRC.stairs} (Landing0 z 1.345, Landing1 z 2.679; two right turns)` });
+  [[-11.45, -7.3, 0], [-11.45, -7.65, 0.179], [-11.45, -10.275, 1.345], [-11.45, -11.5, 1.345],
+    [-12.875, -11.5, 1.345], [-13.3, -11.5, 1.512], [-16.275, -11.5, 2.679], [-18.55, -11.5, 2.679],
+    [-18.55, -11.025, 2.679], [-18.55, -10.65, 2.845], [-18.55, -8.025, 4.012], [-18.55, -7.65, 4.012], [-18.55, -7.4, 4.0]],
+  { label: 'left main stairs', source: `${SRC.stairs} L0_first/cross/return_tread bounds: pitch lines above tread leading edges, flat landings z 1.345 and 2.679; checked against r09-web02 GLB vertical rays` });
 
 node('GF-R-STAIRFOOT', 1, 'stair_foot', [11.45, -4.75, 0], `${SRC.walk} R-STAIR foot`, 'Right main stairs');
 node('F2-R-STAIRTOP', 2, 'stair_top', [18.55, -6.6, 4.0], `${SRC.walk} R-STAIR arrival`, 'Right main stairs (2nd floor)');
 edge('E-RSTAIRAPP-RFOOT', 'walk', 'GF-R-STAIRAPP', 'GF-R-STAIRFOOT', [], { source: SRC.walk });
 edge('S-RIGHT-GF-F2', 'stairs', 'GF-R-STAIRFOOT', 'F2-R-STAIRTOP',
-  // flight 1 has 6 treads (z 0.183 -> 1.016 over y -7.665 -> -9.54); the -9.1 station z is interpolated along that flight
-  [[11.45, -8.0, 0.179], [11.45, -9.1, 0.82], [11.45, -11.3, 1.012], [14.8, -11.5, 1.845], [18.55, -11.5, 2.679], [18.55, -9.4, 3.345], [18.55, -8.1, 3.845]],
-  { label: 'right main stairs', source: `${SRC.poses}; ${SRC.stairs} (Landing0 z 1.012, Landing1 z 2.679; two left turns)` });
+  // Right stair has six treads on flight 1 and ten on the crossing flight; its first landing is lower.
+  [[11.45, -7.3, 0], [11.45, -7.65, 0.179], [11.45, -9.525, 1.012], [11.45, -11.5, 1.012],
+    [12.96, -11.5, 1.012], [13.3, -11.5, 1.179], [16.36, -11.5, 2.679], [18.55, -11.5, 2.679],
+    [18.55, -11.025, 2.679], [18.55, -10.65, 2.845], [18.55, -8.025, 4.012], [18.55, -7.65, 4.012], [18.55, -7.4, 4.0]],
+  { label: 'right main stairs', source: `${SRC.stairs} R0_first/cross/return_tread bounds: pitch lines above tread leading edges, flat landings z 1.012 and 2.679; checked against r09-web02 GLB vertical rays` });
 
 // ---------------------------------------------------------------- second floor (level 2, z = 4.0)
 node('F2-L-FOYER', 2, 'junction', [-18.55, -5.2, 4.0], `${SRC.walk} L-STAIR top foyer`);
 node('F2-L-C1', 2, 'junction', [-21.75, -5.0, 4.0], `${SRC.walk} 2F-L corridor y=-5.0; ${SRC.corridor2f}`);
-node('F2-L-D210', 2, 'door_approach', [-26.625, -5.0, 4.0], `on the 2F-L corridor line, 0.975 m from door leaf centre (-26.625,-5.975) in ${SRC.doors}`, 'Doorway R2-W032-D210');
+node('F2-L-D210', 2, 'door_approach', [-25.9, -5.0, 4.0], `on the 2F-L corridor line, 1.726 m from door leaf centre (-25.9,-6.726) in ${SRC.doors}`, 'Doorway R2-W032-D210');
 edge('E-F2LTOP-FOYER', 'walk', 'F2-L-STAIRTOP', 'F2-L-FOYER', [], { source: SRC.walk });
 edge('E-F2LFOYER-C1', 'walk', 'F2-L-FOYER', 'F2-L-C1', [], { source: SRC.walk });
 edge('E-F2LC1-D210', 'walk', 'F2-L-C1', 'F2-L-D210', [], { source: SRC.walk });
 
 node('F2-R-FOYER', 2, 'junction', [18.55, -5.2, 4.0], `${SRC.walk} R-STAIR top foyer`);
 node('F2-R-C1', 2, 'junction', [21.75, -4.5, 4.0], `${SRC.corridor2f} (right y=-4.5)`);
-node('F2-R-D229', 2, 'door_approach', [25.375, -4.75, 4.0], `on the 2F-R corridor, 1.225 m from door leaf centre (25.375,-5.975) in ${SRC.doors}`, 'Doorway R2-W057-D229');
+node('F2-R-D229', 2, 'door_approach', [26.1, -4.75, 4.0], `on the 2F-R corridor, 1.976 m from door leaf centre (26.1,-6.726) in ${SRC.doors}`, 'Doorway R2-W057-D229');
 edge('E-F2RTOP-FOYER', 'walk', 'F2-R-STAIRTOP', 'F2-R-FOYER', [], { source: SRC.walk });
 edge('E-F2RFOYER-C1', 'walk', 'F2-R-FOYER', 'F2-R-C1', [], { source: SRC.walk });
 edge('E-F2RC1-D229', 'walk', 'F2-R-C1', 'F2-R-D229', [], { source: SRC.walk });
@@ -120,17 +124,17 @@ edge('L-RIGHT-GF-F2', 'lift', 'GF-LIFT', 'F2-LIFT', [[15.5, -8.9, 0], [15.5, -8.
 edge('E-F2LIFT-RFOYER', 'walk', 'F2-LIFT', 'F2-R-FOYER', [], { source: `${SRC.walk} (2F foyer mirror of GF)`, isPublic: false });
 
 const graph = {
-  schemaVersion: 1, modelVersion: 'r09-web02', navigationVersion: 'r09-nav-pilot-draft-1', status: 'draft',
+  schemaVersion: 1, modelVersion: 'r09-web02', navigationVersion: 'r09-nav-pilot-draft-2', status: 'draft',
   calibrationVersion: DRAFT_CALIBRATION.calibrationVersion,
   note: 'Draft pilot graph from model evidence. No edge is verified; step-free status is unknown everywhere. Do not publish as verified directions.',
   floors: [{ level: 1, name: '1st floor' }, { level: 2, name: '2nd floor' }],
   nodes, edges,
   kiosks: { 'PILOT-ENTRANCE': 'GF-ENTRANCE' },
   destinations: [
-    { id: 'PILOT-GF-LEFT', nodeId: 'GF-L-D108-APP', openingId: 'R1-W002-D108', name: 'Ground floor, left wing', code: 'R1-W002-D108', doorPoint: c([-35.225, -1.975, 0]), roomId: null, mapping: 'unresolved' },
-    { id: 'PILOT-GF-RIGHT', nodeId: 'GF-R-D133-APP', openingId: 'R1-W038-D133', name: 'Ground floor, right wing', code: 'R1-W038-D133', doorPoint: c([26.525, -2.025, 0]), roomId: null, mapping: 'unresolved' },
-    { id: 'PILOT-2F-LEFT', nodeId: 'F2-L-D210', openingId: 'R2-W032-D210', name: '2nd floor, left wing', code: 'R2-W032-D210', doorPoint: c([-26.625, -5.975, 4.0]), roomId: null, mapping: 'unresolved' },
-    { id: 'PILOT-2F-RIGHT', nodeId: 'F2-R-D229', openingId: 'R2-W057-D229', name: '2nd floor, right wing', code: 'R2-W057-D229', doorPoint: c([25.375, -5.975, 4.0]), roomId: null, mapping: 'unresolved' },
+    { id: 'PILOT-GF-LEFT', nodeId: 'GF-L-D108-APP', openingId: 'R1-W002-D108', name: 'Ground floor, left wing', code: 'R1-W002-D108', doorPoint: c([-34.7, -2.5, 0]), roomId: null, mapping: 'unresolved' },
+    { id: 'PILOT-GF-RIGHT', nodeId: 'GF-R-D133-APP', openingId: 'R1-W038-D133', name: 'Ground floor, right wing', code: 'R1-W038-D133', doorPoint: c([27.0, -2.5, 0]), roomId: null, mapping: 'unresolved' },
+    { id: 'PILOT-2F-LEFT', nodeId: 'F2-L-D210', openingId: 'R2-W032-D210', name: '2nd floor, left wing', code: 'R2-W032-D210', doorPoint: c([-25.9, -6.726, 4.0]), roomId: null, mapping: 'unresolved' },
+    { id: 'PILOT-2F-RIGHT', nodeId: 'F2-R-D229', openingId: 'R2-W057-D229', name: '2nd floor, right wing', code: 'R2-W057-D229', doorPoint: c([26.1, -6.726, 4.0]), roomId: null, mapping: 'unresolved' },
   ],
   calibration: DRAFT_CALIBRATION,
   fieldVerificationNeeded: [

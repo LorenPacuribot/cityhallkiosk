@@ -4,7 +4,9 @@ import { icon } from '../shared/icons.js';
 import { t, setLang, getLang, direction } from '../shared/i18n.js';
 import { planRouteCore } from '../shared/route-core.js';
 import { planGraphRoute, resolveDestination } from '../shared/nav-graph.js';
-import { routeFloorSVG, placeWalker } from '../shared/route-map.js';
+import { routeFloorSVG, floorPlanSVG, floorBounds, placeWalker, followWalker } from '../shared/route-map.js';
+import { loadPlans, planFor } from '../shared/plans.js';
+import { buildWalk, activeDirection } from '../shared/walk-path.js';
 
 const params = new URLSearchParams(location.search);
 const KIOSK = params.get('kiosk') || 'KIOSK-LOBBY-1';
@@ -28,7 +30,8 @@ const S = {
   bundle: null, online: true, savedAt: null, publicBase: location.origin,
   stack: [], query: '', kbMode: 'abc', filter: 'all', floorFilter: 'all', mapFloor: 1,
   nav: null, idleTimer: null, warnTimer: null, suggestTimer: null, lastSuggest: [],
-  prefs: { stepFree: false, camera: 'overview' },
+  prefs: { stepFree: false },
+  plans: null, mapMode: '3d', mapCtrl: null, mapGen: 0, mapAbort: null,
   navGen: 0, navAbort: null, // every navigation start/stop bumps navGen; late async results from older starts are dropped
 };
 const idx = { services: new Map(), offices: new Map(), rooms: new Map() };
@@ -92,6 +95,7 @@ async function loadBundle() {
     S.bundle = JSON.parse(cached); S.online = false; S.savedAt = S.bundle.generated_at;
   }
   indexBundle(S.bundle);
+  S.plans = await loadPlans(S.bundle.navigation);
   try { S.publicBase = (await api('/api/config')).public_base_url; } catch {}
 }
 async function syncLoop() {
@@ -390,13 +394,14 @@ const screens = {
       <div class="viewport3d" id="vp">
         <div class="vp-loading" hidden role="status"><span class="label">${t('loading_building')}</span><div class="bar"><div></div></div></div>
         <div class="vp-tools">
-          <button class="chip vp-cam" hidden data-action="navcam" aria-pressed="${S.prefs.camera === 'eye'}">${icon('navigation', 28)}<span class="cam-lbl">${t(S.prefs.camera === 'eye' ? 'view_overview' : 'view_walk')}</span></button>
           <button class="chip" data-action="stepfree" aria-pressed="${S.prefs.stepFree}">${icon('alert', 28)}<span>${t('avoid_stairs')}</span></button>
         </div>
         <div class="minimap" aria-label="Map">
+          <span class="caption" id="mm-status" aria-live="polite"></span>
           <div id="mm"></div>
-          <div class="floorpick">${(isGraphRoute(r) ? (S.bundle.navigation.graph.floors || []).filter(f => r.floors_used?.includes(f.level)) : S.bundle.floors)
+          <div class="floorpick">${(isGraphRoute(r) ? S.bundle.navigation.graph.floors || [] : S.bundle.floors)
             .map(f => `<button data-action="mmfloor" data-l="${f.level}" aria-pressed="false">${esc(f.name)}</button>`).join('')}</div>
+          <button class="chip mm-follow" data-action="mmfollow" aria-pressed="${S.nav.mmFloor == null}">${icon('navigation', 24)}${t('follow_position')}</button>
         </div>
         ${wide ? '' : controls}
       </div>
@@ -405,7 +410,7 @@ const screens = {
         ${wide ? `<p class="h2" id="dircur" aria-live="polite">${esc(direction(r.directions[0]))}</p>` : ''}
         <div id="dirs">${r.directions.map((d, i) => `<div class="dir" data-i="${i}"><span class="n"><span class="n-num">${d.kind === 'floor_change' ? icon('stairs', 28) : i + 1}</span><span class="n-done">${icon('check', 28)}</span></span><span class="label" style="font-weight:inherit">${esc(direction(d))}</span></div>`).join('')}</div>
         ${wide ? controls : ''}
-        <div class="btn-row"><button class="btn btn-secondary" data-action="toggle2d">${icon('map', 32)}<span id="t2d">${t('view_2d')}</span></button><button class="btn btn-secondary" data-action="endnav">${t('end_nav')}</button></div>
+        <div class="btn-row"><button class="btn btn-secondary" data-action="toggle2d">${icon('map', 32)}<span id="t2d">${t(S.nav.mode === '2d' ? 'view_3d' : 'view_2d')}</span></button><button class="btn btn-secondary" data-action="endnav">${t('end_nav')}</button></div>
       </div></div></section>`;
   },
 
@@ -452,20 +457,25 @@ const screens = {
   },
 
   map() {
-    const lvl = S.mapFloor;
+    const floors = S.bundle.navigation?.graph?.floors || S.bundle.floors;
+    const lvl = S.mapFloor = floors.some(f => f.level === S.mapFloor) ? S.mapFloor : floors[0].level;
     const fl = S.bundle.floors.find(f => f.level === lvl);
+    const real = !!S.bundle.navigation?.graph;
     return `<section class="screen">${topbar()}
       <div class="content cols map-cols">
         <div class="col-main">
         ${backBtn()}
         <h1 class="h1">${t('map_hall')}</h1>
-        <div class="chips">${S.bundle.floors.map(f => `<button class="chip" data-action="mapfloor" data-l="${f.level}" aria-pressed="${f.level === lvl}">${esc(f.name)}</button>`).join('')}</div>
-        ${floorSVG(fl, { interactive: true, you: S.bundle.kiosk.floor_level === lvl ? S.bundle.kiosk : null })}
+        <div class="chips">${floors.map(f => `<button class="chip" data-action="mapfloor" data-l="${f.level}" aria-pressed="${f.level === lvl}">${esc(f.name)}</button>`).join('')}
+        ${real ? `<button class="chip" data-action="mapmode">${t(S.mapMode === '3d' ? 'view_2d' : 'view_3d')}</button>` : ''}</div>
+        <div class="floor-viewport" id="floor-vp">
+          <div class="floor-fallback">${real ? mapPlan(lvl) : floorSVG(fl, { interactive: true, you: S.bundle.kiosk.floor_level === lvl ? S.bundle.kiosk : null })}</div>
+          ${real && S.mapMode === '3d' ? `<div class="vp-loading" role="status"><span class="label">${t('loading_building')}</span><div class="bar"><div></div></div></div>` : ''}
         </div>
-        <div class="col-side"><div class="list">${fl.rooms.filter(r => r.room_type === 'office' || r.occupant).map(r => {
-          const off = S.bundle.offices.find(o => o.location?.room_id === r.id);
-          return rowHTML({ kind: 'office', id: off?.id ?? '', title: off?.name || r.name, subtitle: r.code });
-        }).join('')}</div>
+        ${real ? `<div class="map-controls" hidden><button class="chip" data-action="mapzoom" data-f="1.35">${t('zoom_in')}</button><button class="chip" data-action="mapzoom" data-f="0.74">${t('zoom_out')}</button><button class="chip" data-action="maprotate">${t('rotate_map')}</button><button class="chip" data-action="mapreset">${t('reset_view')}</button></div><p class="caption muted map-hint" hidden>${t('map_gestures')}</p>` : ''}
+        </div>
+        <div class="col-side"><div class="list">${S.bundle.offices.filter(o => o.location?.floor_level === lvl && o.location?.room_id)
+          .map(o => rowHTML({ kind: 'office', id: o.id, title: o.name, subtitle: o.location.room_code })).join('')}</div>
         ${graphPreview() ? `<h2 class="h3">${t('pilot_doorways')}</h2><p class="caption muted">${t('pilot_doorways_note')}</p>
           <div class="list">${S.bundle.navigation.graph.openings.filter(o => o.approachNodeId && o.status !== 'verified').map(o =>
             `<button class="row" data-action="navopening" data-o="${esc(o.openingId)}" data-t="${esc(o.label || o.openingId)}"><span class="tile">${icon('navigation', 32)}</span><span class="txt"><span class="title">${esc(o.label || o.openingId)}</span><span class="sub">${esc(o.openingId)} · ${t('draft')}</span></span>${icon('chevron-right', 32)}</button>`).join('')}</div>` : ''}
@@ -582,12 +592,14 @@ function back() {
   else go('home');
 }
 function rerender() {
+  stopMap();
   const { name, p } = S.stack[S.stack.length - 1] || { name: 'welcome', p: {} };
   if (name !== 'navigate') stopNav();
   const overlays = [...stage.querySelectorAll('.overlay')];
   stage.innerHTML = (screens[name] || screens.home)(p);
   overlays.forEach(o => stage.appendChild(o));
   if (name === 'navigate') startNav();
+  if (name === 'map') startMap();
   if (name === 'welcome') tickClock();
   if (name === 'search') { /* suggestions update in place */ }
   const content = stage.querySelector('.content'); if (content) content.scrollTop = 0;
@@ -606,6 +618,53 @@ function resetToWelcome() {
   stage.classList.remove('large'); setLang(safeLS.get(LS.lang) || 'en');
   stage.querySelectorAll('.overlay').forEach(o => o.remove());
   go('welcome');
+}
+
+// The floor browser and the route player borrow the same model and renderer.
+function mapOrigin(level) {
+  const graph = S.bundle.navigation?.graph;
+  const point = graph?.nodes.find(n => n.id === graph.kiosks?.[KIOSK]);
+  return point?.floor === level ? point : null;
+}
+function mapPlan(level) {
+  const graph = S.bundle.navigation.graph;
+  return floorPlanSVG({ graph, level, plan: planFor(S.plans, level), you: mapOrigin(level), labels: { you: t('route_start') } });
+}
+function stopMap() {
+  S.mapGen++;
+  S.mapAbort?.abort(); S.mapAbort = null;
+  S.mapCtrl?.dispose(); S.mapCtrl = null;
+  S.mapDetach?.(); S.mapDetach = null;
+}
+async function startMap() {
+  const nav = S.bundle.navigation;
+  if (S.mapMode !== '3d' || !nav?.model || !nav.graph) return;
+  const gen = S.mapGen, ac = S.mapAbort = new AbortController(), level = S.mapFloor;
+  const live = () => gen === S.mapGen && current() === 'map';
+  const vp = $('#floor-vp'), loading = vp?.querySelector('.vp-loading');
+  let off;
+  try {
+    const { getViewer } = await import('./three/building-viewer.js');
+    if (!live()) return;
+    const v = getViewer();
+    await v.ensureModel(nav, { signal: ac.signal, allowDraftCalibration: true,
+      onLoadProgress: e => { if (live() && loading) loading.querySelector('.bar > div').style.width = `${Math.round(e.fraction * 100)}%`; } });
+    if (!live()) return;
+    v.attach(vp); v.updateContent(S.bundle); S.buildingUsed = true;
+    const floor = S.plans?.levels.find(f => f.level === level);
+    const nodes = nav.graph.nodes.filter(n => n.floor === level);
+    const elevation = floor?.elevation ?? Math.min(...nodes.map(n => n.y));
+    S.mapCtrl = v.showFloor({ level, elevation: Number.isFinite(elevation) ? elevation : 0,
+      bounds: S.plans?.bounds || floorBounds(nav.graph, level), you: mapOrigin(level), youLabel: t('route_start') });
+    S.mapDetach = () => { off?.(); v.detach(); };
+    vp.classList.add('has-building');
+    $('.map-controls').hidden = false; $('.map-hint').hidden = false;
+    off = v.on(e => { if (e.type === 'contextlost' && live()) { S.mapMode = '2d'; rerender(); toast(t('map_2d_fallback')); } });
+  } catch (e) {
+    if (e.name !== 'AbortError' && live()) {
+      stopMap(); S.mapMode = '2d'; rerender(); toast(t('map_2d_fallback'));
+    }
+  } finally { if (live() && loading) loading.hidden = true; }
 }
 
 // ---------------------------------------------------------------- navigation (route + 3D)
@@ -671,6 +730,7 @@ function navContentChanged() {
 function stopNav() {
   S.navGen++;
   S.navAbort?.abort(); S.navAbort = null;
+  clearTimeout(S.nav?.arrivalTimer);
   if (S.nav?.ctrl) { S.nav.ctrl.dispose(); S.nav.ctrl = null; }
 }
 async function startNav() {
@@ -681,13 +741,19 @@ async function startNav() {
   updateMinimap(S.nav.route.waypoints[0]);
   const onProgress = (frac, pos, legIndex) => {
     if (!live()) return;
+    S.nav.position = pos;
+    // Playback counts as active use; long upstairs walks must not hit the idle reset.
+    if (frac !== S.nav.progress) {
+      S.nav.progress = frac;
+      if (!S.nav.lastActivity || performance.now() - S.nav.lastActivity > 1000) { S.nav.lastActivity = performance.now(); armIdle(); }
+    }
     const bar = $('#prog'); if (bar) bar.style.width = `${Math.round(frac * 100)}%`;
     updateMinimap(pos);
     stage.querySelectorAll('.dir').forEach((el, i) => { el.classList.toggle('on', i === legIndex); el.classList.toggle('done', i < legIndex); });
     const cur = $('#dircur'), d = S.nav.route.directions[legIndex];
     if (cur && d && cur.dataset.i !== String(legIndex)) { cur.textContent = direction(d); cur.dataset.i = String(legIndex); }
   };
-  const onArrive = () => setTimeout(() => { if (live()) go('arrived', {}, { replace: true }); }, 1400);
+  const onArrive = () => { S.nav.arrivalTimer = setTimeout(() => { if (live()) go('arrived', {}, { replace: true }); }, 1400); };
   if (S.nav.mode === '2d') { animate2D(onProgress, onArrive); return; }
   const loading = vp?.querySelector('.vp-loading');
   if (loading && isGraphRoute(S.nav.route)) loading.hidden = false; // visible at once; hidden again when the route plays
@@ -703,14 +769,13 @@ async function startNav() {
       animate2D(onProgress, onArrive);
     };
     const ctrl = await createNav3D(vp, S.bundle, S.nav.route, {
-      signal: ac.signal, onProgress, onArrive, cameraMode: S.prefs.camera, onFallback: fallback,
+      signal: ac.signal, onProgress, onArrive, onFallback: fallback,
       onLoadProgress: ev => { if (!live() || !loading) return; loading.hidden = false; const b = loading.querySelector('.bar > div'); if (b) b.style.width = `${Math.round(ev.fraction * 100)}%`; },
     });
     if (!live()) { ctrl.dispose(); return; } // the visitor left while the building loaded: never attach to an old screen
     S.nav.ctrl = ctrl;
     if (ctrl.kind === 'building') S.buildingUsed = true;
     if (loading) loading.hidden = true;
-    stage.querySelector('.vp-cam')?.toggleAttribute('hidden', ctrl.kind !== 'building');
   } catch (e) {
     if (e?.name === 'AbortError' || !live()) return;
     console.warn('3D unavailable, using 2D map', e);
@@ -723,7 +788,7 @@ async function startNav() {
 const isGraphRoute = r => r?.routeSource === 'navigation_graph';
 function mapSVG(level, { small = false } = {}) {
   const r = S.nav.route;
-  if (isGraphRoute(r)) return routeFloorSVG({ graph: S.bundle.navigation.graph, route: r, level, small, labels: { you: t('you_are_here') } });
+  if (isGraphRoute(r)) return routeFloorSVG({ graph: S.bundle.navigation.graph, route: r, level, small, plan: planFor(S.plans, level), labels: { you: t('route_start') } });
   const fl = S.bundle.floors.find(f => f.level === level) || S.bundle.floors[0];
   return floorSVG(fl, { route: r, you: S.bundle.kiosk.floor_level === fl.level ? S.bundle.kiosk : null, target: r.to.room_id, small });
 }
@@ -736,34 +801,40 @@ function updateMinimap(pos) {
     stage.querySelectorAll('[data-action="mmfloor"]').forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.l) === level)));
   }
   placeWalker(mm.querySelector('svg'), pos.floor === level ? pos : null);
+  followWalker(mm.querySelector('svg'), S.nav.mmFloor == null && pos.floor === level ? pos : null);
+  const status = $('#mm-status');
+  const text = `${floorName(level)} · ${t(S.nav.mmFloor == null ? 'following_position' : 'floor_overview')}`;
+  if (status && status.textContent !== text) status.textContent = text;
+  $('.mm-follow')?.setAttribute('aria-pressed', String(S.nav.mmFloor == null));
 }
 // 2D fallback animation (no WebGL, failed 3D load, or the visitor chose 2D). Same canonical waypoints as 3D.
 function animate2D(onProgress, onArrive) {
   const vp = $('#vp'); if (!vp) return;
-  const pts = S.nav.route.waypoints;
-  let seg = 0, t0 = performance.now(), cur = { ...pts[0] };
+  const walk = buildWalk(S.nav.route.waypoints, S.nav.route.to?.door);
   let holder = vp.querySelector('.big2d');
   if (!holder) { holder = document.createElement('div'); holder.className = 'big2d'; vp.prepend(holder); }
-  const lens = pts.slice(1).map((p, i) => Math.hypot(p.x - pts[i].x, p.z - pts[i].z) + Math.abs(p.y - pts[i].y));
-  const total = lens.reduce((a, b) => a + b, 0) || 1;
-  const speed = 8; // m/s preview speed
-  const ctrl = { kind: '2d', paused: false, dispose() { cancelAnimationFrame(raf); holder.remove(); }, pause() { this.paused = !this.paused; t0 = performance.now() - done / speed * 1000; return this.paused; }, replay() { done = 0; t0 = performance.now(); this.paused = false; raf = requestAnimationFrame(tick); }, skip() { done = total; } };
-  let done = 0, raf, lastFloor = null;
+  let elapsed = 0, last = null, raf = 0, lastFloor = null, arrived = false, disposed = false;
+  const schedule = () => { if (!raf && !disposed) raf = requestAnimationFrame(tick); };
+  const ctrl = { kind: '2d', paused: false,
+    dispose() { disposed = true; cancelAnimationFrame(raf); holder.remove(); },
+    pause() { this.paused = !this.paused; last = null; if (!this.paused) schedule(); return this.paused; },
+    replay() { elapsed = 0; arrived = false; last = null; this.paused = false; schedule(); },
+    skip() { elapsed = walk.duration; schedule(); } };
   S.nav.ctrl = ctrl;
+  const loading = vp.querySelector('.vp-loading'); if (loading) loading.hidden = true;
+  const toggle = $('#t2d'); if (toggle) toggle.textContent = t('view_3d');
   const tick = now => {
-    if (!ctrl.paused) done = Math.min(total, (now - t0) / 1000 * speed);
-    let acc = 0; seg = 0;
-    while (seg < lens.length - 1 && acc + lens[seg] < done) { acc += lens[seg]; seg++; }
-    const f = lens[seg] ? (done - acc) / lens[seg] : 1, a = pts[seg], b = pts[seg + 1] || a;
-    cur = { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, z: a.z + (b.z - a.z) * f, floor: f < .5 ? a.floor : b.floor };
+    raf = 0; if (disposed) return;
+    const dt = last === null ? 0 : Math.min(.1, (now - last) / 1000); last = now;
+    if (!ctrl.paused) elapsed = Math.min(walk.duration, elapsed + dt);
+    const cur = walk.sample(elapsed);
     if (lastFloor !== cur.floor) { holder.innerHTML = mapSVG(cur.floor); lastFloor = cur.floor; }
     placeWalker(holder.querySelector('svg'), cur);
-    const legIndex = S.nav.route.directions.findIndex(d => d.point_index > seg + (f >= 1 ? 1 : 0));
-    onProgress(done / total, cur, legIndex === -1 ? S.nav.route.directions.length - 1 : legIndex);
-    if (done >= total) { onArrive(); return; }
-    raf = requestAnimationFrame(tick);
+    onProgress(elapsed / walk.duration, cur, activeDirection(S.nav.route.directions, cur));
+    if (!arrived && elapsed >= walk.duration) { arrived = true; onArrive(); }
+    if (!ctrl.paused && !arrived) schedule();
   };
-  raf = requestAnimationFrame(tick);
+  schedule();
 }
 
 // ---------------------------------------------------------------- overlays
@@ -875,14 +946,17 @@ const actions = {
   navopening: d => routeTo({ openingId: d.o }, d.t),
   // "Avoid stairs": replan the same destination; a step-free request never falls back to stairs
   stepfree: () => { S.prefs.stepFree = !S.prefs.stepFree; if (!S.nav) return; S.nav.route = planLocal(S.nav.target); go(S.nav.route.status === 'ok' ? 'navigate' : 'noroute', {}, { replace: true }); },
-  navcam: () => { S.prefs.camera = S.prefs.camera === 'eye' ? 'overview' : 'eye'; S.nav?.ctrl?.setCameraMode?.(S.prefs.camera);
-    const b = $('.vp-cam'); if (b) { b.setAttribute('aria-pressed', String(S.prefs.camera === 'eye')); b.querySelector('.cam-lbl').textContent = t(S.prefs.camera === 'eye' ? 'view_overview' : 'view_walk'); } },
   navpause: () => { const p = S.nav?.ctrl?.pause(); const b = $('#btn-pause'); if (b) b.innerHTML = p ? `${icon('play', 32)}<span>${t('resume')}</span>` : `${icon('pause', 32)}<span>${t('pause')}</span>`; },
-  navreplay: () => S.nav?.ctrl?.replay(),
+  navreplay: () => { clearTimeout(S.nav?.arrivalTimer); S.nav.mmFloor = null; S.nav.ctrl?.replay(); const b = $('#btn-pause'); if (b) b.innerHTML = `${icon('pause', 32)}<span>${t('pause')}</span>`; },
   navskip: () => S.nav?.ctrl?.skip(),
   endnav: () => { back(); },
   toggle2d: () => { S.nav.mode = S.nav.mode === '3d' ? '2d' : '3d'; S.nav.ctrl?.dispose(); S.nav.ctrl = null; go('navigate', {}, { replace: true }); const l = $('#t2d'); if (l) l.textContent = S.nav.mode === '3d' ? t('view_2d') : t('view_3d'); },
-  mmfloor: d => { S.nav.mmFloor = Number(d.l); const mm = $('#mm'); if (mm) mm.dataset.floor = ''; updateMinimap({ ...S.nav.route.waypoints[0], floor: -1 }); },
+  mmfloor: d => { S.nav.mmFloor = Number(d.l); updateMinimap(S.nav.position || S.nav.route.waypoints[0]); },
+  mmfollow: () => { S.nav.mmFloor = null; updateMinimap(S.nav.position || S.nav.route.waypoints[0]); },
+  mapmode: () => { S.mapMode = S.mapMode === '3d' ? '2d' : '3d'; rerender(); },
+  mapzoom: d => S.mapCtrl?.zoom(Number(d.f)),
+  maprotate: () => S.mapCtrl?.rotate(Math.PI / 4),
+  mapreset: () => S.mapCtrl?.reset(),
   stillhere: () => { clearInterval(S.warnTimer); stage.querySelectorAll('.overlay').forEach(o => o.remove()); armIdle(); },
   startover: () => { clearInterval(S.warnTimer); resetToWelcome(); },
 };

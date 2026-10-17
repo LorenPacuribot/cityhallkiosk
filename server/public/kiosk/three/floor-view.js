@@ -73,6 +73,7 @@ export class FloorView {
     cam.up.set(0, 1, 0); cam.lookAt(t);
     cam.near = Math.max(0.5, s.dist * 0.02); cam.far = s.dist * 4 + 200;
     cam.updateProjectionMatrix();
+    cam.updateMatrixWorld(true); // project() must use this candidate pose when fitting the floor
   }
 
   apply() {

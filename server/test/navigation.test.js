@@ -160,7 +160,7 @@ test('mapping + field verification produce a verified route; office moves and cl
 
   // office moves to a room with no verified doorway: the destination follows the office, the old door is not reused
   const other = (await j('GET', '/admin/rooms')).body.items.find(x => x.id !== room && x.room_type === 'office');
-  assert.equal((await j('POST', `/admin/offices/${office.id}/move`, { room_id: other.id, note: 'test move' })).status, 200);
+  assert.equal((await j('POST', `/admin/offices/${office.id}/move`, { room_id: other.id, occupancy: 'share', note: 'test move' })).status, 200);
   r = await j('GET', `/route?office_id=${office.id}&log=0`);
   assert.equal(r.body.reason, 'UNVERIFIED_DESTINATION');
 });
@@ -171,7 +171,7 @@ test('calibration verification needs four measured anchors within 0.10 m', async
 });
 
 test('rollback restores the previous publication', async () => {
-  const second = structuredClone(pilot); second.navigationVersion = 'r09-nav-pilot-draft-2';
+  const second = structuredClone(pilot); second.navigationVersion = `${pilot.navigationVersion}-rollback-test`;
   assert.equal((await j('POST', '/admin/navigation/import', { graph: second })).status, 201);
   assert.equal((await j('POST', `/admin/navigation/${second.navigationVersion}/publish`)).status, 200);
   assert.equal((await j('GET', '/kiosk/bundle')).body.navigation.publication.navigationVersion, second.navigationVersion);

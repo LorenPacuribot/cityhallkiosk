@@ -1,0 +1,462 @@
+{
+  "sourceFile": "cityadmin (1).sql",
+  "sha256": "ead3181b04115092f9ea033687c30e3bb7a94782e5668caba046b85d4acabc4c",
+  "status": "historical_reference_only",
+  "notes": [
+    "Office/location records date from 2024-05-01. They do not contain the r09 model doorway IDs.",
+    "Coordinates are in an unknown legacy model frame: x approximately -10..10, y 0..0.951. Current model is approximately 118 m wide with the second floor at 4 m.",
+    "Zero coordinates are missing-position placeholders. Room 6 is labeled floor 1 but has the same legacy y as most floor-2 rooms.",
+    "The office_location_pivots table omits office 8 (Economic Enterprise); offices.location_id links it to location 18.",
+    "No current database records, calibration, or doorway mappings have been overwritten."
+  ],
+  "locations": [
+    {
+      "id": 1,
+      "name": "Room 1",
+      "floor": "1",
+      "x": -9.106,
+      "y": 0.08,
+      "z": 0.122
+    },
+    {
+      "id": 2,
+      "name": "Room 2",
+      "floor": "1",
+      "x": -6.669,
+      "y": 0.08,
+      "z": 0.122
+    },
+    {
+      "id": 3,
+      "name": "Room 3",
+      "floor": "1",
+      "x": 7.43,
+      "y": 0.08,
+      "z": 2.8816
+    },
+    {
+      "id": 4,
+      "name": "Room 4",
+      "floor": "1",
+      "x": 10.439,
+      "y": 0.08,
+      "z": -0.039
+    },
+    {
+      "id": 5,
+      "name": "Room 5",
+      "floor": "1",
+      "x": -9.461,
+      "y": 0.08,
+      "z": -0.62
+    },
+    {
+      "id": 6,
+      "name": "Room 6",
+      "floor": "1",
+      "x": -7.525,
+      "y": 0.951,
+      "z": 2.865
+    },
+    {
+      "id": 7,
+      "name": "Room 7",
+      "floor": "1",
+      "x": 5.214,
+      "y": 0.08,
+      "z": -0.742
+    },
+    {
+      "id": 8,
+      "name": "Room 8",
+      "floor": "1",
+      "x": 9.678,
+      "y": 0.08,
+      "z": -0.764
+    },
+    {
+      "id": 9,
+      "name": "Room 9",
+      "floor": "2",
+      "x": -8.438,
+      "y": 0.08,
+      "z": -0.62
+    },
+    {
+      "id": 10,
+      "name": "Room 10",
+      "floor": "2",
+      "x": -4.615,
+      "y": 0.951,
+      "z": -0.102
+    },
+    {
+      "id": 11,
+      "name": "Room 11",
+      "floor": "2",
+      "x": 0.769,
+      "y": 0.951,
+      "z": 0.013
+    },
+    {
+      "id": 12,
+      "name": "Room 12",
+      "floor": "2",
+      "x": 7.674,
+      "y": 0.951,
+      "z": 2.788
+    },
+    {
+      "id": 13,
+      "name": "Room 13",
+      "floor": "2",
+      "x": 7.642,
+      "y": 0.951,
+      "z": 0.899
+    },
+    {
+      "id": 14,
+      "name": "Room 14",
+      "floor": "2",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "id": 15,
+      "name": "Room 15",
+      "floor": "2",
+      "x": 8.389,
+      "y": 0.951,
+      "z": -0.473
+    },
+    {
+      "id": 16,
+      "name": "Room 16",
+      "floor": "2",
+      "x": -5.167,
+      "y": 0.951,
+      "z": 0.417
+    },
+    {
+      "id": 17,
+      "name": "Room 17",
+      "floor": "2",
+      "x": -9.622,
+      "y": 0.951,
+      "z": -0.417
+    },
+    {
+      "id": 18,
+      "name": "Room 18",
+      "floor": "2",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "id": 19,
+      "name": "Room 19",
+      "floor": "2",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "id": 20,
+      "name": "Room 20",
+      "floor": "2",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "id": 21,
+      "name": "Market Side, Barangay 9, Malaybalay City",
+      "floor": "Not located at City Hall",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "id": 22,
+      "name": "San Isidro St., Barangay 8, Malaybalay City",
+      "floor": "Not located at City Hall",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "id": 23,
+      "name": "Murillo St., Barangay 8, Malaybalay City",
+      "floor": "Not located at City Hall",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "id": 24,
+      "name": "Claro M. Recto St., Barangay 1 Malaybalay City",
+      "floor": "Not located at City Hall",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "id": 25,
+      "name": "Barangay Casisang, Malaybalay City",
+      "floor": "Not located at City Hall",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "id": 26,
+      "name": "Freedom Park, Barangay 4, Malaybalay City",
+      "floor": "Not located at City Hall",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    {
+      "id": 27,
+      "name": "Empty Room",
+      "floor": "To be relocated",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  ],
+  "offices": [
+    {
+      "id": 1,
+      "location_id": 15,
+      "name": "City Accounting Office",
+      "pivotLocationIds": [
+        15
+      ]
+    },
+    {
+      "id": 2,
+      "location_id": 10,
+      "name": "City Administrator Office",
+      "pivotLocationIds": [
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "location_id": 22,
+      "name": "City Agriculture Office",
+      "pivotLocationIds": [
+        22
+      ]
+    },
+    {
+      "id": 4,
+      "location_id": 3,
+      "name": "City Assessor Office",
+      "pivotLocationIds": [
+        3
+      ]
+    },
+    {
+      "id": 5,
+      "location_id": 13,
+      "name": "City Budget Office",
+      "pivotLocationIds": [
+        13
+      ]
+    },
+    {
+      "id": 6,
+      "location_id": 4,
+      "name": "City Civil Registrar",
+      "pivotLocationIds": [
+        4
+      ]
+    },
+    {
+      "id": 7,
+      "location_id": 18,
+      "name": "City Disaster Risk Reduction and Management Office",
+      "pivotLocationIds": [
+        18
+      ]
+    },
+    {
+      "id": 8,
+      "location_id": 18,
+      "name": "City Economic Enterprise Development and Management Office",
+      "pivotLocationIds": []
+    },
+    {
+      "id": 9,
+      "location_id": 22,
+      "name": "City Engineer’s Office",
+      "pivotLocationIds": [
+        22
+      ]
+    },
+    {
+      "id": 10,
+      "location_id": 1,
+      "name": "City Environment and Natural Resources Office",
+      "pivotLocationIds": [
+        1
+      ]
+    },
+    {
+      "id": 11,
+      "location_id": 6,
+      "name": "City General Services Office",
+      "pivotLocationIds": [
+        6
+      ]
+    },
+    {
+      "id": 12,
+      "location_id": 23,
+      "name": "City Health Office",
+      "pivotLocationIds": [
+        23
+      ]
+    },
+    {
+      "id": 13,
+      "location_id": 12,
+      "name": "City Human Resources Management Office",
+      "pivotLocationIds": [
+        12
+      ]
+    },
+    {
+      "id": 14,
+      "location_id": 17,
+      "name": "City Legal Office",
+      "pivotLocationIds": [
+        17
+      ]
+    },
+    {
+      "id": 15,
+      "location_id": 11,
+      "name": "City Mayors Office",
+      "pivotLocationIds": [
+        11
+      ]
+    },
+    {
+      "id": 16,
+      "location_id": 9,
+      "name": "Bids and Awards Committee",
+      "pivotLocationIds": [
+        9
+      ]
+    },
+    {
+      "id": 17,
+      "location_id": 8,
+      "name": "Business Permit and Licensing Division",
+      "pivotLocationIds": [
+        8
+      ]
+    },
+    {
+      "id": 18,
+      "location_id": 5,
+      "name": "City Urban Development and Housing Division",
+      "pivotLocationIds": [
+        5
+      ]
+    },
+    {
+      "id": 19,
+      "location_id": 11,
+      "name": "Public Employment Service Office",
+      "pivotLocationIds": [
+        11
+      ]
+    },
+    {
+      "id": 20,
+      "location_id": 11,
+      "name": "Office of the Senior Citizen Affairs",
+      "pivotLocationIds": [
+        11
+      ]
+    },
+    {
+      "id": 21,
+      "location_id": 14,
+      "name": "Office of Building Official",
+      "pivotLocationIds": [
+        14
+      ]
+    },
+    {
+      "id": 22,
+      "location_id": 16,
+      "name": "City Planning and Development Office",
+      "pivotLocationIds": [
+        16
+      ]
+    },
+    {
+      "id": 23,
+      "location_id": 2,
+      "name": "City Social Welfare and Development Office",
+      "pivotLocationIds": [
+        2
+      ]
+    },
+    {
+      "id": 24,
+      "location_id": 7,
+      "name": "City Treasurer’s Office",
+      "pivotLocationIds": [
+        7
+      ]
+    },
+    {
+      "id": 25,
+      "location_id": 22,
+      "name": "City Veterinary Office",
+      "pivotLocationIds": [
+        22
+      ]
+    },
+    {
+      "id": 26,
+      "location_id": 14,
+      "name": "City Vice Mayors Office",
+      "pivotLocationIds": [
+        14
+      ]
+    },
+    {
+      "id": 27,
+      "location_id": 19,
+      "name": "Acer/ 117",
+      "pivotLocationIds": [
+        19
+      ]
+    },
+    {
+      "id": 28,
+      "location_id": 20,
+      "name": "City Tourism Office",
+      "pivotLocationIds": [
+        20
+      ]
+    },
+    {
+      "id": 29,
+      "location_id": 21,
+      "name": "Sangguniang Panlungsod",
+      "pivotLocationIds": [
+        21
+      ]
+    }
+  ]
+}

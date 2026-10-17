@@ -65,6 +65,7 @@ const NAV = [
   ['services', 'Services', 'file-text', 'viewer'],
   ['approvals', 'Approvals', 'check', 'lgu_admin'],
   ['offices', 'Offices', 'building', 'viewer'],
+  ['assignments', 'Room assignments', 'move', 'viewer'],
   ['rooms', 'Floors & rooms', 'map', 'viewer'],
   ['kiosks', 'Kiosks', 'monitor', 'viewer'],
   ['navigation', 'Navigation', 'map', 'viewer'],
@@ -101,7 +102,7 @@ PAGES.dashboard = async () => {
   const h = d.helpful_30d || {}; const pct = h.total ? Math.round(100 * (h.yes || 0) / h.total) : null;
   const hours = Array.from({ length: 24 }, (_, i) => i).map(hr => ({ hr, n: d.sessions_by_hour.find(x => x.hour === hr)?.n || 0 }));
   const max = Math.max(1, ...hours.map(x => x.n));
-  shell('dashboard', `<div class="head"><h1>Dashboard</h1><span class="badge info">Content version ${d.content_version}</span></div>
+  shell('dashboard', `<div class="head"><h1>Dashboard</h1><a class="btn primary" href="#/assignments">${icon('move', 18)}Change room assignments</a><span class="badge info">Content version ${d.content_version}</span></div>
     <div class="grid g4">
       <div class="card stat"><small>Kiosk sessions today</small><b>${d.sessions_today}</b><span class="hint">${d.searches_today} searches</span></div>
       <div class="card stat"><small>Found it helpful (30 days)</small><b>${pct === null ? '—' : pct + '%'}</b><span class="hint">${h.total || 0} answers</span></div>
@@ -287,7 +288,6 @@ async function officeDetail(id) {
   const o = S.offices.find(x => x.id === id); if (!o) return shell('offices', '<p>Not found.</p>');
   const [hist] = await Promise.all([api(`/api/admin/offices/${id}/history`), loadFloors()]);
   const editable = can('lgu_admin') || (S.me.role === 'office_editor' && S.me.office_id === id);
-  const occupied = new Map(S.offices.filter(x => x.location?.room_id).map(x => [x.location.room_id, x.name]));
   shell('offices', `<div class="head"><a class="btn sm" href="#/offices">${icon('arrow-left', 16)}Offices</a><h1>${esc(o.name)}</h1><a class="btn sm" href="#/services?office_id=${o.id}&all=1">${o.service_count} services →</a></div>
     <div class="split">
       <form class="card form" id="of"><h2 class="full">Details</h2>
@@ -305,15 +305,107 @@ async function officeDetail(id) {
       <div class="grid">
         <div class="card"><h2>Current location</h2><p style="margin:0 0 8px">${locText(o.location)}</p>
           ${o.location?.position ? `<p class="small muted" style="margin:0">Door position x ${o.location.position.x}, y ${o.location.position.y}, z ${o.location.position.z} m · ${coordBadge(o.location.coord_source)} · <a href="#/rooms?room=${o.location.room_id}">Edit room position</a></p>` : ''}
-          ${isAdmin() ? `<form id="mv" class="grid" style="margin-top:14px;gap:10px"><label class="f">Move to room<select name="room_id" required><option value="">Choose a room…</option>
-            ${S.floors.map(f => `<optgroup label="${esc(f.name)}">${f.rooms.filter(r => r.is_active && !['stairs', 'elevator', 'ramp', 'entrance', 'hall', 'toilet'].includes(r.room_type)).map(r => `<option value="${r.id}" ${o.location?.room_id === r.id ? 'disabled' : ''}>${esc(r.code)} — ${esc(r.name)}${occupied.has(r.id) && occupied.get(r.id) !== o.name ? ` (shared with ${esc(occupied.get(r.id))})` : ''}</option>`).join('')}</optgroup>`).join('')}</select></label>
-            <label class="f">Reason (kept in history)<input name="note" placeholder="e.g. Renovation of 1F-102, temporary"></label>
-            <button class="btn primary">${icon('move', 18)}Move office</button><p class="small muted" style="margin:0">Kiosks show the new room within a minute. Unity reloads destinations automatically.</p></form>` : ''}
+          ${isAdmin() ? `<p><button class="btn primary" data-act="assignoffice" data-office="${id}">${icon('move', 18)}Move office</button></p><p class="small muted">Choose a new room, share a room, or swap with another office. Each change is kept in history.</p>` : ''}
         </div>
         <div class="card"><h2>Location history</h2><table class="tbl"><tbody>${hist.items.map(h => `<tr><td><b>${esc(h.room_code)}</b> · ${esc(h.floor_name)}<div class="small muted">${esc(h.note || '')}</div></td><td class="small">${when(h.valid_from)} → ${h.valid_to ? when(h.valid_to) : '<span class="badge ok">now</span>'}<div class="muted">${esc(h.changed_by_name || 'Seed')}</div></td></tr>`).join('') || '<tr><td class="muted">No history.</td></tr>'}</tbody></table></div>
       </div></div>`);
   $('#of').addEventListener('submit', async e => { e.preventDefault(); try { const b = formData(e.target); await api(`/api/admin/offices/${id}`, { method: 'PUT', body: b }); toast('Saved.'); PAGES.offices(id); } catch (err) { toast(err.message, true); } });
-  $('#mv')?.addEventListener('submit', async e => { e.preventDefault(); try { const b = formData(e.target); const r = await api(`/api/admin/offices/${id}/move`, { method: 'POST', body: { room_id: Number(b.room_id), note: b.note } }); toast(`Moved to ${r.location.room_code}.`); PAGES.offices(id); } catch (err) { toast(err.message, true); } });
+}
+
+// ---------------- room assignments: physical rooms stay fixed when offices move
+const ASSIGNABLE = new Set(['office', 'info_desk', 'other']);
+const roomOffices = roomId => S.offices.filter(o => o.location?.room_id === roomId);
+let floorReferences;
+async function loadFloorReferences() {
+  return floorReferences ||= await api('/admin/reference-plans/index.json');
+}
+PAGES.assignments = async (_, qs) => {
+  await Promise.all([loadOffices(), loadFloors()]);
+  const refs = await loadFloorReferences(), q = new URLSearchParams(qs);
+  const floorId = q.get('floor') || '', term = (q.get('q') || '').toLowerCase();
+  const rooms = S.floors.filter(f => !floorId || String(f.id) === floorId).flatMap(f => f.rooms
+    .filter(r => r.is_active && ASSIGNABLE.has(r.room_type)).map(r => ({ ...r, floor_name: f.name })));
+  const matching = rooms.filter(r => [r.code, r.name, ...roomOffices(r.id).map(o => o.name)].join(' ').toLowerCase().includes(term));
+  const unplaced = S.offices.filter(o => o.is_active && o.location_type !== 'offsite' && !o.location?.room_id);
+  shell('assignments', `<div class="head"><h1>Room assignments</h1>${isAdmin() ? '<button class="btn primary" data-act="assignoffice">Move an office</button>' : ''}</div>
+    <p class="sub">Choose a room and change the office inside. Room positions stay fixed; office services and destinations follow the new assignment.</p>
+    <details class="card reference-plans"><summary>Updated floor plans — room reference</summary>
+      <p class="small muted">Use these drawings to identify rooms. The table below shows the current assignments; names printed on the drawings stay as supplied.</p>
+      <div class="grid g2">${refs.plans.map(p => `<a class="reference-plan" href="${esc(p.pdf)}" target="_blank" rel="noopener"><img src="${esc(p.image)}" loading="lazy" alt="${esc(p.name)}"><b>${esc(p.name)}</b><span class="small">Open full PDF ↗</span></a>`).join('')}</div>
+    </details>
+    ${unplaced.length ? `<div class="notice warn"><span><b>${unplaced.length} offices need a room.</b> ${unplaced.map(o => `<a href="#/offices/${o.id}">${esc(o.short_name || o.name)}</a>`).join(', ')}</span></div>` : ''}
+    <div class="card"><form class="toolbar" id="assignment-filter">
+      <input name="q" aria-label="Search rooms or offices" placeholder="Search a room or office" value="${esc(q.get('q') || '')}">
+      <select name="floor" aria-label="Filter by floor"><option value="">All floors</option>${S.floors.map(f => `<option value="${f.id}" ${String(f.id) === floorId ? 'selected' : ''}>${esc(f.name)}</option>`).join('')}</select><button class="btn">Filter</button>
+    </form><div class="table-scroll"><table class="tbl"><thead><tr><th>Room</th><th>Floor</th><th>Current offices</th><th></th></tr></thead><tbody>
+      ${matching.map(r => `<tr data-room-row="${r.id}"><td><b>${esc(r.code)}</b><div class="small muted">${esc(r.name)}</div></td><td>${esc(r.floor_name)}</td>
+        <td>${roomOffices(r.id).map(o => `<div><a href="#/offices/${o.id}">${esc(o.name)}</a></div>`).join('') || '<span class="muted">Available</span>'}</td>
+        <td class="right">${isAdmin() ? `<button class="btn sm" data-act="assignoffice" data-room="${r.id}">Change office</button>` : ''}</td></tr>`).join('') || '<tr><td colspan="4">No rooms match this filter.</td></tr>'}
+    </tbody></table></div></div><p class="small muted">Room geometry and doorway links are managed in <a href="#/rooms">Floors &amp; rooms</a> and <a href="#/navigation">Navigation</a>. Routes are available for rooms with a mapped doorway.</p>`);
+  $('#assignment-filter').addEventListener('submit', e => { e.preventDefault(); location.hash = '#/assignments?' + new URLSearchParams(formData(e.target)); });
+};
+ACTIONS.assignoffice = b => assignmentDialog({ roomId: Number(b.dataset.room) || null, officeId: Number(b.dataset.office) || null });
+async function assignmentDialog({ roomId = null, officeId = null, onSaved = () => route() } = {}) {
+  await Promise.all([loadOffices(), loadFloors()]);
+  const rooms = S.floors.flatMap(f => f.rooms.filter(r => r.is_active && ASSIGNABLE.has(r.room_type)).map(r => ({ ...r, floor_name: f.name })));
+  const trigger = document.activeElement;
+  modal(`<h2 id="assignment-title">Change room assignment</h2><form id="assignment-form" class="grid">
+    <label class="f">Office to move<select name="office_id" required><option value="">Choose an office…</option>${S.offices.filter(o => o.is_active).map(o => `<option value="${o.id}" ${o.id === officeId ? 'selected' : ''}>${esc(o.name)}</option>`).join('')}</select></label>
+    <div id="assignment-current" class="small muted"></div>
+    <label class="f">New room<select name="room_id" required><option value="">Choose a room…</option>${rooms.map(r => `<option value="${r.id}" ${r.id === roomId ? 'selected' : ''}>${esc(r.code)} · ${esc(r.floor_name)}${roomOffices(r.id).length ? ` — ${esc(roomOffices(r.id).map(o => o.short_name || o.name).join(', '))}` : ' — Available'}</option>`).join('')}</select></label>
+    <div id="assignment-occupancy"></div><div id="assignment-review" class="notice" aria-live="polite"></div>
+    <label class="f">Reason (optional, saved in history)<input name="note" maxlength="500" placeholder="e.g. Office relocation"></label>
+    <div id="assignment-error" class="notice bad" role="alert" hidden></div>
+    <div class="row"><button class="btn primary" id="assignment-save" disabled>Save assignment</button><button type="button" class="btn" data-close>Cancel</button><button type="button" class="btn" id="assignment-refresh" hidden>Refresh assignments</button></div>
+    <p class="small muted">Connected kiosks pick up changes within a minute. Previous assignments remain in each office’s location history.</p>
+  </form>`, el => {
+    $('[role=dialog]', el).setAttribute('aria-labelledby', 'assignment-title');
+    const form = $('#assignment-form', el), save = $('#assignment-save', el);
+    let state = null;
+    const review = (reset = false) => {
+      const office = S.offices.find(o => o.id === Number(form.elements.office_id.value));
+      const room = rooms.find(r => r.id === Number(form.elements.room_id.value));
+      const occupants = room ? roomOffices(room.id).filter(o => o.id !== office?.id) : [];
+      $('#assignment-current', el).innerHTML = office ? `Current location: ${locText(office.location)}` : '';
+      if (reset) {
+        const canSwap = office?.location?.room_id && roomOffices(office.location.room_id).length === 1 && occupants.length === 1;
+        $('#assignment-occupancy', el).innerHTML = occupants.length ? `<label class="f">This room contains ${esc(occupants.map(o => o.name).join(', '))}<select name="occupancy" required>
+          <option value="">Choose what happens to the current occupants…</option><option value="replace">Replace — current occupants will need a new room</option>
+          ${canSwap ? '<option value="swap">Swap — exchange the two offices’ rooms</option>' : ''}<option value="share">Share — keep the current occupants here</option></select></label>` : '';
+      }
+      const mode = occupants.length ? form.elements.occupancy?.value : 'move';
+      const same = office && room && office.location?.room_id === room.id;
+      save.disabled = !office || !room || !mode || same;
+      const change = !office || !room ? 'Choose an office and its new room.' : same ? 'This office is already assigned to this room.' : !mode ? 'Choose what happens to the current occupants.' :
+        `${esc(office.name)} → <b>${esc(room.code)}</b>. ` + (mode === 'replace' ? `${esc(occupants.map(o => o.name).join(', '))} will be marked “Location unconfirmed” until assigned elsewhere.` : mode === 'swap' ? `${esc(occupants[0].name)} → <b>${esc(office.location.room_code)}</b>.` : mode === 'share' ? 'The existing occupants will stay in this room.' : 'The previous room assignment will be saved in history.');
+      $('#assignment-review', el).innerHTML = `<span>${change}</span>`;
+      state = { office, room, occupants, mode };
+    };
+    form.addEventListener('change', e => review(e.target.name !== 'occupancy' && e.target.name !== 'note'));
+    review(true);
+    $('#assignment-refresh', el).onclick = () => { el.remove(); assignmentDialog({ roomId: state?.room?.id, officeId: state?.office?.id, onSaved }); };
+    form.addEventListener('submit', async e => {
+      e.preventDefault(); if (save.disabled) return;
+      const { office, room, occupants, mode } = state;
+      save.disabled = true;
+      try {
+        await api(`/api/admin/offices/${office.id}/move`, { method: 'POST', body: { room_id: room.id, occupancy: mode, note: form.elements.note.value,
+          expected_room_id: office.location?.room_id ?? null, expected_occupant_ids: occupants.map(o => o.id) } });
+        el.remove(); toast(`Assigned ${office.short_name || office.name} to ${room.code}.`); await onSaved();
+      } catch (err) {
+        const error = $('#assignment-error', el); error.hidden = false; error.textContent = err.message;
+        $('#assignment-refresh', el).hidden = false; save.disabled = false;
+      }
+    });
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { el.remove(); trigger?.focus(); }
+      if (e.key !== 'Tab') return;
+      const focusable = $$('input, select, button', el).filter(x => !x.disabled && !x.hidden);
+      const first = focusable[0], last = focusable.at(-1);
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+  });
 }
 
 // ---------------- floors & rooms (dynamic x, y, z) — drag on the plan or type the numbers

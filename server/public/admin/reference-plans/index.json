@@ -1,0 +1,10 @@
+{
+  "suppliedOn": "2026-10-16",
+  "notes": "User-designated updated room reference. Printed office labels describe this drawing; live office assignments are managed separately. These drawings do not establish surveyed route accessibility or model alignment.",
+  "plans": [
+    { "name": "Ground floor", "level": 1, "pdf": "/admin/reference-plans/ground-floor.pdf", "image": "/admin/reference-plans/ground-floor.webp", "source": "https://drive.google.com/file/d/1b4c7wy7BRwhf0hkDiBe816Oq-o6E9H8R/view" },
+    { "name": "Second floor", "level": 2, "pdf": "/admin/reference-plans/second-floor.pdf", "image": "/admin/reference-plans/second-floor.webp", "source": "https://drive.google.com/file/d/1QhnfdBv_GighGBdgIKE43wDEkEwLHf2r/view" },
+    { "name": "Third floor", "level": 3, "pdf": "/admin/reference-plans/third-floor.pdf", "image": "/admin/reference-plans/third-floor.webp", "source": "https://drive.google.com/file/d/1HpHruRlga7_lUqV2vsGLNtVEu8fY-VgY/view" },
+    { "name": "Roof deck", "level": null, "pdf": "/admin/reference-plans/roof-deck.pdf", "image": "/admin/reference-plans/roof-deck.webp", "source": "https://drive.google.com/file/d/1E4nPuBJy19KYgXQT1oXCE85ypkgWdf31/view" }
+  ]
+}

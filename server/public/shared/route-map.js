@@ -112,8 +112,11 @@ const toSvg = (svg, pos) => {
 export function placeWalker(svg, pos) {
   const w = svg?.querySelector('#walker2d');
   if (!w) return;
-  if (!pos) { w.setAttribute('transform', 'translate(-100 -100)'); return; }
+  w.setAttribute('visibility', pos ? 'visible' : 'hidden');
+  if (!pos) return;
   const p = toSvg(svg, pos);
+  // The placeholder plan uses a circle; graph plans use a group with a heading wedge.
+  if (w.tagName.toLowerCase() === 'circle') { w.setAttribute('cx', '0'); w.setAttribute('cy', '0'); }
   const deg = Number.isFinite(pos.yaw) ? pos.yaw * 180 / Math.PI : null; // canonical yaw 0 = +Z = map up
   w.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})${deg === null ? '' : ` rotate(${deg.toFixed(1)})`}`);
   w.querySelector('.heading')?.setAttribute('visibility', deg === null ? 'hidden' : 'visible');

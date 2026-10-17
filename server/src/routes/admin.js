@@ -224,13 +224,46 @@ adminApi.post('/offices/:id/move', requireRole('lgu_admin'), (req, res) => {
   if (!office || !room) return bad(res, 'Office or room not found.', 404);
   const before = officeLocation(id);
   if (before?.room_id === roomId) return bad(res, 'The office is already in that room.');
+  const occupants = all(`SELECT o.id, o.name FROM offices o JOIN office_locations ol ON ol.office_id = o.id
+    WHERE ol.room_id = ? AND ol.valid_to IS NULL AND ol.is_primary = 1 AND o.id != ? ORDER BY o.id`, [roomId, id]);
+  const b = req.body || {}, mode = b.occupancy || 'move';
+  if (b.note != null && (typeof b.note !== 'string' || b.note.length > 500)) return bad(res, 'Reason must be text, up to 500 characters.');
+  if (!['move', 'share', 'replace', 'swap'].includes(mode)) return bad(res, 'Choose how to handle the current occupants.');
+  if (occupants.length && mode === 'move') return bad(res, 'This room is occupied. Choose share, replace, or swap.', 409);
+  // The dialog sends the assignments it displayed. A concurrent edit must be reviewed again.
+  if (Object.hasOwn(b, 'expected_room_id') && b.expected_room_id !== (before?.room_id ?? null))
+    return bad(res, 'This office has moved since you opened the form. Refresh and try again.', 409);
+  if (Object.hasOwn(b, 'expected_occupant_ids')) {
+    if (!Array.isArray(b.expected_occupant_ids)) return bad(res, 'Expected occupants must be a list.');
+    const expected = [...b.expected_occupant_ids].sort((a, b) => a - b);
+    if (JSON.stringify(expected) !== JSON.stringify(occupants.map(o => o.id)))
+      return bad(res, 'The room occupants have changed. Refresh and review the assignment again.', 409);
+  }
+  if (mode === 'swap') {
+    const source = before?.room_id && get('SELECT id FROM rooms WHERE id = ? AND is_active = 1', [before.room_id]);
+    const sourceOthers = source && get('SELECT count(*) AS n FROM office_locations WHERE room_id = ? AND valid_to IS NULL AND is_primary = 1 AND office_id != ?', [source.id, id]).n;
+    if (!source || occupants.length !== 1 || sourceOthers) return bad(res, 'Swap needs one office in each of two active rooms.');
+  }
+  const displaced = occupants.map(o => ({ ...o, before: officeLocation(o.id) }));
+  const note = b.note?.trim() || null;
+  const closeLocation = officeId => run(`UPDATE office_locations SET valid_to = datetime('now') WHERE office_id = ? AND valid_to IS NULL`, [officeId]);
+  const assign = (officeId, target) => {
+    run('INSERT INTO office_locations(office_id, room_id, note, changed_by) VALUES (?,?,?,?)', [officeId, target, note, req.user.id]);
+    run(`UPDATE offices SET location_type = 'in_building', updated_at = datetime('now') WHERE id = ?`, [officeId]);
+  };
   tx(() => {
-    run(`UPDATE office_locations SET valid_to = datetime('now') WHERE office_id = ? AND valid_to IS NULL`, [id]);
-    run(`INSERT INTO office_locations(office_id, room_id, note, changed_by) VALUES (?,?,?,?)`, [id, roomId, req.body?.note || null, req.user.id]);
-    run(`UPDATE offices SET location_type = 'in_building', updated_at = datetime('now') WHERE id = ?`, [id]);
+    closeLocation(id);
+    if (mode === 'replace' || mode === 'swap') for (const o of displaced) {
+      closeLocation(o.id);
+      if (mode === 'swap') assign(o.id, before.room_id);
+      else run(`UPDATE offices SET location_type = 'unconfirmed', updated_at = datetime('now') WHERE id = ?`, [o.id]);
+      audit(req.user, mode, 'office', o.id, o.before, { ...officeLocation(o.id), note, replaced_by: id });
+    }
+    assign(id, roomId);
+    audit(req.user, 'move', 'office', id, before, { ...officeLocation(id), occupancy: mode, note });
+    changed();
   });
   const after = officeLocation(id);
-  audit(req.user, 'move', 'office', id, before, after); changed();
   res.json({ ok: true, location: locationPayload(after) });
 });
 adminApi.get('/offices/:id/history', requireRole('viewer'), (req, res) => {

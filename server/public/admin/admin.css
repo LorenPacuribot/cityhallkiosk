@@ -71,3 +71,9 @@ label.f input, label.f select, label.f textarea { font-weight: 400; color: var(-
 .pager { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 12px; }
 @media (max-width: 1000px) { .app { grid-template-columns: 1fr; } .side { position: static; height: auto; } .g4 { grid-template-columns: repeat(2, 1fr); } .split, .g3, .g2, .form, .diff { grid-template-columns: 1fr; } main { padding: 20px 16px; } }
 label.f input[type=checkbox], label.row input[type=checkbox] { width: auto; flex: none; }
+.reference-plans { margin-bottom: 20px; }
+.reference-plans summary { cursor: pointer; font-weight: 700; }
+.reference-plan { display: grid; gap: 6px; text-decoration: none; }
+.reference-plan img { display: block; width: 100%; border: 1px solid var(--border-default); }
+.table-scroll { overflow-x: auto; }
+[hidden] { display: none !important; }

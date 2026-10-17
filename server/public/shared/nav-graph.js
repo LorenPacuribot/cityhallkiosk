@@ -239,9 +239,9 @@ function describeRoute(graph, nodes, steps, destination, startId) {
       const up = b.floor > a.floor || (b.floor === a.floor && b.y > a.y);
       // count landing turns on the stair polyline (actual geometry, not a generic "top of stairs" sentence)
       const turns = [];
-      let sh = null;
+      let sh = null, firstLanding = null;
       if (s.e.kind === 'stairs' || s.e.kind === 'ramp') {
-        for (let i = 1; i < pl.length; i++) { const hh = heading(pl[i - 1], pl[i]); if (!hh) continue; if (sh) { const t = turnOf(sh, hh); if (t !== 'straight') turns.push(t); } sh = hh; }
+        for (let i = 1; i < pl.length; i++) { const hh = heading(pl[i - 1], pl[i]); if (!hh) continue; if (sh) { const t = turnOf(sh, hh); if (t !== 'straight') { turns.push(t); firstLanding ??= Math.max(wi - 1, wi + i - 3); } } sh = hh; }
       }
       const kind = s.e.kind === 'lift' ? 'elevator' : s.e.kind;
       const fname = floorNameOf(graph, b.floor);
@@ -250,7 +250,7 @@ function describeRoute(graph, nodes, steps, destination, startId) {
         text: `Take the ${s.e.label || kind} ${up ? 'up' : 'down'} to the ${fname}.` });
       if (turns.length) {
         const same = turns.every(t => t === turns[0]);
-        legs.push({ kind: 'stairs_turns', key: same ? `landings_${turns[0]}` : 'landings_mixed', n: turns.length, floor: b.floor, distance_m: 0, point_index: wi + segPts - 1,
+        legs.push({ kind: 'stairs_turns', key: same ? `landings_${turns[0]}` : 'landings_mixed', n: turns.length, floor: b.floor, distance_m: 0, point_index: wi + segPts - 1, start_point_index: firstLanding,
           text: !same ? 'Follow the stairs around the landings.' : turns.length === 1 ? `At the landing, turn ${turns[0]}.` : `At each of the ${turns.length} landings, turn ${turns[0]}.` });
       }
       seconds += s.e.kind === 'lift' ? LIFT_SECONDS : len * STAIR_SECONDS_PER_M;

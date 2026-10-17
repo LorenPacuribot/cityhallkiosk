@@ -172,7 +172,9 @@ h1, h2, h3, p { margin: 0; }
 .viewport3d { flex: 1; position: relative; background: #e8e4dc; overflow: hidden; }
 .viewport3d canvas { display: block; width: 100%; height: 100%; }
 .minimap { position: absolute; right: 24px; top: 24px; width: 340px; background: var(--bg-surface); border: 3px solid var(--brand-blue); border-radius: 20px; padding: 16px; box-shadow: var(--shadow-pop); display: flex; flex-direction: column; gap: 12px; }
-.minimap svg { width: 100%; height: auto; border-radius: 10px; background: var(--bg-subtle); }
+.minimap .mapsvg { display: block; width: 100%; height: 220px; border-radius: 10px; background: var(--bg-subtle); }
+.mm-follow { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 56px; }
+.minimap #mm-status { font-weight: 600; color: var(--brand-navy); }
 .floorpick { display: flex; gap: 8px; }
 .floorpick button { flex: 1; min-height: 60px; border-radius: 10px; border: 0; background: var(--bg-subtle); font-size: var(--fs-caption); font-weight: 600; }
 .floorpick button[aria-pressed="true"] { background: var(--brand-navy); color: #fff; }
@@ -305,7 +307,7 @@ h1, h2, h3, p { margin: 0; }
 .landscape .nav-body .directions .controls button { flex-direction: column; justify-content: center; gap: 8px; min-height: 104px; padding: 12px; text-align: center; line-height: 1.2; background: var(--bg-subtle); box-shadow: none; }
 .landscape .nav-body .directions .btn-row { flex-direction: column; gap: 12px; }
 .landscape .dest { padding: 16px 48px; gap: 24px; }
-.landscape .minimap { width: 460px; }
+.landscape .minimap { width: 340px; }
 .landscape .floorpick button { white-space: nowrap; padding: 0 8px; }
 
 /* overlays */
@@ -355,6 +357,7 @@ h1, h2, h3, p { margin: 0; }
 .narrow .key.space { flex: 2 1 0; width: auto; }
 .narrow .dest { padding: 16px 24px; gap: 16px; }
 .narrow .minimap { width: 240px; right: 12px; top: 12px; padding: 10px; }
+.narrow .minimap .mapsvg { height: 150px; }
 .narrow .viewport3d:has(.big2d) .minimap { display: none; } /* the big 2D map already shows the floor */
 .narrow .big2d { inset: 12px 12px 112px 12px; }
 .narrow .controls { left: 12px; right: 12px; bottom: 12px; gap: 8px; }
@@ -494,3 +497,19 @@ h1, h2, h3, p { margin: 0; }
 #stage.narrow .welcome.premium .wp-foot { left: 28px; right: 28px; bottom: 36px; gap: 14px; }
 #stage.narrow .welcome.premium .wp-lang button { min-height: 68px; padding: 0 22px; font-size: 22px; }
 #stage.narrow .welcome.premium .wp-hint { font-size: 18px; }
+
+/* Indoor floor browser: the model and its fallback share a stable viewport. */
+.floor-viewport { position: relative; width: 100%; min-height: 420px; flex: 1; background: var(--bg-subtle); border-radius: 16px; overflow: hidden; }
+.floor-fallback { position: absolute; inset: 0; display: grid; place-items: center; }
+.floor-fallback svg { width: 100%; max-height: 100%; }
+.floor-viewport.has-building .floor-fallback { display: none; }
+.floor-viewport canvas { touch-action: none; }
+.map-controls { display: flex; flex-wrap: wrap; gap: 12px; }
+.map-controls[hidden], .map-hint[hidden] { display: none; }
+.map-controls .chip { min-height: 64px; padding-inline: 20px; }
+.landscape .map-cols .col-main { display: flex; flex-direction: column; gap: 18px; overflow: hidden; }
+.landscape .floor-viewport { min-height: 280px; }
+.narrow .floor-viewport { min-height: 380px; }
+.narrow .map-controls .chip { flex: 1 1 40%; }
+#stage:not(.landscape) .directions { max-height: 38%; overflow-y: auto; }
+#stage:not(.landscape) .viewport3d { min-height: 430px; }
