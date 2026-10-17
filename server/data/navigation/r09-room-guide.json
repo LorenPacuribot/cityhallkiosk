@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "modelVersion": "r09-web02",
+  "guideDate": "2026-10-17",
+  "source": "Owner's floor guide (FIRST FLOOR and SECOND FLOOR room plans with office list), supplied 2026-10-17.",
+  "note": "Room -> office comes from the owner's guide. Room -> doorway was matched by placing each signed model doorway on the real rendered floor plans (server/public/models/plans/r09-web02) and reading which numbered room of the guide it opens into. Door matches stay DRAFT until staff confirm them on site (Admin > Navigation).",
+  "rooms": [
+    { "number": "1", "level": 1, "office": "CENRO", "openings": ["R1-W001-D105", "R1-W001-D106"], "evidence": "Left wing, north of the corridor, west of the north-south passage (x -55..-40)." },
+    { "number": "2", "level": 1, "office": "CSWDO", "openings": ["R1-W002-D108"], "evidence": "Left wing, north of the corridor, east of the passage (x -37..-20)." },
+    { "number": "3", "level": 1, "office": "CASSO", "openings": ["R1-W038-D133", "R1-W038-D134"], "evidence": "Right wing, north of the corridor, west of the passage (x 20..36)." },
+    { "number": "4", "level": 1, "office": "CASSO", "openings": ["R1-W039-D136"], "evidence": "Right wing, north of the corridor, east of the passage (x 39..57). Second room of the City Assessors Office." },
+    { "number": "5", "level": 1, "office": "CUDHD", "openings": ["R1-W023-D122"], "evidence": "Left wing, south of the corridor, westmost small room; its only door is at the room's north-east corner." },
+    { "number": "6", "level": 1, "office": "BAC", "openings": ["R1-W023-D123", "R1-W023-D124"], "evidence": "Left wing, south of the corridor (x -49..-20); two doors on the corridor, as drawn." },
+    { "number": "7", "level": 1, "office": "CTO", "openings": ["R1-W057-D150", "R1-W057-D151", "R1-W057-D149"], "evidence": "Right wing, south of the corridor (x 20..45); D149 opens into the room's west end." },
+    { "number": "8", "level": 1, "office": "BPLD", "openings": ["R1-W057-D152"], "evidence": "Right wing, south of the corridor, eastmost room (x 45..57)." },
+    { "number": "9", "level": 2, "office": "CLO", "openings": ["R2-W001-D187"], "evidence": "2F left wing, north, west of the passage (x -55..-40)." },
+    { "number": "10.1", "level": 2, "office": "CAdO", "openings": ["R2-W002-D188"], "evidence": "2F left wing, north, east of the passage (x -36..-20)." },
+    { "number": "10.2", "level": 2, "office": "MIS", "officeName": "Management Information System", "openings": ["R2-W002-D189"], "evidence": "2F connector west of the centre block, north of the corridor (x -20..-10). Added as an office at the owner's request (2026-10-17)." },
+    { "number": "11", "level": 2, "office": "CMO", "openings": ["R2-W071-D241"], "evidence": "2F centre block, north of the atrium." },
+    { "number": "12", "level": 2, "office": null, "label": null, "openings": [], "evidence": "2F right wing, north-east (reached from the passage). No office given in the guide." },
+    { "number": "13", "level": 2, "office": "CBO", "openings": ["R2-W041-D217"], "evidence": "2F right wing, north, east of the passage, on the corridor." },
+    { "number": "14", "level": 2, "office": "PMES", "officeName": "Project Monitoring and Evaluation Section", "openings": ["R2-W057-D231"], "evidence": "2F right wing, south, eastmost room. Added as an office at the owner's request (2026-10-17)." },
+    { "number": "15", "level": 2, "office": "CAcO", "openings": ["R2-W057-D229", "R2-W057-D230"], "evidence": "2F right wing, south of the corridor (x 20..48)." },
+    { "number": "16", "level": 2, "office": "CPDO", "openings": ["R2-W032-D210", "R2-W032-D209"], "evidence": "2F left wing, south of the corridor (x -48..-20)." },
+    { "number": "17", "level": 2, "office": null, "label": null, "openings": ["R2-W032-D208"], "evidence": "2F left wing, south, westmost small room. No office given in the guide." }
+  ],
+  "unconfirmed": {
+    "offices": ["CCRO", "CGSO", "CHRMO"],
+    "note": "Listed as in the building before, but not in the owner's guide; the owner asked to mark them location unconfirmed (2026-10-17)."
+  },
+  "unmatchedDoorways": {
+    "R1-W076-D166": "Ground floor, north of the corridor beside the lobby (west). Not a numbered room in the guide.",
+    "R1-W082-D171": "Ground floor, north of the corridor beside the lobby (east). Not a numbered room in the guide.",
+    "R2-W040-D216": "2F right wing, north of the corridor, west of the passage. The guide labels no room there."
+  }
+}

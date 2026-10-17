@@ -137,7 +137,7 @@ test('mapping + field verification produce a verified route; office moves and cl
   let r = await j('GET', `/route?office_id=${office.id}&log=0`);
   assert.equal(r.body.reason, 'UNVERIFIED_ROUTE', 'mapping alone is not enough: segments are still unverified');
 
-  const path = ['E-ENT-LOBBY', 'E-LOBBY-LSTAIRAPP', 'E-LSTAIRAPP-LFOOT', 'S-LEFT-GF-F2', 'E-F2LTOP-FOYER', 'E-F2LFOYER-C1', 'E-F2LC1-D210'];
+  const path = ['E-ENT-LOBBY', 'E-LOBBY-LSTAIRAPP', 'E-LSTAIRAPP-LFOOT', 'S-LEFT-GF-F2', 'E-F2LTOP-FOYER', 'E-F2LFOYER-C1', 'C-F2-L-C1-F2-L-D188', 'C-F2-L-D188-F2-L-D210'];
   for (const e of path) assert.equal((await j('PUT', `/admin/navigation/${v}/edges/${e}`, { verified: true })).status, 200);
   assert.equal((await j('PUT', `/admin/navigation/${v}/edges/S-LEFT-GF-F2`, { step_free: true })).status, 422, 'stairs cannot be step-free');
   r = await j('GET', `/route?office_id=${office.id}&log=0`);
@@ -154,9 +154,9 @@ test('mapping + field verification produce a verified route; office moves and cl
   assert.deepEqual(local.directions.map(d => d.key), r.body.directions.map(d => d.key));
 
   // closure
-  await j('PUT', `/admin/navigation/${v}/edges/E-F2LC1-D210`, { closed: true, closed_reason: 'Floor works' });
+  await j('PUT', `/admin/navigation/${v}/edges/C-F2-L-D188-F2-L-D210`, { closed: true, closed_reason: 'Floor works' });
   assert.equal((await j('GET', `/route?office_id=${office.id}&log=0`)).body.reason, 'ROUTE_CLOSED');
-  await j('PUT', `/admin/navigation/${v}/edges/E-F2LC1-D210`, { closed: false });
+  await j('PUT', `/admin/navigation/${v}/edges/C-F2-L-D188-F2-L-D210`, { closed: false });
 
   // office moves to a room with no verified doorway: the destination follows the office, the old door is not reused
   const other = (await j('GET', '/admin/rooms')).body.items.find(x => x.id !== room && x.room_type === 'office');

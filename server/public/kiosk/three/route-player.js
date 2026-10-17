@@ -94,8 +94,11 @@ export class RoutePlayer {
     this.pinBase = toRender({ x: mk.x, y: floorY + 1.1, z: mk.z });
     this.pin.position.copy(this.pinBase);
     const code = this.route.to?.room_code || '';
-    const lbl = makeTextLabel({ title: code, subtitle: nameWithoutCode(this.route.to?.name || this.route.to?.room_name || '', code) }, x => this.track(x));
+    // the destination beacon names the office only ("Room N" stays on the door signs); the code is a fallback for unnamed rooms
+    const name = nameWithoutCode(this.route.to?.name || this.route.to?.room_name || '', code);
+    const lbl = makeTextLabel({ title: '', subtitle: name || code }, x => this.track(x));
     this.label = lbl.sprite; this.labelAspect = lbl.aspect;
+    this.label.frustumCulled = false; // a beacon drawn over walls; also uploads the shared sprite geometry on the first route
     this.label.position.copy(toRender({ x: mk.x, y: floorY + 1.85, z: mk.z }));
     this.label.visible = false;
     this.endFloor = end.floor;
@@ -131,7 +134,7 @@ export class RoutePlayer {
     if (this.paused || this.arrived) this.viewer.animating.delete(this);
   }
 
-  pause() { this.paused = !this.paused; this.last = null; this.viewer.animating.add(this); this.viewer.invalidate(); return this.paused; }
+  pause(force) { this.paused = force ?? !this.paused; this.last = null; this.viewer.animating.add(this); this.viewer.invalidate(); return this.paused; }
   replay() { this.elapsed = 0; this.arrived = false; this.paused = false; this.last = null; this.viewer.animating.add(this); this.viewer.invalidate(); }
   skip() { this.elapsed = this.total; this.viewer.animating.add(this); this.viewer.invalidate(); }
   /** Jump to a fraction of the walk (tests, staff review). */

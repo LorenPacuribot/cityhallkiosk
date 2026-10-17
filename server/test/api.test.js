@@ -38,6 +38,16 @@ test('search tolerates typos and local words', async () => {
   assert.equal(c.body.count, 0);
 });
 
+test('offices carry their Charter logo, or has_logo = 0 with no logo_url (kiosk shows the city seal)', async () => {
+  const items = (await j('GET', '/offices')).body.items;
+  const by = Object.fromEntries(items.map(o => [o.short_name, o]));
+  assert.equal(by.CTO.has_logo, 1);
+  assert.equal(by.CTO.logo_url, '/img/office-logos/city-treasurers-office.png');
+  assert.equal(by.CSWDO.has_logo, 0);
+  assert.equal(by.CSWDO.logo_url, null);
+  for (const o of items.filter(o => o.has_logo)) assert.ok(fs.existsSync(path.join(import.meta.dirname, '../public', o.logo_url)), o.logo_url);
+});
+
 test('service detail includes requirements, steps and live location with xyz', async () => {
   const s = (await j('GET', '/search?q=cedula&log=0')).body.results[0];
   const d = await j('GET', `/services/${s.id}?view=0`);

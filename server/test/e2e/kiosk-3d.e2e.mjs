@@ -65,12 +65,22 @@ test('repeated navigation reuses one model, one WebGL context and stable GPU res
   let first = null;
   for (let i = 0; i < 6; i++) {
     await startRoute(page); await waitBuilding(page);
-    await page.waitForTimeout(400); // let the route's own meshes render (GPU upload) before counting
+    // Compare the same rendered pose, including the destination marker. Wall-clock waits
+    // sampled different frusta on busy machines and mistook lazy uploads for a leak.
+    const frame = await page.evaluate(async () => {
+      const v = (await import('/kiosk/three/building-viewer.js')).getViewer();
+      v.player.pause(true); v.player.seek(.9);
+      return v.info().frames;
+    });
+    await page.waitForFunction(async previous => (await import('/kiosk/three/building-viewer.js')).getViewer().info().frames > previous, frame);
     const info = await viewerInfo(page);
     first ??= info;
     assert.equal(info.loads, 1, 'the building is loaded once per session');
-    assert.ok(info.geometries <= first.geometries, `no geometry growth on route ${i + 1} (${info.geometries} vs ${first.geometries})`);
-    assert.ok(info.textures <= first.textures, `no texture growth on route ${i + 1} (${info.textures} vs ${first.textures})`);
+    // Building geometry uploads lazily (first time it is drawn), so the count moves by one or two between runs
+    // (measured 15, 16, 16, 16, 16, 12). A leaked route would add its own set of at least four every time.
+    assert.ok(info.geometries <= first.geometries + 2, `no per-route geometry growth on route ${i + 1} (${info.geometries} vs ${first.geometries})`);
+    // same lazy-upload jitter for textures (measured 8, 8, 8, 8, 9, 8); a leak of even one per route exceeds +2 by route 4
+    assert.ok(info.textures <= first.textures + 2, `no per-route texture growth on route ${i + 1} (${info.textures} vs ${first.textures})`);
     assert.ok(await canvasCount(page) <= 1);
     await page.click('[data-action="endnav"]');
     await page.waitForSelector('[data-action="navoffice"]');
@@ -170,18 +180,16 @@ test('WebGL context loss mid-route hands over to the 2D map', async () => {
   await page.close();
 });
 
-test('step-free request: explicit no-route, nothing drawn, never stairs', async () => {
+test('kiosk removes Avoid stairs while the phone/API retain safe step-free behavior', async () => {
   const page = await b.newPage(PORTRAIT), errors = watch(page);
   await openOffice(page); await startRoute(page);
-  await page.click('[data-action="stepfree"]');
-  await page.waitForSelector('[data-action="home"]');
-  const text = await page.textContent('.screen');
-  assert.match(text, /no checked step-free way/);
-  assert.equal(await canvasCount(page), 0);
-  assert.equal(await page.$('.big2d'), null);
-  await page.screenshot({ path: path.join(RESULTS, 'fixture-no-step-free-route.png') });
-  await page.click('[data-action="stepfree"]'); // "Show a route with stairs" restores the normal route
-  await page.waitForSelector('#vp');
+  await waitBuilding(page);
+  assert.equal(await page.$('[data-action="stepfree"]'), null);
+  assert.doesNotMatch(await page.textContent('.screen'), /Avoid stairs/);
+  const response = await fetch(`${srv.base}/api/route?office_id=${srv.fx.office.id}&kiosk=KIOSK-LOBBY-1&preference=step_free`);
+  const route = await response.json();
+  assert.equal(route.status, 'no_route');
+  assert.equal(route.reason, 'NO_STEP_FREE_ROUTE');
   assert.deepEqual(errors, []);
   await page.close();
 });

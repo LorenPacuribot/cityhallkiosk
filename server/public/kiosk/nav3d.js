@@ -13,7 +13,7 @@ import { buildWalk, activeDirection } from '../shared/walk-path.js';
 
 export class Nav3DError extends Error { constructor(message, code) { super(message); this.code = code; } }
 
-export async function createNav3D(container, bundle, route, { signal, onProgress, onArrive, onLoadProgress, onFallback } = {}) {
+export async function createNav3D(container, bundle, route, { signal, onProgress, onArrive, onLoadProgress, onFallback, preview } = {}) {
   const nav = bundle.navigation;
   if (route.routeSource !== 'navigation_graph' || !nav?.model) return createGreyboxNav(container, bundle, route, { onProgress, onArrive });
   if (nav.graph?.modelVersion !== nav.model.modelVersion) throw new Nav3DError('Navigation graph and model release do not match.', 'VERSION_MISMATCH');
@@ -23,14 +23,14 @@ export async function createNav3D(container, bundle, route, { signal, onProgress
   await viewer.ensureModel(nav, { signal, onLoadProgress, allowDraftCalibration: route.verification !== 'verified' });
   if (signal?.aborted) throw Object.assign(new Error('Navigation was cancelled.'), { name: 'AbortError', code: 'ABORTED' });
   viewer.attach(container);
-  viewer.updateContent(bundle);
+  viewer.updateContent(bundle, { preview });
   const player = viewer.playRoute(route, { onProgress, onArrive });
   // WebGL context lost mid-route (driver reset, GPU memory pressure): hand the route to the 2D map
   const off = viewer.on(ev => { if (ev.type === 'contextlost') onFallback?.(Object.assign(new Error('WebGL context lost'), { code: 'CONTEXT_LOST' })); });
   return {
     kind: 'building',
     draft: route.verification !== 'verified' || viewer.calibration?.status !== 'verified',
-    pause: () => player.pause(),
+    pause: force => player.pause(force),
     replay: () => player.replay(),
     skip: () => player.skip(),
     setAvatar: obj => player.setAvatar(obj),
@@ -173,7 +173,7 @@ export function createGreyboxNav(container, bundle, route, { onProgress, onArriv
 
   return {
     kind: 'greybox', draft: true,
-    pause() { paused = !paused; return paused; },
+    pause(force) { paused = force ?? !paused; return paused; },
     replay() { elapsed = 0; arrived = false; paused = false; last = null; },
     skip() { elapsed = walk.duration; },
     dispose() {

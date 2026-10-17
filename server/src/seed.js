@@ -12,6 +12,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { openDb, run, get, all, tx, saveNow, setSetting, ROOT } from './db.js';
 import { hashPassword } from './auth.js';
+import { OFFICE_LOGOS } from './lib/office-logos.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -131,8 +132,8 @@ export async function seed({ reset = true } = {}) {
     const officeIdByName = {};
     for (const o of OFFICES) {
       const type = o.offsite ? 'offsite' : o.unconfirmed ? 'unconfirmed' : 'in_building';
-      const id = run(`INSERT INTO offices(name, short_name, phone, location_type, offsite_address) VALUES (?,?,?,?,?)`,
-        [o.name, o.short, o.phone || PHONES[o.short] || null, type, o.offsite || null]).lastId;
+      const id = run(`INSERT INTO offices(name, short_name, phone, location_type, offsite_address, has_logo, logo_file) VALUES (?,?,?,?,?,?,?)`,
+        [o.name, o.short, o.phone || PHONES[o.short] || null, type, o.offsite || null, OFFICE_LOGOS[o.short] ? 1 : 0, OFFICE_LOGOS[o.short] || null]).lastId;
       officeIdByName[o.name] = id;
       if (o.room) {
         const [code, x, z, w, d] = o.room;

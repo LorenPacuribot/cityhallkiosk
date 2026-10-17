@@ -139,7 +139,11 @@ export class BuildingViewer {
   }
 
   /** Content changes (office moved, labels) after the geometry is loaded. */
-  updateContent(bundle) { this.signs?.update(bundle); this.invalidate(); }
+  /** @param {{preview?: boolean}} [opts] staff preview: draft sign mappings are shown too (remembered for later calls) */
+  updateContent(bundle, { preview } = {}) {
+    if (preview !== undefined) this.signPreview = preview;
+    this.signs?.update(bundle, { preview: !!this.signPreview }); this.invalidate();
+  }
 
   playRoute(route, opts) {
     if (!this.release) throw new Error('Model is not loaded');

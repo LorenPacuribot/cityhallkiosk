@@ -1,5 +1,6 @@
 // Office labels on the model's blank sign faces, from published data (docs/3D_MODEL_INTEGRATION_GUIDE.md §11).
-// Only VERIFIED opening->room mappings get a label; an unverified sign stays blank exactly as modelled.
+// Only VERIFIED opening->room mappings get a label on the public kiosk; in a labelled staff preview, DRAFT mappings
+// (e.g. from the owner's room guide) are shown too. Anything else stays blank exactly as modelled.
 // The label is a canvas texture on the face's UV0 in its own material instance; UV1 and the shared lightmap
 // are untouched, so the baked lighting still applies.
 import * as THREE from 'three';
@@ -8,12 +9,14 @@ import { bakedMaterial } from './materials.js';
 const W = 1024, H = 256;
 
 /**
- * Text for one doorway: the room's CURRENT occupant office(s), primary first, then the room code.
- * A room with no current office shows only its code: a room's stored name is often its former occupant.
+ * Text for one doorway: the room's CURRENT occupant office(s), primary first, then the room code. An office whose
+ * second room this is (room.occupant lists every current location) also counts. A room with no current office
+ * shows only its code: a room's stored name is often its former occupant.
  */
 export function signText(bundle, roomId) {
   const room = bundle.floors?.flatMap(f => f.rooms).find(r => r.id === roomId);
   const offices = (bundle.offices || []).filter(o => o.location?.room_id === roomId).map(o => o.name);
+  if (!offices.length && room?.occupant) offices.push(...room.occupant.split(', '));
   if (!offices.length) return { title: room?.code || '', code: '' };
   return { title: offices.slice(0, 2).join(' / ') + (offices.length > 2 ? ` +${offices.length - 2}` : ''), code: room?.code || '' };
 }
@@ -38,14 +41,16 @@ export class DynamicSigns {
   /**
    * @param {object} bundle current published content (offices + floors) with bundle.navigation.graph signs/openings
    */
-  update(bundle) {
+  update(bundle, { preview = false } = {}) {
     const g = bundle?.navigation?.graph;
+    const draftOK = preview && !!bundle?.navigation?.previewUnverified;
+    const shown = st => st === 'verified' || (draftOK && st === 'draft');
     const wanted = new Map();
     if (g && g.modelVersion === this.release.modelVersion) {
       const openings = new Map(g.openings.map(o => [o.openingId, o]));
       for (const s of g.signs || []) {
         const o = openings.get(s.openingId);
-        if (!o || o.status !== 'verified' || !o.roomId || s.status !== 'verified') continue;
+        if (!o || !o.roomId || !shown(o.status) || !shown(s.status)) continue;
         const t = signText(bundle, o.roomId);
         if (t.title) wanted.set(s.assetId, t);
       }

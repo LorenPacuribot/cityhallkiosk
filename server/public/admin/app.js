@@ -46,10 +46,10 @@ function renderLogin(msg = '') {
     <div class="row"><img class="seal" src="/img/malaybalay-seal.jpg" alt="Official seal of the City of Malaybalay"><div><b>Malaybalay City Hall</b><div class="muted small">Kiosk admin panel</div></div></div>
     <h1 style="font-size:22px;margin:8px 0 0">Sign in</h1>
     ${msg ? `<div class="notice bad" role="alert">${icon('alert', 18)}<span>${esc(msg)}</span></div>` : ''}
-    <label class="f">Email<input name="email" type="email" required autocomplete="username" value="admin@kiosk.local"></label>
+    <label class="f">Email<input name="email" type="email" required autocomplete="username"></label>
     <label class="f">Password<input name="password" type="password" required autocomplete="current-password"></label>
     <button class="btn primary" style="justify-content:center">Sign in</button>
-    <p class="muted small" style="margin:0">Prototype accounts use the password <code>ChangeMe!2026</code>. Change them before going live.</p>
+    <p class="muted small" style="margin:0">Use your assigned staff account. Contact your administrator if you need access.</p>
   </form></div>`;
   $('#login').addEventListener('submit', async e => {
     e.preventDefault();

@@ -1,5 +1,6 @@
 import { all, get, setting } from '../db.js';
 import { publishedNavigation } from './navigation.js';
+import { logoUrl } from './office-logos.js';
 
 export function officeLocation(officeId) {
   return get('SELECT * FROM v_office_current_location WHERE office_id = ?', [officeId]);
@@ -46,16 +47,16 @@ export function serviceDetail(id, { includeUnpublished = false } = {}) {
 }
 
 export function officesWithLocation() {
-  return all(`SELECT o.id, o.name, o.short_name, o.phone, o.hours, o.location_type, o.offsite_address,
+  return all(`SELECT o.id, o.name, o.short_name, o.phone, o.hours, o.location_type, o.offsite_address, o.has_logo, o.logo_file,
                      (SELECT count(*) FROM services s WHERE s.office_id = o.id AND s.status = 'published') AS service_count
                 FROM offices o WHERE o.is_active = 1 ORDER BY o.name`)
-    .map(o => ({ ...o, location: locationPayload(officeLocation(o.id)) }));
+    .map(({ logo_file, ...o }) => ({ ...o, logo_url: o.has_logo ? logoUrl(logo_file) : null, location: locationPayload(officeLocation(o.id)) }));
 }
 
 export function floorsWithRooms() {
   const floors = all('SELECT * FROM floors ORDER BY level');
   const rooms = all(`SELECT r.*, (SELECT group_concat(o.name, ', ') FROM office_locations ol JOIN offices o ON o.id = ol.office_id
-                                   WHERE ol.room_id = r.id AND ol.valid_to IS NULL AND ol.is_primary = 1) AS occupant
+                                   WHERE ol.room_id = r.id AND ol.valid_to IS NULL) AS occupant
                        FROM rooms r WHERE r.is_active = 1 ORDER BY r.code`);
   return floors.map(f => ({ ...f, rooms: rooms.filter(r => r.floor_id === f.id) }));
 }

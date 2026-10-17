@@ -80,16 +80,16 @@ export function publicNavigation() {
 
 // ------------------------------------------------------------------ routing
 /** DB lookup -> shared resolveDestination (public/shared/nav-graph.js), so the kiosk resolves identically. */
-export function resolveFromDb(graph, { officeId, roomId, openingId }, { preview = false } = {}) {
+export function resolveFromDb(graph, { officeId, roomId, openingId }, { preview = false, kioskCode = null } = {}) {
   if (openingId) return resolveDestination(graph, { openingId }, { preview });
   if (officeId) {
     const office = get('SELECT * FROM v_office_current_location WHERE office_id = ?', [officeId]);
     if (!office) return { reason: ROUTE_REASONS.UNKNOWN_DESTINATION, message: 'Office not found.' };
-    return resolveDestination(graph, { roomId: office.room_id, locationType: office.location_type, officeName: office.office_name }, { preview });
+    return resolveDestination(graph, { roomId: office.room_id, locationType: office.location_type, officeName: office.office_name }, { preview, kioskCode });
   }
   if (!roomId) return { reason: ROUTE_REASONS.UNKNOWN_DESTINATION, message: 'No destination given.' };
   if (!get('SELECT 1 FROM rooms WHERE id = ?', [roomId])) return { reason: ROUTE_REASONS.UNKNOWN_DESTINATION, message: 'Room not found.' };
-  return resolveDestination(graph, { roomId, locationType: 'in_building' }, { preview });
+  return resolveDestination(graph, { roomId, locationType: 'in_building' }, { preview, kioskCode });
 }
 
 export function planPublishedRoute({ kioskCode, officeId, roomId, openingId, preference = 'any', preview = false }) {
@@ -98,7 +98,7 @@ export function planPublishedRoute({ kioskCode, officeId, roomId, openingId, pre
   const allowUnverified = preview && nav.previewUnverified;
   const meta = { modelVersion: nav.graph.modelVersion, navigationVersion: nav.graph.navigationVersion, contentVersion: Number(setting('content_version', '1')),
     routePreference: preference, originKioskCode: kioskCode, routeSource: 'navigation_graph' };
-  const d = resolveFromDb(nav.graph, { officeId, roomId, openingId }, { preview: allowUnverified });
+  const d = resolveFromDb(nav.graph, { officeId, roomId, openingId }, { preview: allowUnverified, kioskCode });
   if (!d.destination) return { status: 'no_route', ...meta, reason: d.reason, message: d.message };
   const r = planGraphRoute({ graph: nav.graph, kioskCode, destination: d.destination, preference, allowUnverified,
     versions: { modelVersion: nav.publication.modelVersion, contentVersion: meta.contentVersion } });

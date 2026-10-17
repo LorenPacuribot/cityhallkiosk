@@ -5,6 +5,7 @@ import { all, get, run, setting } from '../db.js';
 import { search } from '../search.js';
 import { serviceDetail, officesWithLocation, officeLocation, locationPayload, floorsWithRooms, kioskBundle, activeAnnouncements, popularServiceIds } from '../lib/data.js';
 import { planRoute, DEFAULT_KIOSK } from '../lib/route.js';
+import { logoUrl } from '../lib/office-logos.js';
 import { publicNavigation } from '../lib/navigation.js';
 
 export const publicApi = express.Router();
@@ -60,7 +61,7 @@ publicApi.get('/offices/:id', (req, res) => {
   if (!o) return res.status(404).json({ error: 'Office not found' });
   const services = all(`SELECT id, COALESCE(plain_title, title) AS title, classification, total_fees, total_processing_time, is_citizen_facing
                           FROM services WHERE office_id = ? AND status='published' ORDER BY is_citizen_facing DESC, title`, [o.id]);
-  res.json({ ...o, location: locationPayload(officeLocation(o.id)), services });
+  res.json({ ...o, logo_url: o.has_logo ? logoUrl(o.logo_file) : null, location: locationPayload(officeLocation(o.id)), services });
 });
 
 publicApi.get('/floors', (req, res) => res.json({ items: floorsWithRooms() }));

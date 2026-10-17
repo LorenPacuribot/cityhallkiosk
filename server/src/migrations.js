@@ -1,6 +1,7 @@
 // Versioned, transactional schema migrations. Each runs once, inside BEGIN/COMMIT, and is recorded in
 // schema_migrations. They only ADD tables/columns: existing content, office history and audit rows are untouched.
 // Never replace this with a reseed — `npm run seed` resets the database.
+import { officeLogoUpdatesSQL } from './lib/office-logos.js';
 
 export const MIGRATIONS = [
   {
@@ -155,6 +156,15 @@ CREATE TABLE IF NOT EXISTS plain_summaries (
   reviewed_at   TEXT,
   UNIQUE (entity_type, entity_id, lang)
 );
+`,
+  },
+  {
+    id: '2026-10-17-002-office-logos',
+    description: "Office logos from the Citizen's Charter; has_logo = 0 means the kiosk shows the city seal instead",
+    sql: `
+ALTER TABLE offices ADD COLUMN has_logo INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE offices ADD COLUMN logo_file TEXT;
+${officeLogoUpdatesSQL()}
 `,
   },
 ];

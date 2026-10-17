@@ -7,6 +7,7 @@ import { loadPlans, planFor } from '/shared/plans.js';
 
 const $ = s => document.querySelector(s);
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const roomLabel = c => (/^room\b/i.test(c) ? c : `Room ${c}`); // "Room 7" codes read as they are
 // Charter notes: plain lines become paragraphs; runs of "a | b | c" lines (fee schedules) become a table.
 function notesHTML(notes) {
   const out = []; let rows = [];
@@ -49,7 +50,7 @@ async function servicePage(id) {
   app.innerHTML = `${header(true)}<main>
     <h1>${esc(s.display_title)}</h1>
     ${s.plain_title && s.plain_title !== s.title ? `<p class="muted small">${esc(s.title)}</p>` : ''}
-    <a class="where" href="#where">${icon('map-pin', 20)}<span><b>${esc(s.office_name)}</b><br>${loc?.room_code ? `${esc(loc.floor_name)} · Room ${esc(loc.room_code)}` : loc?.type === 'offsite' ? esc(loc.offsite_address || 'Outside City Hall') : 'Ask at the information desk'}</span></a>
+    <a class="where" href="#where">${icon('map-pin', 20)}<span><b>${esc(s.office_name)}</b><br>${loc?.room_code ? `${esc(loc.floor_name)} · ${esc(roomLabel(loc.room_code))}` : loc?.type === 'offsite' ? esc(loc.offsite_address || 'Outside City Hall') : 'Ask at the information desk'}</span></a>
     <div class="stats"><div>${icon('wallet', 18)}<small>Fee</small><b>${esc(s.total_fees || '—')}</b></div><div>${icon('clock', 18)}<small>Time</small><b>${esc(s.total_processing_time || '—')}</b></div></div>
     ${s.who_may_avail ? `<p class="small"><b>Who may apply:</b> ${esc(s.who_may_avail)}</p>` : ''}
 
@@ -63,7 +64,7 @@ async function servicePage(id) {
     ${s.notes ? `<section><h2>Notes and fees</h2>${notesHTML(s.notes)}</section>` : ''}
 
     <section id="where"><h2>How to get there</h2>
-      ${moved ? `<p class="notice">This office has moved since the code was made. The directions below are for where it is now: <b>${esc(loc.floor_name)} · Room ${esc(loc.room_code)}</b>.</p>` : ''}
+      ${moved ? `<p class="notice">This office has moved since the code was made. The directions below are for where it is now: <b>${esc(loc.floor_name)} · ${esc(roomLabel(loc.room_code))}</b>.</p>` : ''}
       ${whereHTML({ loc, floor, route, nav, origin, stepFree, plans })}
     </section>
 
@@ -97,7 +98,7 @@ const REASONS = {
 };
 function whereHTML({ loc, floor, route, nav, origin, stepFree, plans }) {
   if (!loc?.room_id) return `<p>${loc?.type === 'offsite' ? `This office is <b>not inside City Hall</b>: ${esc(loc.offsite_address || 'ask the information desk for the address')}.` : 'The room is not confirmed yet. Please ask at the information desk.'}</p>`;
-  const place = `<p><b>${esc(loc.floor_name)} · Room ${esc(loc.room_code)}</b></p>`;
+  const place = `<p><b>${esc(loc.floor_name)} · ${esc(roomLabel(loc.room_code))}</b></p>`;
   if (!origin) return `${place}<p class="muted small">Scan the code on a City Hall kiosk to get step-by-step directions from where you are standing.</p>`;
   if (!route || route.status !== 'ok') return `${place}<p>${esc(REASONS[route?.reason] || 'Directions are not available right now.')} Please ask at the information desk.</p>`;
   const pref = stepFree ? ' · avoiding stairs' : '';

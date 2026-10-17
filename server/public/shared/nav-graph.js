@@ -66,7 +66,7 @@ export function validateGraph(g) {
  * @param {{preview?: boolean}} opts draft (unverified) mappings only in a labelled preview
  * @returns {{destination}|{reason, message}}
  */
-export function resolveDestination(graph, target, { preview = false } = {}) {
+export function resolveDestination(graph, target, { preview = false, kioskCode = null } = {}) {
   const asDest = (o, name) => ({ nodeId: o.approachNodeId, openingId: o.openingId, roomId: o.roomId ?? null, doorPoint: o.doorPoint || null,
     name: name || o.roomName || o.label, code: o.roomCode || o.openingId, mapping: o.status });
   if (target.openingId) {
@@ -78,16 +78,26 @@ export function resolveDestination(graph, target, { preview = false } = {}) {
   }
   if (target.locationType === 'offsite') return { reason: ROUTE_REASONS.OFFSITE, message: 'This office is not in this building.' };
   if (target.locationType === 'unconfirmed' || !target.roomId) return { reason: ROUTE_REASONS.UNVERIFIED_DESTINATION, message: 'This office\'s location is not confirmed.' };
-  const chosen = doorForRoom(graph, target.roomId, { preview });
+  const chosen = doorForRoom(graph, target.roomId, { preview, kioskCode });
   if (!chosen) return { reason: ROUTE_REASONS.UNVERIFIED_DESTINATION, message: 'Directions to this office have not been verified yet.' };
   return { destination: asDest(chosen, target.officeName) };
 }
 
-/** The doorway a room is reached by: a verified mapping, or a draft one only in a labelled preview. */
-export function doorForRoom(graph, roomId, { preview = false } = {}) {
+/**
+ * The doorway a room is reached by: a verified mapping, or a draft one only in a labelled preview. When a room has
+ * several eligible doorways (e.g. the Treasurer's three), the one nearest the visitor's kiosk wins; all doors of a
+ * room open onto the same corridor, so straight-line distance from the kiosk's graph node picks the shortest walk.
+ */
+export function doorForRoom(graph, roomId, { preview = false, kioskCode = null } = {}) {
   if (roomId == null) return null;
   const candidates = (graph.openings || []).filter(o => o.roomId === roomId && o.approachNodeId);
-  return candidates.find(o => o.status === 'verified') || (preview ? candidates.find(o => o.status === 'draft') : null) || null;
+  const tier = candidates.filter(o => o.status === 'verified');
+  const pool = tier.length ? tier : preview ? candidates.filter(o => o.status === 'draft') : [];
+  if (pool.length < 2) return pool[0] || null;
+  const start = graph.nodes.find(n => n.id === graph.kiosks?.[kioskCode]);
+  if (!start) return pool[0];
+  const dist = o => { const a = graph.nodes.find(n => n.id === o.approachNodeId); return a ? Math.hypot(a.x - start.x, a.y - start.y, a.z - start.z) : Infinity; };
+  return pool.reduce((best, o) => dist(o) < dist(best) ? o : best);
 }
 
 /** Which edges a request may use. Unknown step-free status is never eligible for a step-free request. */

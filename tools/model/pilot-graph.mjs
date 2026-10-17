@@ -65,7 +65,6 @@ node('GF-L-D108-APP', 1, 'door_approach', [-34.7, -3.8, 0], `1.3 m in front of d
 edge('E-LOBBY-LSTAIRAPP', 'walk', 'GF-LOBBY', 'GF-L-STAIRAPP', [], { source: SRC.walk });
 edge('E-LSTAIRAPP-LFOYER', 'walk', 'GF-L-STAIRAPP', 'GF-L-FOYER', [], { source: SRC.walk });
 edge('E-LFOYER-LC1', 'walk', 'GF-L-FOYER', 'GF-L-C1', [[-18.25, -5.0, 0]], { source: SRC.walk });
-edge('E-LC1-LD108', 'walk', 'GF-L-C1', 'GF-L-D108', [[-26.75, -5.0, 0]], { source: SRC.walk });
 edge('E-LD108-APP', 'door', 'GF-L-D108', 'GF-L-D108-APP', [], { source: SRC.doors });
 
 // right wing
@@ -77,7 +76,6 @@ node('GF-R-D133-APP', 1, 'door_approach', [27.0, -3.5, 0], `1 m in front of door
 edge('E-LOBBY-RSTAIRAPP', 'walk', 'GF-LOBBY', 'GF-R-STAIRAPP', [], { source: SRC.walk });
 edge('E-RSTAIRAPP-RFOYER', 'walk', 'GF-R-STAIRAPP', 'GF-R-FOYER', [], { source: SRC.walk });
 edge('E-RFOYER-RC1', 'walk', 'GF-R-FOYER', 'GF-R-C1', [[18.25, -4.0, 0]], { source: SRC.walk });
-edge('E-RC1-RD133', 'walk', 'GF-R-C1', 'GF-R-D133', [[24.25, -4.0, 0]], { source: SRC.walk });
 edge('E-RD133-APP', 'door', 'GF-R-D133', 'GF-R-D133-APP', [], { source: SRC.doors });
 
 // ---------------------------------------------------------------- stairs (actual flights and landings)
@@ -106,14 +104,70 @@ node('F2-L-C1', 2, 'junction', [-21.75, -5.0, 4.0], `${SRC.walk} 2F-L corridor y
 node('F2-L-D210', 2, 'door_approach', [-25.9, -5.0, 4.0], `on the 2F-L corridor line, 1.726 m from door leaf centre (-25.9,-6.726) in ${SRC.doors}`, 'Doorway R2-W032-D210');
 edge('E-F2LTOP-FOYER', 'walk', 'F2-L-STAIRTOP', 'F2-L-FOYER', [], { source: SRC.walk });
 edge('E-F2LFOYER-C1', 'walk', 'F2-L-FOYER', 'F2-L-C1', [], { source: SRC.walk });
-edge('E-F2LC1-D210', 'walk', 'F2-L-C1', 'F2-L-D210', [], { source: SRC.walk });
 
 node('F2-R-FOYER', 2, 'junction', [18.55, -5.2, 4.0], `${SRC.walk} R-STAIR top foyer`);
 node('F2-R-C1', 2, 'junction', [21.75, -4.5, 4.0], `${SRC.corridor2f} (right y=-4.5)`);
 node('F2-R-D229', 2, 'door_approach', [26.1, -4.75, 4.0], `on the 2F-R corridor, 1.976 m from door leaf centre (26.1,-6.726) in ${SRC.doors}`, 'Doorway R2-W057-D229');
 edge('E-F2RTOP-FOYER', 'walk', 'F2-R-STAIRTOP', 'F2-R-FOYER', [], { source: SRC.walk });
 edge('E-F2RFOYER-C1', 'walk', 'F2-R-FOYER', 'F2-R-C1', [], { source: SRC.walk });
-edge('E-F2RC1-D229', 'walk', 'F2-R-C1', 'F2-R-D229', [], { source: SRC.walk });
+
+// ---------------------------------------------------------------- every doorway of the owner's room guide
+// server/data/navigation/r09-room-guide.json (owner's floor guide, 2026-10-17) says which numbered room each signed
+// doorway belongs to. Each such doorway gets a junction on its wing's corridor line and an approach node 1.0 m in
+// front of the door leaf; the corridor is a chain of junctions outward from the wing's first corridor node.
+// Leaf centres: Blender x, y, z of the closed leaves (DOORGEO leaf boundsGltf midpoints in nodes.json, as SRC.doors).
+const LEAF = {
+  'R1-W001-D105': [-45.7, -2.526, 0], 'R1-W001-D106': [-40.9, -2.526, 0], 'R1-W002-D108': [-34.7, -2.526, 0],
+  'R1-W023-D122': [-48.2, -7.526, 0], 'R1-W023-D123': [-41.5, -7.526, 0], 'R1-W023-D124': [-27.0, -7.526, 0],
+  'R1-W038-D133': [27.0, -2.526, 0], 'R1-W038-D134': [33.2, -2.526, 0], 'R1-W039-D136': [50.8, -2.5, 0],
+  'R1-W057-D149': [22.7, -7.526, 0], 'R1-W057-D150': [25.6, -7.526, 0], 'R1-W057-D151': [41.4, -7.5, 0], 'R1-W057-D152': [49.0, -7.5, 0],
+  'R2-W001-D187': [-40.1, -3.326, 4.0], 'R2-W002-D188': [-25.2, -3.326, 4.0], 'R2-W002-D189': [-15.5, -3.326, 4.0],
+  'R2-W032-D208': [-46.3, -6.726, 4.0], 'R2-W032-D209': [-42.1, -6.726, 4.0], 'R2-W032-D210': [-25.9, -6.726, 4.0],
+  'R2-W041-D217': [40.0, -2.326, 4.0], 'R2-W057-D229': [26.1, -6.726, 4.0], 'R2-W057-D230': [42.0, -6.726, 4.0],
+  'R2-W057-D231': [49.2, -6.726, 4.0], 'R2-W071-D241': [3.7, -2.5, 4.0],
+};
+const GUIDE = JSON.parse(fs.readFileSync(path.join(HERE, '../../server/data/navigation/r09-room-guide.json'), 'utf8'));
+const guideRoom = new Map(GUIDE.rooms.flatMap(r => r.openings.map(o => [o, r])));
+for (const id of guideRoom.keys()) if (!LEAF[id]) throw new Error(`no door leaf position for guide doorway ${id}`);
+const approaches = new Map(); // openingId -> { nodeId, doorPoint }
+const doorApproach = (prefix, floor, id, junctionAt) => {
+  const [lx, ly, lz] = LEAF[id], n = id.slice(-4);
+  const junction = node(`${prefix}-${n}`, floor, 'junction', junctionAt, `${SRC.doors} ${id} x, on the ${prefix} walking line`);
+  const north = ly > junctionAt[1], ay = +(north ? ly - 1.0 : ly + 1.0).toFixed(3);
+  const app = node(`${prefix}-${n}-APP`, floor, 'door_approach', [lx, ay, lz], `1.0 m in front of door leaf centre (${lx},${ly}) from ${SRC.doors}`, `Doorway ${id}`);
+  edge(`E-${prefix}-${n}-APP`, 'door', junction, app, [], { source: SRC.doors });
+  approaches.set(id, { nodeId: app, doorPoint: c([lx, ly, lz]) });
+  return junction;
+};
+const WINGS = [
+  { prefix: 'GF-L', floor: 1, y: -5.0, z: 0, start: 'GF-L-C1', west: true, existing: { 'R1-W002-D108': 'GF-L-D108' } },
+  { prefix: 'GF-R', floor: 1, y: -4.0, z: 0, start: 'GF-R-C1', west: false, existing: { 'R1-W038-D133': 'GF-R-D133' } },
+  { prefix: 'F2-L', floor: 2, y: -5.0, z: 4.0, start: 'F2-L-C1', west: true, existing: { 'R2-W032-D210': 'F2-L-D210' } },
+  { prefix: 'F2-R', floor: 2, y: -4.5, z: 4.0, start: 'F2-R-C1', west: false, existing: { 'R2-W057-D229': 'F2-R-D229' } },
+];
+for (const w of WINGS) {
+  const startX = nodes.find(n => n.id === w.start).blender[0];
+  const stops = [...guideRoom.keys()].filter(id => LEAF[id][2] === w.z && (w.west ? LEAF[id][0] < -20 : LEAF[id][0] > 20))
+    .sort((a, b) => Math.abs(LEAF[a][0] - startX) - Math.abs(LEAF[b][0] - startX));
+  let prev = w.start;
+  for (const id of stops) {
+    const junction = w.existing[id] || doorApproach(w.prefix, w.floor, id, [LEAF[id][0], w.y, w.z]);
+    edge(`C-${prev}-${junction}`, 'walk', prev, junction, [], { source: `${SRC.walk} corridor line y=${w.y}; doorway x from ${SRC.doors}` });
+    prev = junction;
+  }
+}
+// 2F centre: walkway north of the atrium void (void edge y -4.93, centre-block north wall y -2.98; rendered plan
+// server/public/models/plans/r09-web02/floor-2.webp), joined to both stair-top foyers.
+const ATRIUM = 'walkway between the atrium void and the centre-block north wall, server/public/models/plans/r09-web02/floor-2.webp';
+node('F2-C-W', 2, 'junction', [-10.0, -4.0, 4.0], ATRIUM);
+node('F2-C-E', 2, 'junction', [10.0, -4.0, 4.0], ATRIUM);
+const d189 = doorApproach('F2-L', 2, 'R2-W002-D189', [-15.5, -4.77, 4.0]);
+const d241 = doorApproach('F2-C', 2, 'R2-W071-D241', [3.7, -4.0, 4.0]);
+edge('C-F2-L-FOYER-F2-L-D189', 'walk', 'F2-L-FOYER', d189, [], { source: `${SRC.walk}; ${ATRIUM}` });
+edge('C-F2-L-D189-F2-C-W', 'walk', d189, 'F2-C-W', [], { source: ATRIUM });
+edge('C-F2-C-W-F2-C-D241', 'walk', 'F2-C-W', d241, [], { source: ATRIUM });
+edge('C-F2-C-D241-F2-C-E', 'walk', d241, 'F2-C-E', [], { source: ATRIUM });
+edge('C-F2-C-E-F2-R-FOYER', 'walk', 'F2-C-E', 'F2-R-FOYER', [], { source: `${SRC.walk}; ${ATRIUM}` });
 
 // ---------------------------------------------------------------- lift: modelled as a concept only.
 // Kept in the graph so it can be verified later, but NOT public: its existence, stops and access are unconfirmed.
@@ -124,7 +178,7 @@ edge('L-RIGHT-GF-F2', 'lift', 'GF-LIFT', 'F2-LIFT', [[15.5, -8.9, 0], [15.5, -8.
 edge('E-F2LIFT-RFOYER', 'walk', 'F2-LIFT', 'F2-R-FOYER', [], { source: `${SRC.walk} (2F foyer mirror of GF)`, isPublic: false });
 
 const graph = {
-  schemaVersion: 1, modelVersion: 'r09-web02', navigationVersion: 'r09-nav-pilot-draft-2', status: 'draft',
+  schemaVersion: 1, modelVersion: 'r09-web02', navigationVersion: 'r09-nav-draft-3', status: 'draft',
   calibrationVersion: DRAFT_CALIBRATION.calibrationVersion,
   note: 'Draft pilot graph from model evidence. No edge is verified; step-free status is unknown everywhere. Do not publish as verified directions.',
   floors: [{ level: 1, name: '1st floor' }, { level: 2, name: '2nd floor' }],
@@ -140,7 +194,7 @@ const graph = {
   fieldVerificationNeeded: [
     'Actual kiosk position and facing (KIOSK-LOBBY-1 has only a placeholder).',
     'Four calibration anchors: entrance centre, a point left, a point right/deeper inside, an upstairs landing; one measured distance; real floor elevations.',
-    'Which office occupies each pilot doorway (R1-W002-D108, R1-W038-D133, R2-W032-D210, R2-W057-D229), and that the doorway is the public entrance.',
+    'That each doorway matched to a numbered room of the owner\'s guide (server/data/navigation/r09-room-guide.json) is that room\'s public entrance.',
     'That every corridor segment, both main stairs and their landings are public and walkable as drawn (positions come from revision 05 walkthrough stations).',
     'Whether the lift exists, where it stops and whether it is public; whether the entrance ramps exist and their levels.',
     'Step-free status of every corridor segment.',
@@ -157,9 +211,9 @@ const dyn = JSON.parse(dynBuf.toString('utf8')).objects;
 graph.signs = dyn.filter(o => o.kind === 'sign').map(o => ({ assetId: `${graph.modelVersion}:${o.name}`, openingId: o.openingId, face: /_Face_B$/.test(o.name) ? 'B' : 'A' }));
 const destByOpening = new Map(graph.destinations.map(d => [d.openingId, d]));
 graph.openings = [...new Set(graph.signs.map(s => s.openingId))].sort().map(openingId => {
-  const d = destByOpening.get(openingId);
-  return { openingId, roomId: null, status: 'unresolved', approachNodeId: d?.nodeId ?? null, doorPoint: d?.doorPoint ?? null,
-    label: d ? `${d.name} — doorway ${openingId}` : `Doorway ${openingId}`,
+  const d = destByOpening.get(openingId), a = approaches.get(openingId), r = guideRoom.get(openingId);
+  return { openingId, roomId: null, status: 'unresolved', approachNodeId: d?.nodeId ?? a?.nodeId ?? null, doorPoint: d?.doorPoint ?? a?.doorPoint ?? null,
+    label: r ? `Room ${r.number} — doorway ${openingId}` : d ? `${d.name} — doorway ${openingId}` : `Doorway ${openingId}`,
     doorAssetIds: dyn.filter(o => o.kind === 'door' && o.openingId === openingId).map(o => `${graph.modelVersion}:${o.name}`) };
 });
 for (const d of graph.destinations) if (!graph.openings.some(o => o.openingId === d.openingId)) throw new Error(`pilot destination ${d.openingId} has no sign opening`);

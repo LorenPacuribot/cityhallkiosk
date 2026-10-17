@@ -1,209 +1,83 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-17T02:08:35.893845+00:00",
-  "title": "Design System: Malaybalay City Hall detail screens",
+  "generatedAt": "2026-10-17T16:07:01.222Z",
+  "title": "Design System: Malaybalay City Hall kiosk",
   "extensions": {
-    "scope": "Office and service detail screens only; no global restyling.",
-    "colorMeta": {
-      "header-deep": {
-        "role": "primary",
-        "displayName": "Header Deep",
-        "tonalRamp": [
-          "oklch(15% 0.06 255)",
-          "oklch(26% 0.06 255)",
-          "oklch(38% 0.06 255)",
-          "oklch(50% 0.06 255)",
-          "oklch(62% 0.06 255)",
-          "oklch(74% 0.06 255)",
-          "oklch(86% 0.06 255)",
-          "oklch(95% 0.06 255)"
-        ]
-      },
-      "header-blue": {
-        "role": "primary",
-        "displayName": "Header Blue",
-        "tonalRamp": [
-          "oklch(15% 0.15 255)",
-          "oklch(26% 0.15 255)",
-          "oklch(38% 0.15 255)",
-          "oklch(50% 0.15 255)",
-          "oklch(62% 0.15 255)",
-          "oklch(74% 0.15 255)",
-          "oklch(86% 0.15 255)",
-          "oklch(95% 0.15 255)"
-        ]
-      },
-      "civic-navy": {
-        "role": "primary",
-        "displayName": "Civic Navy",
-        "tonalRamp": [
-          "oklch(15% 0.08 250)",
-          "oklch(26% 0.08 250)",
-          "oklch(38% 0.08 250)",
-          "oklch(50% 0.08 250)",
-          "oklch(62% 0.08 250)",
-          "oklch(74% 0.08 250)",
-          "oklch(86% 0.08 250)",
-          "oklch(95% 0.08 250)"
-        ]
-      },
-      "cool-canvas": {
-        "role": "neutral",
-        "displayName": "Cool Canvas",
-        "tonalRamp": [
-          "oklch(15% 0.01 255)",
-          "oklch(26% 0.01 255)",
-          "oklch(38% 0.01 255)",
-          "oklch(50% 0.01 255)",
-          "oklch(62% 0.01 255)",
-          "oklch(74% 0.01 255)",
-          "oklch(86% 0.01 255)",
-          "oklch(95% 0.01 255)"
-        ]
-      },
-      "card-white": {
-        "role": "neutral",
-        "displayName": "Card White",
-        "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(38% 0 0)",
-          "oklch(50% 0 0)",
-          "oklch(62% 0 0)",
-          "oklch(74% 0 0)",
-          "oklch(86% 0 0)",
-          "oklch(95% 0 0)"
-        ]
-      },
-      "warm-border": {
-        "role": "neutral",
-        "displayName": "Warm Border",
-        "tonalRamp": [
-          "oklch(15% 0.015 80)",
-          "oklch(26% 0.015 80)",
-          "oklch(38% 0.015 80)",
-          "oklch(50% 0.015 80)",
-          "oklch(62% 0.015 80)",
-          "oklch(74% 0.015 80)",
-          "oklch(86% 0.015 80)",
-          "oklch(95% 0.015 80)"
-        ]
-      },
-      "pale-blue": {
-        "role": "neutral",
-        "displayName": "Pale Blue",
-        "tonalRamp": [
-          "oklch(15% 0.025 255)",
-          "oklch(26% 0.025 255)",
-          "oklch(38% 0.025 255)",
-          "oklch(50% 0.025 255)",
-          "oklch(62% 0.025 255)",
-          "oklch(74% 0.025 255)",
-          "oklch(86% 0.025 255)",
-          "oklch(95% 0.025 255)"
-        ]
-      },
-      "focus-amber": {
-        "role": "neutral",
-        "displayName": "Focus Amber",
-        "tonalRamp": [
-          "oklch(15% 0.11 70)",
-          "oklch(26% 0.11 70)",
-          "oklch(38% 0.11 70)",
-          "oklch(50% 0.11 70)",
-          "oklch(62% 0.11 70)",
-          "oklch(74% 0.11 70)",
-          "oklch(86% 0.11 70)",
-          "oklch(95% 0.11 70)"
-        ]
-      }
-    },
-    "typographyMeta": {
-      "headline": {
-        "displayName": "Landscape headline",
-        "purpose": "Office and service titles in landscape."
-      }
-    },
+    "scope": "Shared public kiosk; admin and phone retain their layouts.",
     "shadows": [
       {
-        "name": "primary-action",
-        "value": "0 12px 24px #15395e26",
-        "purpose": "Soft lift beneath primary detail actions."
-      }
-    ],
-    "gradients": [
-      {
-        "name": "detail-header",
-        "value": "linear-gradient(115deg,#0c2340,#307dd7 85%)"
-      },
-      {
-        "name": "detail-action",
-        "value": "linear-gradient(145deg,#307fda,#12365b 80%)"
+        "name": "dialog",
+        "value": "0 18px 48px #10233933",
+        "purpose": "Separate the active modal from the inactive page."
       }
     ],
     "responsiveModes": [
-      "landscape: two content columns",
-      "portrait: stacked service columns and wrapped action dock",
-      "narrow: stacked summary cards"
-    ]
+      "Actual viewport pixels without canvas scaling",
+      "Landscape: two columns from 960px when aspect ratio allows",
+      "Portrait: stacked reading order",
+      "Below 760px or 600px height: full-page scrolling"
+    ],
+    "focus": "3px solid #a35d00, offset 3px",
+    "motion": [
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Start walking playback paused, with explicit Resume action."
+      }
+    ],
+    "kioskBackground": {
+      "asset": "/img/kiosk-background.png",
+      "source": "User-supplied bg.png, unchanged copy",
+      "selector": ".screen",
+      "position": "center",
+      "size": "cover",
+      "overlay": "none; show the supplied image at its original visibility"
+    }
   },
   "components": [
     {
-      "name": "Directions button",
+      "name": "Primary action",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Directions button from the scoped detail screens.",
-      "html": "<button class=\"ds-primary\">Show me the way</button>",
-      "css": ".ds-primary{font-family:\"Plus Jakarta Sans\",sans-serif;font-weight:700;font-size:30px;min-height:104px;padding:16px 22px;border:0;border-radius:24px;color:white;background:linear-gradient(145deg,#307fda,#12365b 80%);box-shadow:0 12px 24px #15395e26}.ds-primary:hover{filter:brightness(1.05)}.ds-primary:active{filter:brightness(.95)}.ds-primary:focus-visible{outline:4px solid #b36b00;outline-offset:4px}"
+      "html": "<button class=\"ds-button\">Show me the way</button>",
+      "css": ".ds-button{font-family:'Plus Jakarta Sans',sans-serif;background:#1b5ca5;color:white;border:1px solid transparent;border-radius:10px;min-height:52px;padding:12px 22px;font-size:18px;font-weight:650}.ds-button:hover{background:#144b89}.ds-button:active{filter:brightness(.96)}.ds-button:focus-visible{outline:3px solid #a35d00;outline-offset:3px}"
     },
     {
-      "name": "Summary card",
+      "name": "Secondary action",
+      "kind": "button",
+      "html": "<button class=\"ds-button\">Take it with you (QR)</button>",
+      "css": ".ds-button{font-family:'Plus Jakarta Sans',sans-serif;background:white;color:#16395d;border:1px solid #9baabd;border-radius:10px;min-height:52px;padding:12px 22px;font-size:18px;font-weight:650}.ds-button:hover{background:#eaf1f8}.ds-button:active{filter:brightness(.96)}.ds-button:focus-visible{outline:3px solid #a35d00;outline-offset:3px}"
+    },
+    {
+      "name": "Search field",
+      "kind": "input",
+      "html": "<label class=\"ds-search\">Find a service<input type=\"search\" placeholder=\"Service, office or document\"></label>",
+      "css": ".ds-search{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:column;gap:8px;color:#202c39;font-size:18px}.ds-search input{font:inherit;min-height:52px;padding:8px 16px;border:1px solid #9baabd;border-radius:12px;color:#202c39;background:white}.ds-search input::placeholder{color:#526171}.ds-search input:focus-visible{outline:3px solid #a35d00;outline-offset:3px}"
+    },
+    {
+      "name": "Floor filter",
+      "kind": "chip",
+      "html": "<button class=\"ds-chip\" aria-pressed=\"true\">1st floor</button>",
+      "css": ".ds-chip{font-family:'Plus Jakarta Sans',sans-serif;background:#16395d;color:white;min-height:48px;padding:10px 18px;border:1px solid #16395d;border-radius:10px;font-size:16px;font-weight:600}.ds-chip:hover{background:#1b5ca5}.ds-chip:focus-visible{outline:3px solid #a35d00;outline-offset:3px}"
+    },
+    {
+      "name": "Service summary",
       "kind": "card",
       "refersTo": "card",
-      "description": "Summary card from the scoped detail screens.",
-      "html": "<div class=\"ds-summary\"><span>Total fee</span><strong>See service details</strong></div>",
-      "css": ".ds-summary{font-family:\"Plus Jakarta Sans\",sans-serif;color:#13385f;background:white;border:2px solid #e3ddd3;border-radius:26px;padding:18px 24px;display:flex;flex-direction:column;gap:6px;font-size:26px}.ds-summary strong{font-size:34px;font-weight:800}"
-    },
-    {
-      "name": "Requirement row",
-      "kind": "custom",
-      "refersTo": "requirement",
-      "description": "Requirement row from the scoped detail screens.",
-      "html": "<div class=\"ds-req\"><span aria-hidden=\"true\"></span><strong>Requirement from the Citizen?s Charter</strong></div>",
-      "css": ".ds-req{font-family:\"Plus Jakarta Sans\",sans-serif;display:flex;align-items:flex-start;gap:24px;background:#e3eefc;border-radius:20px;padding:20px 22px;font-size:30px;color:#13385f}.ds-req span{width:46px;height:46px;border:2px solid #13385f;background:white;flex:none}"
-    },
-    {
-      "name": "Service row",
-      "kind": "button",
-      "refersTo": "card",
-      "description": "Service row from the scoped detail screens.",
-      "html": "<button class=\"ds-row\">Service title<span aria-hidden=\"true\">?</span></button>",
-      "css": ".ds-row{font-family:\"Plus Jakarta Sans\",sans-serif;display:flex;align-items:center;justify-content:space-between;gap:22px;text-align:left;min-height:112px;width:100%;background:white;border:2px solid #e3ddd3;border-radius:26px;padding:20px 24px;color:#13385f;font-size:30px;font-weight:600}.ds-row span{display:grid;place-items:center;width:60px;height:60px;border-radius:50%;background:linear-gradient(145deg,#307fda,#12365b 80%);color:white;flex:none}.ds-row:hover{border-color:#13385f}.ds-row:focus-visible{outline:4px solid #b36b00;outline-offset:4px}"
-    },
-    {
-      "name": "Process step",
-      "kind": "custom",
-      "refersTo": "card",
-      "description": "Process step from the scoped detail screens.",
-      "html": "<div class=\"ds-step\"><span>1</span><strong>Resident action</strong></div>",
-      "css": ".ds-step{font-family:\"Plus Jakarta Sans\",sans-serif;display:flex;align-items:flex-start;gap:24px;padding:8px 0;color:#13385f;font-size:30px}.ds-step span{display:grid;place-items:center;width:70px;height:70px;flex:none;border-radius:50%;color:white;background:linear-gradient(145deg,#307fda,#12365b 80%)}"
+      "html": "<div class=\"ds-summary\"><span>Processing time</span><strong>As listed in the Citizen’s Charter</strong></div>",
+      "css": ".ds-summary{font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:column;gap:10px;padding:20px 24px;background:white;border:1px solid #d8dfe6;border-radius:16px;color:#526171;font-size:16px}.ds-summary strong{color:#202c39;font-size:20px;line-height:1.45;font-weight:650}"
     }
   ],
   "narrative": {
     "northStar": "Civic wayfinding",
-    "overview": "The owner's pinned screenshots define the office and service detail composition. A blue header band, cool canvas and generously rounded white cards make official information approachable and easy to scan at a public touchscreen.\n\nThis is a scoped implementation record, not a global identity replacement. Apply it only to the office and service detail screens marked `civic-detail` in `server/public/kiosk/app.js`. The final reference-design block in `server/public/kiosk/kiosk.css` is the implementation source. Other screens keep their existing design.",
+    "overview": "The owner's references define the office and service detail composition. The subsequent deployment-readiness request extends one consistent visual system across the kiosk, with calmer typography and more space at laptop widths.",
     "keyCharacteristics": [
-      "Blue gradient header and primary actions.",
-      "Large, readable information blocks.",
-      "Warm borders against a cool canvas.",
+      "Flat navy page bands and blue primary actions.",
+      "Readable information with responsive typography and space.",
+      "Fine borders, white surfaces and the supplied subdued pattern.",
       "Visible destination and take-away actions."
     ],
     "rules": [
-      {
-        "name": "The Scope Rule",
-        "body": "Keep these visual overrides inside the two detail screens; do not restyle the welcome, home, browse, map, navigation, phone or admin screens.",
-        "section": "colors"
-      },
       {
         "name": "The Evidence Rule",
         "body": "Display official service text and genuine location status; visual polish must not imply that an unverified route or location has been checked.",
@@ -211,12 +85,10 @@
       }
     ],
     "dos": [
-      "Do preserve the screenshot-led office and service detail composition.",
       "Do preserve translations, larger text, scrolling and visible focus.",
       "Do keep Charter content and location status accurate."
     ],
     "donts": [
-      "Don't extend this scoped redesign to other app screens.",
       "Don't truncate requirements or process text to fit a card.",
       "Don't invent office locations, routes or accessibility connections."
     ]

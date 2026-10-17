@@ -14,6 +14,7 @@ test('admin swaps offices from the room list, reviews the change, and can read a
   const offices = (await srv.api('GET', '/admin/offices')).body.items;
   const mayor = offices.find(o => o.short_name === 'CMO'), accounting = offices.find(o => o.short_name === 'CAcO');
   await page.goto(srv.base + '/admin#/assignments');
+  await page.locator('[name=email]').fill('admin@kiosk.local');
   await page.locator('[name=password]').fill('ChangeMe!2026');
   await page.locator('#login button').click();
   await page.getByRole('heading', { name: 'Room assignments', exact: true }).waitFor();
