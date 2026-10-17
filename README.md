@@ -9,7 +9,7 @@ This is a self-service kiosk for Malaybalay City Hall. Visitors can find a servi
 | **Admin panel** | http://localhost:3000/admin | Services editor with an approval flow, offices with **move office plus history**, floors and rooms with **drag or typed x/y/z**, kiosks, announcements, feedback, search insights, users and roles, audit log. |
 | **Phone page** | http://localhost:3000/m | What the QR code opens: a requirements checklist that stays on the phone, the steps, and a floor map. |
 | **API + database** | `server/` | Node.js (Express) API with a SQLite database file. 270 services imported from the Citizen's Charter 2023. |
-| **Unity C#** | `unity/Assets/Scripts/Kiosk` | Scripts that read the same database. Room positions are dynamic, office moves apply live, it uses the NavMesh path when one is baked, and an editor tool syncs room markers between Unity and the database. See [`unity/README.md`](unity/README.md). |
+| **3D building** | `server/public/kiosk/three`, `tools/model` | The real baked City Hall model (Blender revision 09) in the browser with three.js: first-person walk to the office door, floor maps and real floor plans. Project status and handoff: [`docs/HANDOFF.md`](docs/HANDOFF.md). |
 
 ## Run it locally
 
@@ -59,7 +59,7 @@ Useful kiosk URL options:
 
 ## Locations are data, not code
 
-Every position is in **metres, using Unity's axes**:
+Every position is in **metres**:
 - **Y** is up.
 - **+X** is to the right when facing the building.
 - **+Z** points into the building.
@@ -68,17 +68,17 @@ Every position is in **metres, using Unity's axes**:
 - A **room** has a centre `x, y, z`, a door or approach point, a facing direction and a size.
 - An **office** is linked to a room through `office_locations`. A move closes the old row and opens a new one, so history is kept and nothing is overwritten.
 - A **kiosk** has its own `x, y, z`, which is where every route starts.
-- Any change bumps a content version. Web kiosks re-sync within 60 s and Unity within 30 s, offline caches included.
+- Any change bumps a content version. Web kiosks re-sync within 60 s, offline caches included.
 
 Details: [`docs/DATABASE.md`](docs/DATABASE.md) · endpoints: [`docs/API.md`](docs/API.md)
 
 ## Honest status of the prototype
 
-- **Room positions are placeholders.** They sit on a simple grid (labelled *Placeholder* in the admin panel) until someone measures the building or pushes markers from the Unity model.
+- **Room positions are placeholders.** They sit on a simple grid (labelled *Placeholder* in the admin panel) until someone measures the building. Real routes come from the published navigation graph, not from these placeholders.
 - The **Charter import** reads the PDF's tables cell by cell, using each text run's position and the table borders, so columns never mix and rows cut by a page break are joined. All **276 services** are imported, and every text line in the database was checked word for word against the PDF. Notes, policies and fee schedules printed with a service (for example the traffic fines table) are kept in a **Notes and fees** field. The text is the Charter's own wording, including its typos and a few gaps the PDF itself has. Each office should still check its own services and press *Mark as verified*.
 - The **Filipino and Cebuano** texts are first drafts and need review by native speakers.
-- The web kiosk's 3D view is a greybox built from the database (three.js). The real City Hall model goes into Unity.
-- The backend is Node.js rather than C#/.NET so it runs with a single `npm start` on any PC. The C# part is the Unity client. The API is plain JSON, so it can be re-implemented in ASP.NET later without changing the kiosk or Unity.
+- The web kiosk shows the real City Hall model (three.js). Routes in it are drafts until checked on site; see [`docs/HANDOFF.md`](docs/HANDOFF.md).
+- The backend is Node.js rather than C#/.NET so it runs with a single `npm start` on any PC. The API is plain JSON, so it can be re-implemented in ASP.NET later without changing the kiosk.
 - The Figma admin and phone screens were not drawn (Figma plan limit). The code versions here follow the same design tokens.
 
 ## Repository layout
@@ -88,7 +88,7 @@ server/
   src/            API (Express), database layer (sql.js), auth, search, route planner, seed
   src/schema.sql  database schema
   data/           charter-2023.json (parsed Charter); kiosk.sqlite is created at runtime
-  public/kiosk    kiosk SPA (+ nav3d.js three.js greybox)
+  public/kiosk    kiosk SPA (+ three/ real-building viewer, nav3d.js)
   public/admin    admin SPA
   public/m        phone page
   public/shared   design tokens, icons, i18n, shared route planner
@@ -96,6 +96,6 @@ server/
 tools/charter/           re-run the Charter PDF import:
                            cd tools/charter && npm install && npm run import -- <charter.pdf>
                            then cd server && npm run seed (this resets the database)
-unity/Assets/Scripts/Kiosk   Unity C# client + editor sync tool
-docs/            API and database reference
+tools/model/              Blender export, model release build/validation, floor plans, pilot graph
+docs/            HANDOFF.md (start here), API and database reference, 3d-integration/
 ```

@@ -170,7 +170,7 @@ export function validateRelease(dir, { inventory = JSON.parse(fs.readFileSync(IN
   errors.push(...m.errors);
   if (m.errors.length) return { ok: false, errors, warnings, stats };
   const read = rel => JSON.parse(fs.readFileSync(path.join(dir, ...rel.split('/')), 'utf8'));
-  const blend = inventory.source_assets.find(a => a.path.endsWith('09_Unity_Baked_Optimized.blend'));
+  const blend = inventory.source_assets.find(a => /09_(Unity_)?Baked_Optimized\.blend$/.test(a.path));
   if (manifest.sourceBlendSha256 !== blend?.sha256) errors.push('manifest: source hash differs from the verified inventory');
 
   const materials = read(manifest.materials);

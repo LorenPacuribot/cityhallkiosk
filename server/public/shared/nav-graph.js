@@ -78,10 +78,16 @@ export function resolveDestination(graph, target, { preview = false } = {}) {
   }
   if (target.locationType === 'offsite') return { reason: ROUTE_REASONS.OFFSITE, message: 'This office is not in this building.' };
   if (target.locationType === 'unconfirmed' || !target.roomId) return { reason: ROUTE_REASONS.UNVERIFIED_DESTINATION, message: 'This office\'s location is not confirmed.' };
-  const candidates = (graph.openings || []).filter(o => o.roomId === target.roomId && o.approachNodeId);
-  const chosen = candidates.find(o => o.status === 'verified') || (preview ? candidates.find(o => o.status === 'draft') : null);
+  const chosen = doorForRoom(graph, target.roomId, { preview });
   if (!chosen) return { reason: ROUTE_REASONS.UNVERIFIED_DESTINATION, message: 'Directions to this office have not been verified yet.' };
   return { destination: asDest(chosen, target.officeName) };
+}
+
+/** The doorway a room is reached by: a verified mapping, or a draft one only in a labelled preview. */
+export function doorForRoom(graph, roomId, { preview = false } = {}) {
+  if (roomId == null) return null;
+  const candidates = (graph.openings || []).filter(o => o.roomId === roomId && o.approachNodeId);
+  return candidates.find(o => o.status === 'verified') || (preview ? candidates.find(o => o.status === 'draft') : null) || null;
 }
 
 /** Which edges a request may use. Unknown step-free status is never eligible for a step-free request. */

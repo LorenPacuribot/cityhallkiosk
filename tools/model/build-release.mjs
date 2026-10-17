@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Assembles an immutable browser model release from the Blender staging export and the Unity sidecars.
+// Assembles an immutable browser model release from the Blender staging export and the model sidecars.
 //
 //   node tools/model/build-release.mjs <stagingDir> [--sidecars <CityHallPrepared dir>] [--out <models dir>]
 //
@@ -17,7 +17,7 @@ const INVENTORY = JSON.parse(fs.readFileSync(path.join(REPO, 'docs/3d-integratio
 const args = process.argv.slice(2);
 const staging = path.resolve(args.shift() || '');
 const opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
-const SIDECARS = opt('--sidecars', path.join(INVENTORY.model_workspace, 'unity_baked_revision/Unity_Package/Assets/CityHallPrepared'));
+const SIDECARS = opt('--sidecars', path.join(INVENTORY.model_workspace, 'web_source_r09/sidecars'));
 const OUT = path.resolve(opt('--out', path.join(REPO, 'server/public/models/cityhall')));
 
 const report = JSON.parse(fs.readFileSync(path.join(staging, 'export-report.json'), 'utf8'));
@@ -25,7 +25,7 @@ const version = report.modelVersion;
 const dest = path.join(OUT, version);
 if (fs.existsSync(dest)) { console.error(`release ${dest} already exists; releases are immutable — bump the model version`); process.exit(1); }
 const sha256 = buf => crypto.createHash('sha256').update(buf).digest('hex');
-const blend = INVENTORY.source_assets.find(a => a.path.endsWith('09_Unity_Baked_Optimized.blend'));
+const blend = INVENTORY.source_assets.find(a => /09_(Unity_)?Baked_Optimized\.blend$/.test(a.path));
 if (report.source.sha256 !== blend.sha256) { console.error('export report source hash differs from the verified inventory'); process.exit(1); }
 
 // Every sidecar input must match the verified inventory before it is copied.
@@ -56,7 +56,7 @@ try {
   if (missing.length) throw new Error(`exported materials without a binding: ${missing.join(', ')}`);
   json('materials.json', {
     schemaVersion: 1, modelVersion: version,
-    source: 'Unity_Package/Assets/CityHallPrepared/MaterialBindings.json (values copied unchanged; texture paths made release-relative)',
+    source: 'web_source_r09/sidecars/MaterialBindings.json (values copied unchanged; texture paths made release-relative)',
     lut: { path: texRel('AgX_Afternoon_LUT.png'), size: [4096, 64], slices: 64, encoding: 'log2 input: p = clamp((log2(max(c,1/4096))+12)/18,0,1)*63; R within slice, G vertical (bottom origin), B selects slice; output is display-encoded (sRGB)' },
     lightmapEncoding: 'RGBM, linear: irradiance = rgb * a * lightRange',
     textureRules: {

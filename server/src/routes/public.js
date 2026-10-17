@@ -1,4 +1,4 @@
-// Public API: used by the kiosk (web prototype and Unity), and the phone page. No sign-in.
+// Public API: used by the kiosk and the phone page. No sign-in.
 import express from 'express';
 import QRCode from 'qrcode';
 import { all, get, run, setting } from '../db.js';
@@ -73,7 +73,7 @@ publicApi.get('/navigation', (req, res) => {
 publicApi.get('/announcements', (req, res) => res.json({ items: activeAnnouncements() }));
 
 // --- locations for the 3D app ----------------------------------------------------
-// Unity calls this to know where every office is NOW. When an office moves rooms,
+// Where every office is NOW. When an office moves rooms,
 // or a room's coordinates are corrected, the next call returns the new values.
 publicApi.get('/destinations', (req, res) => {
   const items = all(`SELECT * FROM v_office_current_location WHERE room_id IS NOT NULL ORDER BY office_name`).map(d => ({
@@ -84,7 +84,7 @@ publicApi.get('/destinations', (req, res) => {
   }));
   res.json({ content_version: Number(setting('content_version', '1')), items });
 });
-// Kiosk position (start of every route). Unity's KioskStartPoint reads this.
+// Kiosk position (start of every route).
 publicApi.get('/kiosks/:code', (req, res) => {
   const k = get(`SELECT k.id, k.code, k.name, k.x, k.y, k.z, k.facing_deg, f.level AS floor_level FROM kiosks k JOIN floors f ON f.id = k.floor_id WHERE k.code = ?`, [String(req.params.code)]);
   if (!k) return res.status(404).json({ error: 'Kiosk not found' });

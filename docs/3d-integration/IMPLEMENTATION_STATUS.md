@@ -16,7 +16,7 @@ Status on 16 October 2026, branch `codex/3d-building-r09`. This file reports wha
 
 ## Source defect found and corrected in the browser release
 
-The front-composition camera, `LAYERED_Front_Composition`, has a **stale stored `matrix_world` (identity)** in `09_Unity_Baked_Optimized.blend`. Its own data evaluates to the intended camera: location (0, âˆ’220, 12), rotation 84.1Â° about X, no parent and no constraints. The check is `tools/model/inspect_front_camera.py`.
+The front-composition camera, `LAYERED_Front_Composition`, has a **stale stored `matrix_world` (identity)** in `09_Baked_Optimized.blend`. Its own data evaluates to the intended camera: location (0, âˆ’220, 12), rotation 84.1Â° about X, no parent and no constraints. The check is `tools/model/inspect_front_camera.py`.
 
 The delivery's `assemble_unity_export.py` copied that identity in two places:
 
@@ -109,9 +109,9 @@ From the repository root:
 
 ```powershell
 # 1. Read-only scene inspection (waits for memory; one guarded Blender at a time)
-node tools/model/run-blender.mjs tools/model/inspect_r09.py --wait-min 120 -- "<model workspace>/unity_baked_revision/09_Unity_Baked_Optimized.blend" "<scratch>/inspect_r09.json"
+node tools/model/run-blender.mjs tools/model/inspect_r09.py --wait-min 120 -- "<model workspace>/web_source_r09/09_Baked_Optimized.blend" "<scratch>/inspect_r09.json"
 # 2. Export the runtime scene into a staging directory (source verified by hash; never saved)
-node tools/model/run-blender.mjs tools/model/export_cityhall_web.py --wait-min 120 -- "<â€¦>/09_Unity_Baked_Optimized.blend" 6b861ed900092188ac6ff359f4c003d72b437cc375baff6819baa6bd6d648c37 "<scratch>/r09-staging"
+node tools/model/run-blender.mjs tools/model/export_cityhall_web.py --wait-min 120 -- "<â€¦>/09_Baked_Optimized.blend" 6b861ed900092188ac6ff359f4c003d72b437cc375baff6819baa6bd6d648c37 "<scratch>/r09-staging"
 # 3. Assemble, validate and install the immutable release (refuses to overwrite)
 node tools/model/build-release.mjs "<scratch>/r09-staging"
 node tools/model/validate-release.mjs server/public/models/cityhall/r09-web02

@@ -97,7 +97,7 @@ export function setSetting(key, value) {
   run('INSERT INTO settings(key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value', [key, String(value)]);
 }
 
-// Every content change bumps this number. Kiosks and the Unity app poll it
+// Every content change bumps this number. Kiosks and phones poll it
 // and re-download their offline bundle when it changes.
 export function bumpContentVersion() {
   const v = Number(setting('content_version', '0')) + 1;

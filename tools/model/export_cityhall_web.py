@@ -98,10 +98,10 @@ unknown = [o.name for o in objects if role_of(o) == 'unknown']
 
 # ------------------------------------------------------------------ 3. front camera correction + projector scalars
 # The source's LAYERED_Front_Composition camera has a STALE stored matrix_world (identity): it was never evaluated in
-# the scene the Unity assembly ran from. Its own data (location, rotation, no parent, no constraints) evaluates to the
+# the scene the bake assembly ran from. Its own data (location, rotation, no parent, no constraints) evaluates to the
 # intended camera. The delivery copied the stale identity into VIEW_LAYERED_Front_Composition and computed every
 # ENV_ projector coordinate against it. We recompute exactly those values from the evaluated camera with the
-# delivery's own formula (assemble_unity_export.py: p = cam.matrix_world.inverted() @ ob.matrix_world @ v.co;
+# delivery's own formula (assemble_baked_export.py, formerly assemble_unity_export.py: p = cam.matrix_world.inverted() @ ob.matrix_world @ v.co;
 # ProjectorXY = (p.x, p.y), ProjectorDepth = -p.z). Geometry, UVs, colours and lighting are not touched.
 corrections = []
 front_cam = bpy.data.objects.get(FRONT_CAMERA)

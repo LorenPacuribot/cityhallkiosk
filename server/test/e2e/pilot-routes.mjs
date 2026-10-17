@@ -35,6 +35,9 @@ await api('POST', '/admin/navigation/import', { graph });
 await api('POST', '/admin/model-releases', { model_version: graph.modelVersion });
 await api('POST', `/admin/navigation/${graph.navigationVersion}/publish`);
 await api('PUT', '/admin/navigation-preview', { enabled: true });
+// the four draft office<->door matches read from the supplied plans (same as the demo server)
+const { applyPlanReferenceRooms } = await import('../../src/lib/plan-reference-rooms.js');
+applyPlanReferenceRooms(graph);
 const floor1 = (await api('GET', '/admin/floors')).items.find(f => f.level === 1);
 await api('POST', '/admin/kiosks', { code: 'PILOT-ENTRANCE', name: 'Pilot origin: inside the main entrance', floor_id: floor1.id });
 
@@ -60,6 +63,20 @@ for (const level of [1, 2]) {
   });
   assert.equal(floorInfo.level, level);
   assert.ok(floorInfo.distance < 400 && floorInfo.calls > 0, 'floor is framed and rendered');
+  assert.equal(await page.$$eval('#floor-vp .floor-label[data-action="navoffice"]', els => els.length), 2, `two mapped offices labelled on floor ${level}`);
+}
+// tapping an office label in 3D opens its route
+{
+  await page.click('.floor-label[data-action="navoffice"]:not([hidden])');
+  await page.waitForSelector('#vp canvas', { timeout: 60000 });
+  assert.ok(await page.$('.dest'), '3D office tap started a route');
+  await page.goto(`${base}/kiosk?idle=0&kiosk=PILOT-ENTRANCE&preview=1&screen=map`, { waitUntil: 'networkidle' });
+  await page.click('[data-action="mapmode"]');
+  await page.waitForSelector('.floorplan .tap[data-action="navoffice"]');
+  await page.screenshot({ path: path.join(OUT, layout + '-floor-1-plan.png') });
+  await page.click('.floorplan .tap[data-action="navoffice"]');
+  await page.waitForSelector('.dest', { timeout: 20000 });
+  await page.click('[data-action="endnav"]');
 }
 for (const d of graph.destinations) {
   await page.click(`[data-action="navopening"][data-o="${d.openingId}"]`);

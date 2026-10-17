@@ -78,16 +78,6 @@ test('moving an office keeps history and updates where its services point', asyn
   assert.equal(del.status, 400);
 });
 
-test('Unity marker sync updates coordinates by room code', async () => {
-  const token = await login('admin@kiosk.local');
-  const r = await j('POST', '/admin/rooms/sync-from-unity', { items: [{ code: '2F-201', x: -19, y: 4.5, z: 9.5, approach_x: -19, approach_y: 4.5, approach_z: 14.9, facing_deg: 180 }, { code: 'NOPE' }] }, token);
-  assert.deepEqual(r.body.updated, ['2F-201']);
-  assert.deepEqual(r.body.unknown, ['NOPE']);
-  const room = (await j('GET', '/rooms')).body.items.find(x => x.code === '2F-201');
-  assert.equal(room.y, 4.5);
-  assert.equal(room.coord_source, 'unity_sync');
-});
-
 test('room reassignment requires an occupancy choice, swaps atomically, and preserves displaced history', async () => {
   const token = await login('lgu.admin@kiosk.local');
   const floor = (await j('GET', '/admin/floors', null, token)).body.items[0];
@@ -159,7 +149,7 @@ test('feedback and search logs feed the dashboard', async () => {
   assert.ok(d.helpful_30d.total >= 1);
 });
 
-test('Unity endpoints: kiosk position and destinations always carry numeric xyz', async () => {
+test('position endpoints: kiosk position and destinations always carry numeric xyz', async () => {
   const k = await j('GET', '/kiosks/KIOSK-LOBBY-1');
   assert.equal(k.status, 200);
   for (const f of ['x', 'y', 'z', 'facing_deg', 'floor_level']) assert.equal(typeof k.body[f], 'number');

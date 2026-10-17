@@ -246,7 +246,7 @@ test('QR handoff keeps the origin kiosk and preference; the phone re-plans and f
 // ---------------------------------------------------------------- shader parity
 const INV = JSON.parse(fs.readFileSync(path.resolve(FIXTURES, '../../../../docs/3d-integration/source-inventory.json'), 'utf8'));
 const lutEntry = INV.source_assets.find(a => a.path.endsWith('AgX_Afternoon_LUT.png'));
-const QA = path.join(INV.model_workspace, 'unity_baked_revision', 'texture_validation');
+const QA = path.join(INV.model_workspace, 'web_source_r09', 'texture_validation');
 function readNpy(file) {
   const buf = fs.readFileSync(file), hl = buf.readUInt16LE(8), header = buf.toString('latin1', 10, 10 + hl);
   const descr = /'descr':\s*'([^']+)'/.exec(header)[1], shape = /'shape':\s*\(([^)]*)\)/.exec(header)[1].split(',').filter(s => s.trim()).map(Number);

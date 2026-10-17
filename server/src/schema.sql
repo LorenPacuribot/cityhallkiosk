@@ -3,9 +3,9 @@
 --
 -- Design rules
 --  * Locations are DATA, not code. Every physical place (room, stairs,
---    kiosk) has x, y, z world coordinates in METRES, matching the Unity
---    scene (1 Unity unit = 1 m, Y is up). Staff can change them any time
---    and the kiosk / Unity app picks up the change on the next sync.
+--    kiosk) has x, y, z world coordinates in METRES, matching the 3D
+--    model (1 unit = 1 m, Y is up). Staff can change them any time
+--    and the kiosk and phone pick up the change on the next sync.
 --  * An office is not the same as a room. Offices MOVE between rooms.
 --    office_locations keeps the full history: the current location is the
 --    row with valid_to IS NULL. Moving an office closes that row and opens
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS floors (
   building_id   INTEGER NOT NULL REFERENCES buildings(id) ON DELETE CASCADE,
   level         INTEGER NOT NULL,          -- 1 = ground floor
   name          TEXT NOT NULL,             -- "1st floor"
-  elevation_y   REAL NOT NULL DEFAULT 0,   -- floor height in metres (Unity Y)
+  elevation_y   REAL NOT NULL DEFAULT 0,   -- floor height in metres (Y)
   plan_image    TEXT,                      -- optional URL of a floor-plan image for the admin map
   bounds_min_x  REAL NOT NULL DEFAULT -60, -- extent used to draw the 2D map
   bounds_max_x  REAL NOT NULL DEFAULT 60,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS floors (
 CREATE TABLE IF NOT EXISTS rooms (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   floor_id    INTEGER NOT NULL REFERENCES floors(id) ON DELETE CASCADE,
-  code        TEXT NOT NULL UNIQUE,        -- "1F-104" — also the Unity marker name suffix (DEST_1F-104)
+  code        TEXT NOT NULL UNIQUE,        -- "1F-104"
   name        TEXT NOT NULL,
   room_type   TEXT NOT NULL DEFAULT 'office'
               CHECK (room_type IN ('office','hall','stairs','elevator','ramp','toilet','info_desk','entrance','other')),
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS rooms (
   depth_m     REAL NOT NULL DEFAULT 6,
   is_accessible INTEGER NOT NULL DEFAULT 1, -- reachable without stairs
   is_active   INTEGER NOT NULL DEFAULT 1,
-  coord_source TEXT NOT NULL DEFAULT 'manual'  -- 'manual' | 'unity_sync' | 'seed_placeholder'
+  coord_source TEXT NOT NULL DEFAULT 'manual'  -- 'manual' | 'unity_sync' (legacy import) | 'seed_placeholder'
               CHECK (coord_source IN ('manual','unity_sync','seed_placeholder')),
   photo_url   TEXT,
   notes       TEXT,

@@ -8,7 +8,7 @@ import { toRender } from './coordinates.js';
 
 const CUT_ABOVE_FLOOR = 2.4;   // m: below the ceilings, above door heads
 const FOV = 38;
-const PITCH = THREE.MathUtils.degToRad(56);
+const PITCH = THREE.MathUtils.degToRad(62);
 const ZOOM_RANGE = [0.22, 1.15]; // x the distance that fits the whole floor
 const EASE = 0.45;             // s for preset changes
 
@@ -23,7 +23,12 @@ export class FloorView {
     this.disposables = [];
     this.clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), o.elevation + CUT_ABOVE_FLOOR);
     viewer.renderer.clippingPlanes = [this.clip];
-    if (o.you) this.addYou(o.you, o.youLabel || 'You are here');
+    // labels are HTML over the canvas: never cut by the clipping plane and sharp at any zoom. Office names are real
+    // buttons (data-action="navoffice") for touch and screen readers.
+    this.labelLayer = document.createElement('div'); this.labelLayer.className = 'floor-labels';
+    this.officeLabels = (o.offices || []).map(of => this.addOffice(of));
+    if (o.you) this.officeLabels.push(this.addYou(o.you, o.youLabel || 'You are here'));
+    viewer.container?.appendChild(this.labelLayer);
     viewer.scene.add(this.group);
     this.home = this.fitPreset();
     this.cur = { ...this.home }; this.from = null; this.anim = 0;
@@ -37,15 +42,23 @@ export class FloorView {
     pin.rotation.x = Math.PI; pin.position.copy(toRender({ x: p.x, y: p.y + 1.2, z: p.z }));
     const disc = new THREE.Mesh(this.track(new THREE.CircleGeometry(1.1, 32)), this.track(new THREE.MeshBasicMaterial({ color: 0x12355b, transparent: true, opacity: 0.35, depthWrite: false, toneMapped: false })));
     disc.rotation.x = -Math.PI / 2; disc.position.copy(toRender({ x: p.x, y: p.y + 0.04, z: p.z }));
-    const c = document.createElement('canvas'); c.width = 768; c.height = 176;
-    const x = c.getContext('2d');
-    x.fillStyle = '#12355B'; x.beginPath(); x.roundRect ? x.roundRect(6, 6, 756, 164, 82) : x.rect(6, 6, 756, 164); x.fill();
-    x.fillStyle = '#fff'; x.font = 'bold 84px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle';
-    x.fillText(text, 384, 92, 700);
-    const tex = this.track(new THREE.CanvasTexture(c)); tex.colorSpace = THREE.SRGBColorSpace;
-    const label = new THREE.Sprite(this.track(new THREE.SpriteMaterial({ map: tex, depthTest: false, depthWrite: false, toneMapped: false })));
-    label.scale.set(7, 7 * 176 / 768, 1); label.position.copy(toRender({ x: p.x, y: p.y + 3.4, z: p.z })); label.renderOrder = 10;
-    this.group.add(pin, disc, label);
+    this.group.add(pin, disc);
+    const el = document.createElement('span'); el.className = 'floor-label you'; el.textContent = text;
+    this.labelLayer.append(el);
+    return { el, anchor: toRender({ x: p.x, y: p.y + 2.2, z: p.z }) };
+  }
+
+  /** An office name over its door: a stem in the model and an HTML button that follows it on screen. */
+  addOffice(of) {
+    const stem = new THREE.Mesh(this.track(new THREE.CylinderGeometry(0.14, 0.14, 2.2, 8)), this.track(new THREE.MeshBasicMaterial({ color: of.draft ? 0x9a6b00 : 0x1a63be, toneMapped: false })));
+    stem.position.copy(toRender({ x: of.x, y: of.y + 1.1, z: of.z }));
+    this.group.add(stem);
+    const b = document.createElement('button');
+    b.className = `floor-label${of.draft ? ' draft' : ''}`; b.dataset.action = 'navoffice'; b.dataset.id = String(of.id);
+    const t = document.createElement('b'); t.textContent = of.title; b.append(t);
+    if (of.subtitle) b.setAttribute('aria-label', `${of.title}, ${of.subtitle}`);
+    this.labelLayer.append(b);
+    return { el: b, anchor: toRender({ x: of.x, y: of.y + 2.2, z: of.z }) };
   }
 
   /** Camera preset that fits the whole floor at the current aspect ratio. */
@@ -80,6 +93,13 @@ export class FloorView {
     const cam = this.viewer.camera;
     cam.fov = FOV;
     this.place(cam, this.cur);
+    const v = new THREE.Vector3();
+    for (const l of this.officeLabels) {
+      v.copy(l.anchor).project(cam);
+      const off = v.z > 1 || Math.abs(v.x) > 1.05 || Math.abs(v.y) > 1.05;
+      l.el.hidden = off;
+      if (!off) { l.el.style.left = `${(v.x + 1) * 50}%`; l.el.style.top = `${(1 - v.y) * 50}%`; }
+    }
     this.viewer.invalidate();
   }
 
@@ -171,6 +191,7 @@ export class FloorView {
     if (this.disposed) return;
     this.disposed = true;
     this.unbind?.();
+    this.labelLayer?.remove();
     this.viewer.animating.delete(this);
     this.group.removeFromParent();
     this.disposables.forEach(d => d.dispose?.());

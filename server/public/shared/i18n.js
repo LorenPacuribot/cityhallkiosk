@@ -7,6 +7,7 @@ export const LANGS = { en: 'EN', fil: 'FIL', ceb: 'CEB' };
 
 const T = {
   en: {
+    not_on_map_yet: "Not on the map yet. Ask at the information desk.", tap_office_map: "Tap an office name to get directions.", on_map: "On the map",
     follow_position: "Follow my position", following_position: "Following walk", floor_overview: "Floor overview", route_start: "Route start", zoom_in: "Zoom in", zoom_out: "Zoom out", rotate_map: "Rotate", reset_view: "Reset view", map_gestures: "Drag to move · Pinch or scroll to zoom · Use Rotate to turn the floor",
     city: 'Self-service kiosk', kiosk_name: 'Malaybalay City Hall',
     welcome_title: 'Welcome to Malaybalay City Hall', welcome_sub: 'Maayong pag-abot · Maligayang pagdating',
@@ -64,6 +65,7 @@ const T = {
     view_requirements: 'View requirements', none: 'None',
   },
   fil: {
+    not_on_map_yet: "Wala pa sa mapa. Magtanong sa information desk.", tap_office_map: "Pindutin ang pangalan ng opisina para sa direksyon.", on_map: "Nasa mapa",
     follow_position: "Sundan ang posisyon ko", following_position: "Sinusundan ang lakad", floor_overview: "Buong palapag", route_start: "Simula ng ruta", zoom_in: "Palakihin", zoom_out: "Paliitin", rotate_map: "Paikutin", reset_view: "Ibalik ang tanaw", map_gestures: "I-drag para ilipat · Kurutin o i-scroll para mag-zoom · Paikutin ang palapag",
     city: 'Self-service kiosk', kiosk_name: 'Malaybalay City Hall',
     welcome_title: 'Maligayang pagdating sa Malaybalay City Hall', welcome_sub: 'Welcome · Maayong pag-abot',
@@ -120,6 +122,7 @@ const T = {
     view_requirements: 'Tingnan ang requirements', none: 'Wala',
   },
   ceb: {
+    not_on_map_yet: "Wala pa sa mapa. Pangutana sa information desk.", tap_office_map: "Pindota ang ngalan sa opisina para sa direksyon.", on_map: "Naa sa mapa",
     follow_position: "Sunda ang akong posisyon", following_position: "Nagsunod sa lakaw", floor_overview: "Tibuok andana", route_start: "Sinugdanan sa ruta", zoom_in: "Padak-a", zoom_out: "Pagamya", rotate_map: "Libota", reset_view: "Ibalik ang tan-aw", map_gestures: "I-drag aron ibalhin · Pinch o scroll aron mag-zoom · Libota ang andana",
     city: 'Self-service kiosk', kiosk_name: 'Malaybalay City Hall',
     welcome_title: 'Maayong pag-abot sa Malaybalay City Hall', welcome_sub: 'Welcome · Maligayang pagdating',

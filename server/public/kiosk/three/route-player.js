@@ -12,6 +12,7 @@ import * as THREE from 'three';
 import { toRender } from './coordinates.js';
 import { CameraRig } from './camera-controller.js';
 import { buildWalk, activeDirection } from '../../shared/walk-path.js';
+import { makeTextLabel, nameWithoutCode } from './label.js';
 
 const RIBBON_WIDTH = 0.6;    // m
 const LIFT_FLOOR = 0.025;    // ribbon height above level floors (m)
@@ -38,8 +39,13 @@ export class RoutePlayer {
 
   build() {
     const wps = this.route.waypoints;
-    const doorPoint = this.route.to?.door;
-    const ribbonPoints = doorPoint ? [...wps, { ...doorPoint, y: wps.at(-1).y, floor: wps.at(-1).floor }] : wps;
+    // destination marker: just in front of the door (corridor side), or the route end when there is no door point
+    const end = wps[wps.length - 1], door = this.route.to?.door;
+    const toDoor = door ? new THREE.Vector2(door.x - end.x, door.z - end.z) : new THREE.Vector2();
+    const doorDist = toDoor.length();
+    const mk = doorDist > 0.2 ? { x: door.x - toDoor.x / doorDist * 0.7, z: door.z - toDoor.y / doorDist * 0.7 } : { x: end.x, z: end.z };
+    // the ribbon ends in the centre of the door ring (not at the door itself, where it crossed the ring)
+    const ribbonPoints = doorDist > 0.2 && Math.hypot(mk.x - end.x, mk.z - end.z) > 0.15 ? [...wps, { x: mk.x, y: end.y, z: mk.z, floor: end.floor }] : wps;
     // ---- ribbon on the floor (u = metres along the route, v = across)
     const pts = [], lifts = [];
     for (let i = 0; i < ribbonPoints.length; i++) {
@@ -49,16 +55,16 @@ export class RoutePlayer {
       pts.push(p); lifts.push(sloped(prev) || sloped(next) ? LIFT_STAIRS : LIFT_FLOOR);
     }
     this.ribbonMat = this.track(new THREE.ShaderMaterial({
-      uniforms: { uTime: { value: 0 }, uDone: { value: -1 }, uColor: { value: COLORS.route }, uDoneColor: { value: COLORS.routeDone } },
+      uniforms: { uTime: { value: 0 }, uDone: { value: -1 }, uLen: { value: 1e6 }, uColor: { value: COLORS.route }, uDoneColor: { value: COLORS.routeDone } },
       vertexShader: /* glsl */`varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
       fragmentShader: /* glsl */`
-        uniform float uTime, uDone; uniform vec3 uColor, uDoneColor; varying vec2 vUv;
+        uniform float uTime, uDone, uLen; uniform vec3 uColor, uDoneColor; varying vec2 vUv;
         void main() {
           float u = vUv.x, v = vUv.y;
           float edge = smoothstep(0.0, 0.1, v) * (1.0 - smoothstep(0.9, 1.0, v));
           float x = fract((u - uTime * 0.9) / 1.6);              // chevrons every 1.6 m, moving forward
           float c = x + abs(v - 0.5) * 0.55;                      // arms trail behind the tip: points the way
-          float chev = smoothstep(0.50, 0.53, c) - smoothstep(0.70, 0.73, c);
+          float chev = (smoothstep(0.50, 0.53, c) - smoothstep(0.70, 0.73, c)) * (1.0 - smoothstep(uLen - 1.6, uLen - 0.9, u)); // no arrows inside the ring
           vec3 col = mix(uColor, vec3(1.0), chev * 0.9);
           float a = 0.9 * edge;
           if (u < uDone) { col = mix(col, uDoneColor, 0.7); a *= 0.4; }
@@ -67,27 +73,29 @@ export class RoutePlayer {
       transparent: true, depthWrite: false, side: THREE.DoubleSide,
       polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
     }));
-    const ribbon = new THREE.Mesh(this.track(ribbonGeometry(pts, lifts, RIBBON_WIDTH)), this.ribbonMat);
+    const ribbonGeo = this.track(ribbonGeometry(pts, lifts, RIBBON_WIDTH));
+    this.ribbonMat.uniforms.uLen.value = ribbonGeo.userData.length;
+    const ribbon = new THREE.Mesh(ribbonGeo, this.ribbonMat);
     ribbon.renderOrder = 2; ribbon.frustumCulled = false;
     this.group.add(ribbon);
 
     // ---- destination: floor ring in front of the door, a pin above it, and the door's name
-    const end = wps[wps.length - 1], door = this.route.to?.door;
-    const toDoor = door ? new THREE.Vector2(door.x - end.x, door.z - end.z) : new THREE.Vector2();
-    const doorDist = toDoor.length();
-    // the marker stands just in front of the door (on the corridor side), or at the route end when no door point
-    const mk = doorDist > 0.2 ? { x: door.x - toDoor.x / doorDist * 0.7, z: door.z - toDoor.y / doorDist * 0.7 } : { x: end.x, z: end.z };
     const floorY = end.y;
     this.ring = new THREE.Mesh(this.track(new THREE.RingGeometry(0.42, 0.6, 48)),
       this.track(new THREE.MeshBasicMaterial({ color: COLORS.ring, transparent: true, opacity: 0.9, depthWrite: false, toneMapped: false, side: THREE.DoubleSide,
         polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3 })));
     this.ring.rotation.x = -Math.PI / 2; this.ring.renderOrder = 3;
     this.ring.position.copy(toRender({ x: mk.x, y: floorY + LIFT_FLOOR + 0.005, z: mk.z }));
+    const spot = new THREE.Mesh(this.track(new THREE.CircleGeometry(0.42, 40)), this.track(new THREE.MeshBasicMaterial({ color: COLORS.ring, transparent: true, opacity: 0.35,
+      depthWrite: false, toneMapped: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3 })));
+    spot.renderOrder = 3; this.ring.add(spot); // a filled centre, in the ring's plane; the ribbon ends under it
     this.pin = new THREE.Mesh(this.track(new THREE.ConeGeometry(0.2, 0.5, 24)), this.track(new THREE.MeshBasicMaterial({ color: COLORS.pin, toneMapped: false })));
     this.pin.rotation.x = Math.PI;
     this.pinBase = toRender({ x: mk.x, y: floorY + 1.1, z: mk.z });
     this.pin.position.copy(this.pinBase);
-    this.label = makeLabel(this.route.to?.room_code || '', this.route.to?.name || this.route.to?.room_name || '', this);
+    const code = this.route.to?.room_code || '';
+    const lbl = makeTextLabel({ title: code, subtitle: nameWithoutCode(this.route.to?.name || this.route.to?.room_name || '', code) }, x => this.track(x));
+    this.label = lbl.sprite; this.labelAspect = lbl.aspect;
     this.label.position.copy(toRender({ x: mk.x, y: floorY + 1.85, z: mk.z }));
     this.label.visible = false;
     this.endFloor = end.floor;
@@ -114,7 +122,7 @@ export class RoutePlayer {
     this.pin.position.y = this.pinBase.y + Math.sin(now / 320) * 0.07;
     this.label.visible = pose.floor === this.endFloor && this.walk.length - pose.s < LABEL_RANGE;
     const labelWidth = Math.min(1.9, this.label.position.distanceTo(this.viewer.camera.position) * 0.48);
-    this.label.scale.set(labelWidth, labelWidth * 288 / 1024, 1);
+    this.label.scale.set(labelWidth, labelWidth * this.labelAspect, 1);
     this.pin.scale.setScalar(Math.min(1, this.pin.position.distanceTo(this.viewer.camera.position) / 2));
 
     const leg = activeDirection(this.route.directions, pose);
@@ -167,23 +175,8 @@ function ribbonGeometry(pts, lifts, width) {
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+  g.userData.length = u;
   g.setIndex(idx);
   return g;
 }
 function norm2(x, z) { const l = Math.hypot(x, z); return l > 1e-9 ? { x: x / l, z: z / l } : { x: 0, z: 0 }; }
-
-/** Camera-facing label: room code (large) over the destination name. Drawn over walls so it reads around corners. */
-function makeLabel(code, name, owner) {
-  const c = document.createElement('canvas'); c.width = 1024; c.height = 288;
-  const x = c.getContext('2d');
-  x.fillStyle = 'rgba(255,255,255,0.96)'; x.strokeStyle = '#B8432F'; x.lineWidth = 10;
-  x.beginPath(); x.roundRect ? x.roundRect(8, 8, 1008, 272, 40) : x.rect(8, 8, 1008, 272); x.fill(); x.stroke();
-  x.textAlign = 'center'; x.textBaseline = 'middle';
-  x.fillStyle = '#B8432F'; x.font = 'bold 96px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif';
-  x.fillText(code, 512, name ? 104 : 144, 960);
-  if (name) { x.fillStyle = '#12355B'; x.font = '600 60px "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif'; x.fillText(name.length > 34 ? name.slice(0, 33) + '…' : name, 512, 206, 960); }
-  const tex = owner.track(new THREE.CanvasTexture(c)); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
-  const s = new THREE.Sprite(owner.track(new THREE.SpriteMaterial({ map: tex, depthTest: false, depthWrite: false, toneMapped: false })));
-  s.scale.set(1.9, 1.9 * 288 / 1024, 1); s.renderOrder = 10;
-  return s;
-}

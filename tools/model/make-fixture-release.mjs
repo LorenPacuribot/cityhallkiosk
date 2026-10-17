@@ -233,7 +233,7 @@ const roles = {}; for (const n of nodes) roles[n.role] = (roles[n.role] || 0) + 
 const inventory = { building_meshes: building.length, building_triangles: building.reduce((a, [, v]) => a + v.triangles, 0), total_meshes: mesh.length,
   total_triangles: mesh.reduce((a, [, v]) => a + v.triangles, 0), closed_door_roots: roles.door_root, blank_sign_faces: roles.sign_face, environment_cards: roles.scenery,
   material_kinds: bindings.reduce((a, b) => ({ ...a, [b.kind]: (a[b.kind] || 0) + 1 }), {}), viewpoints: [vp],
-  source_assets: [{ path: 'fixture/09_Unity_Baked_Optimized.blend', sha256: '0'.repeat(64), bytes: 0 }] };
+  source_assets: [{ path: 'fixture/09_Baked_Optimized.blend', sha256: '0'.repeat(64), bytes: 0 }] };
 fs.writeFileSync(path.join(ROOT, `${V}.inventory.json`), JSON.stringify(inventory, null, 1) + '\n');
 
 // ------------------------------------------------------------------ fixture navigation graph (canonical: x, z_blender, y_blender + 10)

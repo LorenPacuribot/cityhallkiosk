@@ -20,6 +20,8 @@ export const WALK_DEFAULTS = {
   doorTurnRate: 1.2,    // rad/s for the final turn towards the door
   endHold: 0.4,         // s looking at the door before arrival is reported
   stairPitch: 0.6,      // fraction of the flight's slope used as view pitch (look up the stairs, not at the steps)
+  doorStandOff: 2.6,    // m: the walk stops this far from the door (on the route, never past a stair), so the door,
+                        // its marker and name tag stay in view on any screen shape
   doorLookAhead: 2.0,   // start looking toward the door before stopping beside it
   pathLookAhead: 2.4,   // look into the next landing before reaching a stairwell wall
 };
@@ -48,8 +50,26 @@ export function buildWalk(waypoints, door = null, opts = {}) {
     segs.push({ i: i - 1, a, b, s0, len, h, dy, yaw: null, pitch: h > 1e-6 ? Math.atan2(dy, h) : 0, stairs: Math.abs(dy) > 0.05 || a.floor !== b.floor });
     s0 += len;
   }
-  const total = s0;
-  if (total < 1e-3) throw new Error('The route has no length');
+  if (s0 < 1e-3) throw new Error('The route has no length');
+  // Stop short of the door: walk the route backwards over level segments to the first point whose horizontal
+  // distance to the door is doorStandOff. On a segment from b back to a: |b + u t - door|^2 = R^2, u = (a - b) / |a - b|.
+  let stopShort = 0;
+  if (door) {
+    const R = o.doorStandOff;
+    for (let k = segs.length - 1; k >= 0; k--) {
+      const g = segs[k];
+      if (g.len <= 1e-6) continue;
+      if (g.stairs) break;
+      const ex = g.b.x - door.x, ez = g.b.z - door.z, d2 = ex * ex + ez * ez;
+      if (d2 >= R * R) break;
+      const ux = (g.a.x - g.b.x) / g.h, uz = (g.a.z - g.b.z) / g.h, b = ux * ex + uz * ez;
+      const t = -b + Math.sqrt(b * b - (d2 - R * R));
+      if (t <= g.len) { stopShort += t; break; }
+      stopShort += g.len;
+    }
+    stopShort = Math.min(stopShort, s0 - 0.5); // always walk at least half a metre
+  }
+  const total = s0 - stopShort;
   // heading of zero-length / vertical segments: inherit the neighbour's
   for (const g of segs) if (g.h > 1e-6) g.yaw = Math.atan2(g.b.x - g.a.x, g.b.z - g.a.z);
   for (let k = 0; k < segs.length; k++) if (segs[k].yaw === null) segs[k].yaw = segs[k - 1]?.yaw ?? segs.find(g => g.yaw !== null)?.yaw ?? 0;
@@ -90,8 +110,8 @@ export function buildWalk(waypoints, door = null, opts = {}) {
   }
   const walkEnd = T[T.length - 1];
 
-  // final turn to face the door (from the end of the route, horizontally)
-  const end = waypoints[waypoints.length - 1];
+  // final turn to face the door (from where the walk stops, horizontally)
+  const end = poseAtDistance(total);
   const pathYawAt = s => {
     const from = poseAtDistance(s), to = poseAtDistance(Math.min(total, s + o.pathLookAhead));
     return Math.hypot(to.x - from.x, to.z - from.z) > .01 ? Math.atan2(to.x - from.x, to.z - from.z) : yawAt(s);
@@ -115,11 +135,11 @@ export function buildWalk(waypoints, door = null, opts = {}) {
 
   /** Pose at time t (seconds since the walk started). */
   function sample(t) {
-    if (t <= o.startHold) return { ...poseAtDistance(0), yaw: pathYawAt(0), pitch: pitchAt(0), s: 0, phase: 'start' };
+    if (t <= o.startHold) return { ...poseAtDistance(0), yaw: pathYawAt(0), pitch: pitchAt(0), s: 0, doorBlend: 0, phase: 'start' };
     if (t >= walkEnd) {
       const k = smooth((t - walkEnd) / turnDur);
       const p = poseAtDistance(total);
-      return { ...p, seg: segs.length - 1, f: 1, yaw: yawEnd + doorTurn * k, pitch: pitchEnd * (1 - k), s: total, phase: t >= duration ? 'arrived' : 'door' };
+      return { ...p, yaw: yawEnd + doorTurn * k, pitch: pitchEnd * (1 - k), s: total, doorBlend: door ? 1 : 0, phase: t >= duration ? 'arrived' : 'door' };
     }
     // binary search the timeline
     let lo = 0, hi = T.length - 1;
@@ -132,7 +152,9 @@ export function buildWalk(waypoints, door = null, opts = {}) {
       const desired = Math.atan2(door.x - pose.x, door.z - pose.z);
       yaw += wrap(desired - yaw) * smooth(1 - (total - s) / o.doorLookAhead);
     }
-    return { ...pose, yaw, pitch: pitchAt(s), s, phase: 'walk' };
+    // doorBlend: 0 while walking, rising to 1 over the last doorLookAhead metres (the camera lifts its gaze to the door)
+    const doorBlend = door ? smooth(1 - (total - s) / o.doorLookAhead) : 0;
+    return { ...pose, yaw, pitch: pitchAt(s), s, doorBlend, phase: 'walk' };
   }
 
   /** Time at which the walk reaches distance s (for skipping to a point). */
@@ -156,6 +178,7 @@ export function viewDirection(yaw, pitch) {
 // Stair instructions share an end point. Show the landing cue as the walker approaches
 // the first landing instead of letting the floor-change instruction hide it throughout.
 export function activeDirection(directions, pose) {
+  if (pose.phase === 'door' || pose.phase === 'arrived') return directions.length - 1; // standing at the door
   const point = pose.seg + (pose.f >= 1 ? 1 : 0);
   let index = directions.findIndex(d => d.point_index > point);
   if (index < 0) return directions.length - 1;

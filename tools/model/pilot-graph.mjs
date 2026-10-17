@@ -146,7 +146,7 @@ const graph = {
     'Step-free status of every corridor segment.',
   ],
 };
-// Sign faces and their openings from the verified Unity sidecar (hash-checked against the inventory).
+// Sign faces and their openings from the verified model sidecar (hash-checked against the inventory).
 // Every opening starts unresolved: the model does not say which office is behind a door.
 import crypto from 'node:crypto';
 const INV = JSON.parse(fs.readFileSync(path.join(HERE, '../../docs/3d-integration/source-inventory.json'), 'utf8'));

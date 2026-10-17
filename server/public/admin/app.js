@@ -1,5 +1,5 @@
 // Admin panel SPA — content management for the City Hall kiosk.
-// Everything here writes to the same SQLite database the kiosk and Unity read from;
+// Everything here writes to the same SQLite database the kiosk and phone read from;
 // each save bumps the content version so kiosks pick it up on their next sync (≤ 60 s).
 import { icon } from '/shared/icons.js';
 
@@ -36,7 +36,7 @@ function modal(html, onMount) {
   document.body.appendChild(el); el.querySelector('input,select,textarea,button')?.focus();
   onMount?.(el); return el;
 }
-const coordBadge = s => s === 'unity_sync' ? '<span class="badge ok">Unity sync</span>' : s === 'manual' ? '<span class="badge info">Manual</span>' : '<span class="badge warn">Placeholder</span>';
+const coordBadge = s => s === 'unity_sync' ? '<span class="badge ok">Imported</span>' : s === 'manual' ? '<span class="badge info">Manual</span>' : '<span class="badge warn">Placeholder</span>';
 const statusBadge = s => s === 'published' ? '<span class="badge ok">Published</span>' : s === 'draft' ? '<span class="badge">Draft</span>' : `<span class="badge bad">${esc(s)}</span>`;
 const officeOptions = (sel, { blank = false } = {}) => (blank ? '<option value="">—</option>' : '') + S.offices.map(o => `<option value="${o.id}" ${Number(sel) === o.id ? 'selected' : ''}>${esc(o.name)}</option>`).join('');
 
@@ -421,7 +421,7 @@ function drawRooms(kiosks) {
   const sel = fl.rooms.find(r => r.id === S.selRoom) || null;
   const editable = isAdmin();
   shell('rooms', `<div class="head"><h1>Floors &amp; rooms</h1>${editable ? `<button class="btn primary" data-act="newroom">${icon('plus', 18)}Add room</button>` : ''}</div>
-    <p class="sub">Positions are in metres with the same axes as the Unity model: <b>x</b> left/right from the main entrance, <b>y</b> height of the floor, <b>z</b> depth into the building. ${editable ? 'Drag a room on the plan or type exact numbers.' : ''}</p>
+    <p class="sub">Positions are in metres with the same axes as the 3D model: <b>x</b> left/right from the main entrance, <b>y</b> height of the floor, <b>z</b> depth into the building. ${editable ? 'Drag a room on the plan or type exact numbers.' : ''}</p>
     <div class="row" style="margin-bottom:12px" role="tablist">${S.floors.map(f => `<button class="btn ${f.level === fl.level ? 'primary' : ''}" role="tab" aria-selected="${f.level === fl.level}" data-act="roomfloor" data-l="${f.level}">${esc(f.name)} <span class="small" style="opacity:.75">y = ${f.elevation_y}</span></button>`).join('')}</div>
     <div class="split"><div class="card">${planSVG(fl, kiosks)}<p class="small muted" style="margin:8px 0 0">Grid = 2 m. Blue dot = door / approach point the route walks to. Green = kiosk.</p></div>
       <div class="card" id="roomform">${sel ? roomForm(sel, editable) : '<p class="muted">Select a room on the plan or in the table.</p>'}</div></div>
@@ -461,7 +461,7 @@ function roomForm(r, editable) {
     <label class="row small"><input type="checkbox" name="is_accessible" ${r.is_accessible ? 'checked' : ''} ${dis}> Wheelchair accessible</label>
     <label class="f">Notes<textarea name="notes" rows="2" ${dis}>${esc(r.notes)}</textarea></label>
     ${editable ? `<div class="row"><button class="btn primary">${icon('check', 18)}Save position</button>${r.is_active ? `<button type="button" class="btn danger" data-act="delroom" data-id="${r.id}">Deactivate</button>` : ''}</div>
-    <p class="small muted" style="margin:0">Saving bumps the content version. Kiosks and Unity re-download within a minute.</p>` : ''}</form>`;
+    <p class="small muted" style="margin:0">Saving bumps the content version. Kiosks re-download within a minute.</p>` : ''}</form>`;
 }
 function bindRoomForm(r) {
   $('#rf').addEventListener('submit', async e => {

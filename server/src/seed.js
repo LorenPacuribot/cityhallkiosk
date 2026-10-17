@@ -5,8 +5,8 @@
 //   npm run seed          -> wipes and rebuilds data/kiosk.sqlite
 //
 // IMPORTANT: room coordinates here are PLACEHOLDERS laid out on the 110 m x 40 m
-// plan grid. Replace them by (a) editing rooms in the admin panel, or (b) placing
-// DEST_<room code> markers in the Unity scene and running Kiosk > Sync Room Markers.
+// plan grid. Replace them by editing rooms in the admin panel. Real routes come from the published
+// navigation graph (Admin > Navigation), not from these coordinates.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -114,7 +114,7 @@ export async function seed({ reset = true } = {}) {
       return run(`INSERT INTO rooms(floor_id,code,name,room_type,x,y,z,approach_x,approach_y,approach_z,facing_deg,width_m,depth_m,is_accessible,coord_source,notes)
                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?, 'seed_placeholder', ?)`,
         [floorIds[floor], code, name, type, x, y, z, extra.approachX ?? x, y, approachZ, z < 16 ? 180 : 0, w, d,
-         extra.accessible ?? (floor === 1 ? 1 : 0), extra.notes ?? 'Placeholder position on the plan grid — replace with the measured or Unity-synced value.']).lastId;
+         extra.accessible ?? (floor === 1 ? 1 : 0), extra.notes ?? 'Placeholder position on the plan grid — replace with the measured value.']).lastId;
     };
     // shared spaces
     addRoom(1, '1F-ENT', 'Main entrance', 'entrance', 0, 1, 8, 2, { approachZ: 2 });

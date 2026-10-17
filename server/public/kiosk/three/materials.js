@@ -1,4 +1,4 @@
-// Browser versions of the Unity delivery's materials (docs/3D_MODEL_INTEGRATION_GUIDE.md §8).
+// Browser versions of the baked delivery's original shaders (docs/3D_MODEL_INTEGRATION_GUIDE.md §8).
 //
 //   baked      Shaders/BakedAfternoon.shader:  irradiance = rgbm.rgb * rgbm.a * lightRange
 //              linearSurface = irradiance * linearBase(uv0) * linearVertexColour;  display = AfternoonLUT(linearSurface)

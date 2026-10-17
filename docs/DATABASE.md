@@ -24,18 +24,18 @@ erDiagram
 - **rooms** holds the physical spaces. Each one has an `x, y, z` centre and an `approach_x/y/z` point, the corridor spot in front of the door where a route ends. It also has `facing_deg`, `width_m`, `depth_m`, `room_type`, `is_accessible` and `coord_source` (`seed_placeholder` → `manual` when edited in the admin panel → `unity_sync` when pushed from Unity). All values are metres, in the Unity convention: Y up, +X right facing the building, +Z into the building, with the origin at the main entrance.
 - **offices** holds the departments. An office does **not** store its own position.
 - **office_locations** links an office to a room over time. The row with `valid_to IS NULL` is the current location. Moving an office (`POST /api/admin/offices/:id/move`) closes the current row and inserts a new one in one transaction, so the full history is kept ("CCRO was in 1F-104 until 3 Nov, then 2F-205 during renovation").
-- **v_office_current_location** is a view that joins an office to its current room, floor and coordinates. Unity's `/api/destinations` reads from it.
+- **v_office_current_location** is a view that joins an office to its current room, floor and coordinates. `/api/destinations` reads from it.
 - **kiosks** stores each kiosk's own `x, y, z, facing_deg`. Every route starts from there.
 
 This gives you three independent things that can change without touching code:
 
 | Change in real life | What you do | What updates |
 |---|---|---|
-| An office moves to another room | Admin ▸ Offices ▸ Move office | Kiosk, phone page and Unity routes; history kept |
-| A room was measured wrong | Admin ▸ Floors & rooms ▸ drag or type x/y/z, or Unity ▸ Push markers | Every office in that room |
+| An office moves to another room | Admin ▸ Offices ▸ Move office | Kiosk and phone page routes; history kept |
+| A room was measured wrong | Admin ▸ Floors & rooms ▸ drag or type x/y/z | Every office in that room |
 | The kiosk is moved in the lobby | Admin ▸ Kiosks ▸ Edit | Every route's starting point |
 
-Every write calls `bumpContentVersion()`. The web kiosk and Unity poll `/api/kiosk/version` and re-download when it changes; the web kiosk polls every 60 s and Unity every 30 s.
+Every write calls `bumpContentVersion()`. The web kiosk polls `/api/kiosk/version` every 60 s and re-downloads when it changes.
 
 ## Other tables
 

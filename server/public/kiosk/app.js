@@ -3,7 +3,7 @@
 import { icon } from '../shared/icons.js';
 import { t, setLang, getLang, direction } from '../shared/i18n.js';
 import { planRouteCore } from '../shared/route-core.js';
-import { planGraphRoute, resolveDestination } from '../shared/nav-graph.js';
+import { planGraphRoute, resolveDestination, doorForRoom } from '../shared/nav-graph.js';
 import { routeFloorSVG, floorPlanSVG, floorBounds, placeWalker, followWalker } from '../shared/route-map.js';
 import { loadPlans, planFor } from '../shared/plans.js';
 import { buildWalk, activeDirection } from '../shared/walk-path.js';
@@ -460,22 +460,25 @@ const screens = {
     const floors = S.bundle.navigation?.graph?.floors || S.bundle.floors;
     const lvl = S.mapFloor = floors.some(f => f.level === S.mapFloor) ? S.mapFloor : floors[0].level;
     const fl = S.bundle.floors.find(f => f.level === lvl);
-    const real = !!S.bundle.navigation?.graph;
+    const real = !!S.bundle.navigation?.graph, can3d = real && calibrationOK();
+    const mapped = new Map((real ? mapOffices(null) : []).map(m => [m.office.id, m]));
     return `<section class="screen">${topbar()}
       <div class="content cols map-cols">
         <div class="col-main">
         ${backBtn()}
         <h1 class="h1">${t('map_hall')}</h1>
         <div class="chips">${floors.map(f => `<button class="chip" data-action="mapfloor" data-l="${f.level}" aria-pressed="${f.level === lvl}">${esc(f.name)}</button>`).join('')}
-        ${real ? `<button class="chip" data-action="mapmode">${t(S.mapMode === '3d' ? 'view_2d' : 'view_3d')}</button>` : ''}</div>
+        ${can3d ? `<button class="chip" data-action="mapmode">${t(S.mapMode === '3d' ? 'view_2d' : 'view_3d')}</button>` : ''}</div>
         <div class="floor-viewport" id="floor-vp">
           <div class="floor-fallback">${real ? mapPlan(lvl) : floorSVG(fl, { interactive: true, you: S.bundle.kiosk.floor_level === lvl ? S.bundle.kiosk : null })}</div>
-          ${real && S.mapMode === '3d' ? `<div class="vp-loading" role="status"><span class="label">${t('loading_building')}</span><div class="bar"><div></div></div></div>` : ''}
+          ${can3d && S.mapMode === '3d' ? `<div class="vp-loading" role="status"><span class="label">${t('loading_building')}</span><div class="bar"><div></div></div></div>` : ''}
         </div>
-        ${real ? `<div class="map-controls" hidden><button class="chip" data-action="mapzoom" data-f="1.35">${t('zoom_in')}</button><button class="chip" data-action="mapzoom" data-f="0.74">${t('zoom_out')}</button><button class="chip" data-action="maprotate">${t('rotate_map')}</button><button class="chip" data-action="mapreset">${t('reset_view')}</button></div><p class="caption muted map-hint" hidden>${t('map_gestures')}</p>` : ''}
+        ${can3d ? `<div class="map-controls" hidden><button class="chip" data-action="mapzoom" data-f="1.35">${t('zoom_in')}</button><button class="chip" data-action="mapzoom" data-f="0.74">${t('zoom_out')}</button><button class="chip" data-action="maprotate">${t('rotate_map')}</button><button class="chip" data-action="mapreset">${t('reset_view')}</button></div><p class="caption muted map-hint" hidden>${t('map_gestures')}</p>` : ''}
         </div>
-        <div class="col-side"><div class="list">${S.bundle.offices.filter(o => o.location?.floor_level === lvl && o.location?.room_id)
-          .map(o => rowHTML({ kind: 'office', id: o.id, title: o.name, subtitle: o.location.room_code })).join('')}</div>
+        <div class="col-side">${real ? `<p class="caption muted">${t('tap_office_map')}</p>` : ''}<div class="list">${S.bundle.offices.filter(o => o.location?.floor_level === lvl && o.location?.room_id)
+          .map(o => { const m = real ? mapped.get(o.id) : null;
+            // the database room codes are placeholders until a door is mapped: show the mapped door's room, else say so
+            return rowHTML({ kind: 'office', id: o.id, title: o.name, subtitle: !real ? o.location.room_code : m ? `${o.location.room_code} · ${t(m.draft ? 'draft' : 'on_map')}` : t('not_on_map_yet') }); }).join('')}</div>
         ${graphPreview() ? `<h2 class="h3">${t('pilot_doorways')}</h2><p class="caption muted">${t('pilot_doorways_note')}</p>
           <div class="list">${S.bundle.navigation.graph.openings.filter(o => o.approachNodeId && o.status !== 'verified').map(o =>
             `<button class="row" data-action="navopening" data-o="${esc(o.openingId)}" data-t="${esc(o.label || o.openingId)}"><span class="tile">${icon('navigation', 32)}</span><span class="txt"><span class="title">${esc(o.label || o.openingId)}</span><span class="sub">${esc(o.openingId)} · ${t('draft')}</span></span>${icon('chevron-right', 32)}</button>`).join('')}</div>` : ''}
@@ -626,9 +629,29 @@ function mapOrigin(level) {
   const point = graph?.nodes.find(n => n.id === graph.kiosks?.[KIOSK]);
   return point?.floor === level ? point : null;
 }
+/** Offices whose door is mapped in the published graph (verified; drafts only in staff preview), on one floor or all. */
+function mapOffices(level) {
+  const graph = S.bundle.navigation?.graph; if (!graph) return [];
+  const out = [];
+  for (const office of S.bundle.offices) {
+    const door = doorForRoom(graph, office.location?.room_id, { preview: graphPreview() });
+    const node = door && graph.nodes.find(n => n.id === door.approachNodeId);
+    if (!door?.doorPoint || !node || (level != null && node.floor !== level)) continue;
+    out.push({ office, door, x: door.doorPoint.x, y: node.y, z: door.doorPoint.z, floor: node.floor, draft: door.status !== 'verified' });
+  }
+  return out;
+}
+const officeTag = o => o.short_name || o.name;
+// Plans and the 3D floor map are drawn with the published calibration: use them only for that calibration, and while it
+// is unverified only in a labelled staff preview (the same rule as the 3D route view and the phone page).
+function calibrationOK() { const c = S.bundle.navigation?.calibration; return !!c && (c.status === 'verified' || graphPreview()); }
+function usablePlan(level) {
+  return S.plans && calibrationOK() && S.plans.calibrationVersion === S.bundle.navigation.calibration.calibrationVersion ? planFor(S.plans, level) : null;
+}
 function mapPlan(level) {
   const graph = S.bundle.navigation.graph;
-  return floorPlanSVG({ graph, level, plan: planFor(S.plans, level), you: mapOrigin(level), labels: { you: t('route_start') } });
+  const points = mapOffices(level).map(m => ({ x: m.x, z: m.z, label: officeTag(m.office), color: m.draft ? '#9A6B00' : '#1A63BE', action: 'navoffice', id: m.office.id }));
+  return floorPlanSVG({ graph, level, plan: usablePlan(level), you: mapOrigin(level), labels: { you: t('route_start') }, points });
 }
 function stopMap() {
   S.mapGen++;
@@ -638,7 +661,7 @@ function stopMap() {
 }
 async function startMap() {
   const nav = S.bundle.navigation;
-  if (S.mapMode !== '3d' || !nav?.model || !nav.graph) return;
+  if (S.mapMode !== '3d' || !nav?.model || !nav.graph || !calibrationOK()) return;
   const gen = S.mapGen, ac = S.mapAbort = new AbortController(), level = S.mapFloor;
   const live = () => gen === S.mapGen && current() === 'map';
   const vp = $('#floor-vp'), loading = vp?.querySelector('.vp-loading');
@@ -647,7 +670,7 @@ async function startMap() {
     const { getViewer } = await import('./three/building-viewer.js');
     if (!live()) return;
     const v = getViewer();
-    await v.ensureModel(nav, { signal: ac.signal, allowDraftCalibration: true,
+    await v.ensureModel(nav, { signal: ac.signal, allowDraftCalibration: graphPreview(),
       onLoadProgress: e => { if (live() && loading) loading.querySelector('.bar > div').style.width = `${Math.round(e.fraction * 100)}%`; } });
     if (!live()) return;
     v.attach(vp); v.updateContent(S.bundle); S.buildingUsed = true;
@@ -655,7 +678,8 @@ async function startMap() {
     const nodes = nav.graph.nodes.filter(n => n.floor === level);
     const elevation = floor?.elevation ?? Math.min(...nodes.map(n => n.y));
     S.mapCtrl = v.showFloor({ level, elevation: Number.isFinite(elevation) ? elevation : 0,
-      bounds: S.plans?.bounds || floorBounds(nav.graph, level), you: mapOrigin(level), youLabel: t('route_start') });
+      bounds: S.plans?.bounds || floorBounds(nav.graph, level), you: mapOrigin(level), youLabel: t('route_start'),
+      offices: mapOffices(level).map(m => ({ id: m.office.id, x: m.x, y: m.y, z: m.z, title: officeTag(m.office), subtitle: m.office.short_name ? m.office.name : '', draft: m.draft })) });
     S.mapDetach = () => { off?.(); v.detach(); };
     vp.classList.add('has-building');
     $('.map-controls').hidden = false; $('.map-hint').hidden = false;
@@ -686,6 +710,11 @@ function planLocal(target) {
       modelVersion: nav.publication.modelVersion, navigationVersion: nav.publication.navigationVersion, contentVersion };
     const d = resolveDestination(nav.graph, t2, { preview: allow });
     if (!d.destination) return { status: 'no_route', ...meta, reason: d.reason, message: d.message };
+    // a doorway picked directly (staff pilot list) is named after the office now in its room, if any
+    if (target.openingId && d.destination.roomId != null) {
+      const occupant = S.bundle.offices.find(o => o.location?.room_id === d.destination.roomId);
+      if (occupant) d.destination.name = occupant.name;
+    }
     const r = planGraphRoute({ graph: nav.graph, kioskCode: KIOSK, destination: d.destination, preference, allowUnverified: allow,
       versions: { modelVersion: nav.publication.modelVersion, contentVersion } });
     return { ...r, ...meta, destinationMapping: d.destination.mapping, calibrationStatus: nav.calibration?.status ?? null };
@@ -788,7 +817,7 @@ async function startNav() {
 const isGraphRoute = r => r?.routeSource === 'navigation_graph';
 function mapSVG(level, { small = false } = {}) {
   const r = S.nav.route;
-  if (isGraphRoute(r)) return routeFloorSVG({ graph: S.bundle.navigation.graph, route: r, level, small, plan: planFor(S.plans, level), labels: { you: t('route_start') } });
+  if (isGraphRoute(r)) return routeFloorSVG({ graph: S.bundle.navigation.graph, route: r, level, small, plan: usablePlan(level), labels: { you: t('route_start') } });
   const fl = S.bundle.floors.find(f => f.level === level) || S.bundle.floors[0];
   return floorSVG(fl, { route: r, you: S.bundle.kiosk.floor_level === fl.level ? S.bundle.kiosk : null, target: r.to.room_id, small });
 }

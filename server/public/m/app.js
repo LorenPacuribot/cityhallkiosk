@@ -3,6 +3,7 @@
 // /m              → search.
 import { icon } from '/shared/icons.js';
 import { routeFloorSVG } from '/shared/route-map.js';
+import { loadPlans, planFor } from '/shared/plans.js';
 
 const $ = s => document.querySelector(s);
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -35,7 +36,7 @@ async function servicePage(id) {
   const q = new URLSearchParams(location.search);
   const origin = q.get('k'), stepFree = q.get('p') === 'sf', qrRoom = Number(q.get('r')) || null;
   const moved = qrRoom && loc?.room_id !== qrRoom;
-  let floor = null, route = null, nav = null;
+  let floor = null, route = null, nav = null, plans = null;
   if (loc?.room_id) {
     // directions follow the office's CURRENT room; without an origin kiosk there is no "from" — never assume the lobby
     [floor, route, nav] = await Promise.all([
@@ -43,6 +44,7 @@ async function servicePage(id) {
       origin ? fetch(`/api/route?office_id=${s.office_id}&kiosk=${encodeURIComponent(origin)}${stepFree ? '&preference=step_free' : ''}&log=0`).then(r => r.json()).catch(() => null) : null,
       getJSON('/api/navigation').catch(() => null),
     ]);
+    plans = await loadPlans(nav);
   }
   app.innerHTML = `${header(true)}<main>
     <h1>${esc(s.display_title)}</h1>
@@ -62,7 +64,7 @@ async function servicePage(id) {
 
     <section id="where"><h2>How to get there</h2>
       ${moved ? `<p class="notice">This office has moved since the code was made. The directions below are for where it is now: <b>${esc(loc.floor_name)} · Room ${esc(loc.room_code)}</b>.</p>` : ''}
-      ${whereHTML({ loc, floor, route, nav, origin, stepFree })}
+      ${whereHTML({ loc, floor, route, nav, origin, stepFree, plans })}
     </section>
 
     <section class="contact">${s.office_phone ? `<a class="btn" href="tel:${esc(s.office_phone.replace(/[^\d+]/g, ''))}">${icon('phone', 18)}Call ${esc(s.office_phone)}</a>` : ''}<p class="muted small">${esc(s.office_hours || '')}</p></section>
@@ -93,7 +95,7 @@ const REASONS = {
   ROUTE_CLOSED: 'The way to this office is closed right now.',
   UNKNOWN_KIOSK: 'The kiosk this code came from is not set up for directions.',
 };
-function whereHTML({ loc, floor, route, nav, origin, stepFree }) {
+function whereHTML({ loc, floor, route, nav, origin, stepFree, plans }) {
   if (!loc?.room_id) return `<p>${loc?.type === 'offsite' ? `This office is <b>not inside City Hall</b>: ${esc(loc.offsite_address || 'ask the information desk for the address')}.` : 'The room is not confirmed yet. Please ask at the information desk.'}</p>`;
   const place = `<p><b>${esc(loc.floor_name)} · Room ${esc(loc.room_code)}</b></p>`;
   if (!origin) return `${place}<p class="muted small">Scan the code on a City Hall kiosk to get step-by-step directions from where you are standing.</p>`;
@@ -101,8 +103,10 @@ function whereHTML({ loc, floor, route, nav, origin, stepFree }) {
   const pref = stepFree ? ' · avoiding stairs' : '';
   const dirs = `<ol class="dirs">${route.directions.map(d => `<li>${esc(d.text)}</li>`).join('')}</ol>`;
   if (route.routeSource === 'navigation_graph' && nav?.graph) {
-    // one map per floor the route uses, from the published walkable network
-    const maps = route.floors_used.map(l => `<figure class="plan-fig"><figcaption>${esc(nav.graph.floors.find(f => f.level === l)?.name || `Floor ${l}`)}</figcaption>${routeFloorSVG({ graph: nav.graph, route, level: l, labels: { you: 'Kiosk' } })}</figure>`).join('');
+    // one map per floor the route uses: the real floor plan when it was drawn with the published calibration (an
+    // unverified calibration only for a route that is itself labelled draft), else the published walkable network
+    const cal = nav.calibration, planOK = !!plans && plans.calibrationVersion === cal?.calibrationVersion && (cal.status === 'verified' || route.verification !== 'verified');
+    const maps = route.floors_used.map(l => `<figure class="plan-fig"><figcaption>${esc(nav.graph.floors.find(f => f.level === l)?.name || `Floor ${l}`)}</figcaption>${routeFloorSVG({ graph: nav.graph, route, level: l, labels: { you: 'Kiosk' }, plan: planOK ? planFor(plans, l) : null })}</figure>`).join('');
     const draft = route.verification !== 'verified' ? '<p class="notice">Draft route: not yet checked on site. Please confirm at the information desk.</p>' : '';
     return `${place}${draft}${maps}${dirs}<p class="muted small">From kiosk ${esc(origin)}${pref} · about ${route.distance_m} m · map version ${esc(route.navigationVersion || '')}.</p>`;
   }

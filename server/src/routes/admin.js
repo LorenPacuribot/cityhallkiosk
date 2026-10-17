@@ -323,25 +323,6 @@ adminApi.delete('/rooms/:id', requireRole('lgu_admin'), (req, res) => {
   res.json({ ok: true });
 });
 
-// Bulk coordinate sync from the Unity editor (Kiosk > Sync Room Markers).
-// Body: { items: [{ code, x, y, z, approach_x, approach_y, approach_z, facing_deg }] }
-adminApi.post('/rooms/sync-from-unity', requireRole('lgu_admin'), (req, res) => {
-  const items = Array.isArray(req.body?.items) ? req.body.items : [];
-  const updated = [], unknown = [];
-  tx(() => {
-    for (const it of items) {
-      const r = get('SELECT id FROM rooms WHERE code = ?', [String(it.code || '')]);
-      if (!r) { unknown.push(it.code); continue; }
-      run(`UPDATE rooms SET x = ?, y = ?, z = ?, approach_x = ?, approach_y = ?, approach_z = ?, facing_deg = COALESCE(?, facing_deg),
-                            coord_source = 'unity_sync', updated_at = datetime('now') WHERE id = ?`,
-        [num(it.x), num(it.y), num(it.z), num(it.approach_x ?? it.x), num(it.approach_y ?? it.y), num(it.approach_z ?? it.z), num(it.facing_deg), r.id]);
-      updated.push(it.code);
-    }
-  });
-  audit(req.user, 'unity_sync', 'room', null, null, { updated, unknown });
-  if (updated.length) changed();
-  res.json({ updated, unknown });
-});
 
 // ============================================================ kiosks
 adminApi.get('/kiosks', requireRole('viewer'), (req, res) => res.json({ items: all(`SELECT k.*, f.name AS floor_name,

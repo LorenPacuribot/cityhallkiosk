@@ -32,7 +32,14 @@ for (const opening of graph.openings.filter(o => o.approachNodeId)) {
     const atDoor = viewDirection(walk.sample(walk.walkEnd).yaw, 0);
     assert.ok(beforeDoor.x * atDoor.x + beforeDoor.z * atDoor.z > .999, 'no heading snap at the door');
     assert.equal(end.phase, 'arrived');
-    for (const k of ['x', 'y', 'z', 'floor']) assert.equal(end[k], last[k]);
+    // the walk ends on the last segment, short of the door when the route itself ends closer than doorStandOff
+    // the walk stops ON the route, doorStandOff from the door (the pilot routes are long enough for that)
+    const ea = route.waypoints[end.seg], eb = route.waypoints[end.seg + 1];
+    assert.equal(end.floor, last.floor);
+    for (const k of ['x', 'y', 'z']) assert.ok(Math.abs(end[k] - (ea[k] + (eb[k] - ea[k]) * end.f)) < 1e-7, 'stops on the route');
+    const endToDoor = Math.hypot(route.to.door.x - end.x, route.to.door.z - end.z);
+    assert.ok(Math.abs(endToDoor - WALK_DEFAULTS.doorStandOff) < 0.01, `stands back from the door (${endToDoor.toFixed(2)} m)`);
+    assert.equal(activeDirection(route.directions, end), route.directions.length - 1, 'the door instruction is shown on arrival');
     const dir = viewDirection(end.yaw, end.pitch), dx = route.to.door.x - end.x, dz = route.to.door.z - end.z;
     if (Math.hypot(dx, dz) > .2) assert.ok((dir.x * dx + dir.z * dz) / Math.hypot(dx, dz) > .999);
   });

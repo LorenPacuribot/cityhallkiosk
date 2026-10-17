@@ -22,7 +22,8 @@ export class CameraRig {
     cam.fov = THREE.MathUtils.clamp(THREE.MathUtils.radToDeg(v), ...V_FOV_RANGE);
     cam.near = 0.05; cam.far = 600;
     toRender({ x: pose.x, y: pose.y + EYE_HEIGHT, z: pose.z }, this.eye);
-    const d = viewDirection(pose.yaw, Math.min(0, pose.pitch) - WALK_LOOK_DOWN);
+    // look down at the floor guide while walking; lift the gaze to the door (sign and name tag) at the end
+    const d = viewDirection(pose.yaw, Math.min(0, pose.pitch) - WALK_LOOK_DOWN * (1 - 0.75 * (pose.doorBlend || 0)));
     this.look.set(this.eye.x + d.x, this.eye.y + d.y, this.eye.z - d.z);
     cam.position.copy(this.eye);
     cam.up.set(0, 1, 0);

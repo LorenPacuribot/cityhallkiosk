@@ -1,3 +1,5 @@
+> **Note (2026-10-16).** This is the original brief, kept as delivered. Unity has since been dropped. The model files moved: `unity_baked_revision/` is now `web_source_r09/`, `09_Unity_Baked_Optimized.blend` is now `09_Baked_Optimized.blend` (same contents), and `Unity_Package/Assets/CityHallPrepared/` is now `web_source_r09/sidecars/`. Current status: `docs/HANDOFF.md`.
+
 # Integrating the City Hall building into the web kiosk
 
 Implementation specification • 16 October 2026

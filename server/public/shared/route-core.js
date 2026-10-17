@@ -104,6 +104,6 @@ export function planRouteCore({ kiosk, room, floors, rooms, accessible = false, 
     directions: legs,
     distance_m: Math.round(total),
     minutes: Math.max(1, Math.round(total / WALK_SPEED / 60)),
-    note: 'Prototype corridor route. The Unity kiosk computes the real path on the NavMesh from the same start and end coordinates.',
+    note: 'Prototype corridor route. Real routes come from the published navigation graph (shared/nav-graph.js).',
   };
 }

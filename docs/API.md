@@ -2,7 +2,7 @@
 
 Base URL: `http://localhost:3000/api`. All requests and responses are JSON. Admin endpoints need a session, sent either as the `sid` cookie set by login or as `Authorization: Bearer <token>`.
 
-## Public (kiosk, phone, Unity)
+## Public (kiosk, phone)
 
 | Method & path | Returns |
 |---|---|
@@ -18,7 +18,7 @@ Base URL: `http://localhost:3000/api`. All requests and responses are JSON. Admi
 | `GET /offices`, `GET /offices/:id` | Offices with their current location (and services) |
 | `GET /floors` | Floors with their rooms (x/y/z, approach, size) |
 | `GET /rooms` | Active rooms. The approach point falls back to the centre. |
-| `GET /destinations` | **For Unity**: every office's current room with x/y/z and approach |
+| `GET /destinations` | Every office's current room with x/y/z and approach |
 | `GET /route?room_id=` \| `office_id=` \| `service_id=` `&kiosk=&accessible=1&log=0` | `{ from, to, waypoints[{x,y,z,floor,label}], directions[{key,text,distance_m,point_index}], distance_m, minutes }` |
 | `POST /feedback` | Body `{ service_id, helpful: 1/0, reason: unclear/wrong_info/not_found/other, comment, kiosk_code }` |
 | `GET /qr.svg?data=` | QR code for the phone hand-off |
@@ -49,7 +49,6 @@ Base URL: `http://localhost:3000/api`. All requests and responses are JSON. Admi
 | `GET /offices/:id/history` (viewer) | All past locations |
 | `GET /floors`, `PUT /floors/:id` (lgu_admin) | Elevation (y) and plan bounds |
 | `GET /rooms`, `POST /rooms`, `PUT /rooms/:id`, `DELETE /rooms/:id` (lgu_admin) | Room CRUD with x/y/z validation. Delete deactivates, and is blocked while an office is in the room. |
-| `POST /rooms/sync-from-unity` (lgu_admin) | `{ items: [{ code, x, y, z, approach_x, approach_y, approach_z, facing_deg }] }` → `{ updated[], unknown[] }` |
 | `GET/POST /kiosks`, `PUT /kiosks/:id` | Kiosk position |
 | `GET/POST /announcements`, `PUT/DELETE /announcements/:id` | |
 | `GET /feedback`, `PUT /feedback/:id` | `{ status: resolved\|new }` |

@@ -42,12 +42,12 @@ const corridorsSVG = (graph, level, { X, Y, sc }) => {
 
 // walker: a dot with a heading wedge (rotated by placeWalker); hidden off-canvas until placed
 const walkerSVG = (sc, small) => {
-  const r = small ? 15 : 12, cone = Math.max(r * 2.6, 3.2 * sc);
+  const r = small ? 10 : 12, cone = Math.max(r * 2.6, 3.2 * sc);
   return `<g id="walker2d" transform="translate(-100 -100)"><path class="heading" d="M0 0 L${-cone * 0.55} ${-cone} A${cone} ${cone} 0 0 1 ${cone * 0.55} ${-cone} Z" fill="#1A63BE" fill-opacity=".28"/>
-    <circle r="${r}" fill="#B8432F" stroke="#fff" stroke-width="4"/></g>`;
+    <circle r="${r}" fill="#12355B" stroke="#fff" stroke-width="4"/></g>`;
 };
 
-const youSVG = (x, y, small, label) => `<g class="you"><circle cx="${x}" cy="${y}" r="${small ? 14 : 13}" fill="#12355B" stroke="#fff" stroke-width="4"/>
+const youSVG = (x, y, small, label) => `<g class="you">${small ? `<circle cx="${x}" cy="${y}" r="7" fill="#fff" stroke="#12355B" stroke-width="4"/>` : `<circle cx="${x}" cy="${y}" r="13" fill="#12355B" stroke="#fff" stroke-width="4"/>`}
   ${small || !label ? '' : `<text x="${x}" y="${y + 36}" font-size="20" text-anchor="middle" fill="#12355B" font-weight="700" font-family="sans-serif" paint-order="stroke" stroke="#fff" stroke-width="5">${esc(label)}</text>`}</g>`;
 
 /**
@@ -65,7 +65,7 @@ export function routeFloorSVG({ graph, route, level, small = false, labels = {},
   const nodeOf = id => graph.nodes.find(n => n.id === id);
   const onFloor = route.waypoints.filter(p => p.floor === level);
   const pts = onFloor.map(p => `${X(p.x)},${Y(p.z)}`).join(' ');
-  const lw = small ? 11 : 9;
+  const lw = small ? 8 : 9;
   const line = onFloor.length > 1 ? `<polyline points="${pts}" fill="none" stroke="#fff" stroke-width="${lw + 8}" stroke-linecap="round" stroke-linejoin="round" stroke-opacity=".9"/>
     <polyline points="${pts}" fill="none" stroke="#1A63BE" stroke-width="${lw}" stroke-linecap="round" stroke-linejoin="round"/>` : '';
   const marks = [];
@@ -73,7 +73,8 @@ export function routeFloorSVG({ graph, route, level, small = false, labels = {},
   for (const e of route.edges || []) if (e.kind !== 'walk' && e.kind !== 'door') {
     for (const id of [e.from, e.to]) {
       const n = nodeOf(id);
-      if (n?.floor === level) marks.push(`<g><rect x="${X(n.x) - 16}" y="${Y(n.z) - 16}" width="32" height="32" rx="6" fill="#D9A520" stroke="#fff" stroke-width="3"/>
+      const q = small ? 10 : 16;
+      if (n?.floor === level) marks.push(`<g><rect x="${X(n.x) - q}" y="${Y(n.z) - q}" width="${2 * q}" height="${2 * q}" rx="${small ? 4 : 6}" fill="#D9A520" stroke="#fff" stroke-width="3"/>
         ${small ? '' : `<text x="${X(n.x)}" y="${Y(n.z) - 24}" font-size="20" text-anchor="middle" fill="#6B4E00" font-weight="700" font-family="sans-serif" paint-order="stroke" stroke="#fff" stroke-width="5">${esc(e.label || labels.stairs || e.kind)}</text>`}</g>`);
     }
   }
@@ -82,7 +83,8 @@ export function routeFloorSVG({ graph, route, level, small = false, labels = {},
   const door = route.to?.door, end = route.to;
   if (end && end.floor_level === level) {
     const d = door || end;
-    marks.push(`<circle cx="${X(d.x)}" cy="${Y(d.z)}" r="${small ? 16 : 14}" fill="#B8432F" stroke="#fff" stroke-width="4"/>
+    // the door: a terracotta ring with a dot, so it never reads as the (navy) walker
+    marks.push(`<g class="door"><circle cx="${X(d.x)}" cy="${Y(d.z)}" r="${small ? 11 : 15}" fill="#fff" stroke="#B8432F" stroke-width="${small ? 5 : 6}"/><circle cx="${X(d.x)}" cy="${Y(d.z)}" r="${small ? 4 : 6}" fill="#B8432F"/></g>
       ${small ? '' : `<text x="${X(d.x)}" y="${Y(d.z) - 24}" font-size="20" text-anchor="middle" fill="#B8432F" font-weight="700" font-family="sans-serif" paint-order="stroke" stroke="#fff" stroke-width="5">${esc(end.room_code || labels.door || '')}</text>`}`);
   }
   return `<svg class="mapsvg routemap${plan ? ' has-plan' : ''}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(graph.floors?.find(fl => fl.level === level)?.name || '')}"
@@ -96,7 +98,7 @@ export function routeFloorSVG({ graph, route, level, small = false, labels = {},
  */
 export function floorPlanSVG({ graph, level, plan = null, you = null, labels = {}, points = [] }) {
   const f = frame(graph, level, plan), { X, Y, sc, H } = f;
-  const pts = points.map(p => `<g><circle cx="${X(p.x)}" cy="${Y(p.z)}" r="11" fill="${p.color || '#1A63BE'}" stroke="#fff" stroke-width="4"/>
+  const pts = points.map(p => `<g${p.action ? ` class="tap" data-action="${esc(p.action)}" data-id="${esc(p.id)}" role="button" aria-label="${esc(p.label)}"` : ''}>${p.action ? `<circle cx="${X(p.x)}" cy="${Y(p.z)}" r="30" fill="transparent"/>` : ''}<circle cx="${X(p.x)}" cy="${Y(p.z)}" r="11" fill="${p.color || '#1A63BE'}" stroke="#fff" stroke-width="4"/>
     ${p.label ? `<text x="${X(p.x)}" y="${Y(p.z) - 20}" font-size="18" text-anchor="middle" fill="${p.color || '#1A63BE'}" font-weight="700" font-family="sans-serif" paint-order="stroke" stroke="#fff" stroke-width="5">${esc(p.label)}</text>` : ''}</g>`).join('');
   return `<svg class="mapsvg routemap floorplan${plan ? ' has-plan' : ''}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(graph.floors?.find(fl => fl.level === level)?.name || '')}"
     data-minx="${f.b.minX}" data-minz="${f.b.minZ}" data-sc="${sc}" data-h="${H}" data-w="${W}">
