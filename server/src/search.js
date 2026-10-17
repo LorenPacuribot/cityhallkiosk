@@ -48,12 +48,12 @@ export function invalidateSearchIndex() { index = null; }
 
 function buildIndex() {
   const services = all(`
-    SELECT s.id, s.title, s.plain_title, s.description, s.classification, s.office_id, o.name AS office_name,
+    SELECT s.id, s.title, s.plain_title, s.description, s.classification, s.office_id, o.name AS office_name, s.is_citizen_facing,
            v.floor_name, o.location_type,
            (SELECT group_concat(keyword, ' | ') FROM service_keywords k WHERE k.service_id = s.id) AS keywords
       FROM services s JOIN offices o ON o.id = s.office_id
       LEFT JOIN v_office_current_location v ON v.office_id = o.id
-     WHERE s.status = 'published' AND s.is_citizen_facing = 1 AND o.is_active = 1`);
+     WHERE s.status = 'published' AND o.is_active = 1`);
   const offices = all(`SELECT o.id, o.name, o.short_name, o.location_type, v.floor_name
                          FROM offices o LEFT JOIN v_office_current_location v ON v.office_id = o.id
                         WHERE o.is_active = 1`);
@@ -61,7 +61,7 @@ function buildIndex() {
     ...services.map(s => ({
       kind: 'service', id: s.id, title: s.plain_title || s.title, official_title: s.title,
       subtitle: [s.office_name, s.location_type === 'offsite' ? 'Not in this building' : s.floor_name].filter(Boolean).join(' · '),
-      classification: s.classification,
+      classification: s.classification, government: !s.is_citizen_facing,
       titleWords: tokens(`${s.plain_title || ''} ${s.title}`),
       kwWords: tokens(s.keywords),
       kwPhrases: (s.keywords || '').split(' | ').map(normalize).filter(Boolean),
@@ -96,6 +96,7 @@ export function search(q, limit = 25) {
     if (qt.length && matched < Math.ceil(qt.length * 0.6) && score < 40) continue; // most words must match
     if (score < 6) continue; // description-only mentions are too weak to show
     if (item.kind === 'office') score += 2;
+    if (item.government) score *= 0.6; // services for other government offices rank below public ones
     results.push({ ...item, score: Math.round(score) });
   }
   results.sort((a, b) => b.score - a.score || a.title.length - b.title.length);

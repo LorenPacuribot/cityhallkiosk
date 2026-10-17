@@ -37,6 +37,9 @@ if (!nav.revisionByVersion(graph.navigationVersion)) nav.importGraph(graph, null
 nav.registerModelRelease({ modelVersion: graph.modelVersion, baseUrl: `/models/cityhall/${graph.modelVersion}/`, sourceBlendSha256: manifest.sourceBlendSha256 });
 if (nav.currentPublication()?.navigation_version !== graph.navigationVersion) nav.publish(graph.navigationVersion, null);
 applyPlanReferenceRooms(graph);
+// the prepared plain-language drafts (they stay drafts: approve them in Admin > Plain language to see them on the kiosk)
+const { importPlainDrafts } = await import('../../src/routes/plain-admin.js');
+importPlainDrafts();
 setSetting('navigation_preview_unverified', '1');
 if (!get(`SELECT 1 FROM kiosks WHERE code = 'PILOT-ENTRANCE'`)) {
   const f1 = get('SELECT id FROM floors WHERE level = 1');

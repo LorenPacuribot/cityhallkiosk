@@ -7,6 +7,8 @@ export const LANGS = { en: 'EN', fil: 'FIL', ceb: 'CEB' };
 
 const T = {
   en: {
+    where_label: 'Where', room_n: 'Room {c}', inside_hall: 'Inside City Hall', about_time: 'about {t}',
+    browse_sub: 'Choose the office that handles what you need. Each one says what it helps with.', helps_with: 'Helps with: {text}', public_services: 'Services for the public', gov_services: 'For other government offices', choose_office: 'Choose an office to see its services.',
     not_on_map_yet: "Not on the map yet. Ask at the information desk.", tap_office_map: "Tap an office name to get directions.", on_map: "On the map",
     follow_position: "Follow my position", following_position: "Following walk", floor_overview: "Floor overview", route_start: "Route start", zoom_in: "Zoom in", zoom_out: "Zoom out", rotate_map: "Rotate", reset_view: "Reset view", map_gestures: "Drag to move · Pinch or scroll to zoom · Use Rotate to turn the floor",
     city: 'Self-service kiosk', kiosk_name: 'Malaybalay City Hall',
@@ -65,6 +67,8 @@ const T = {
     view_requirements: 'View requirements', none: 'None',
   },
   fil: {
+    where_label: 'Saan', room_n: 'Kuwarto {c}', inside_hall: 'Nasa loob ng City Hall', about_time: 'mga {t}',
+    browse_sub: 'Piliin ang opisinang humahawak sa kailangan mo. Nakasulat kung saan tumutulong ang bawat isa.', helps_with: 'Tumutulong sa: {text}', public_services: 'Mga serbisyo para sa publiko', gov_services: 'Para sa ibang tanggapan ng gobyerno', choose_office: 'Pumili ng opisina para makita ang mga serbisyo nito.',
     not_on_map_yet: "Wala pa sa mapa. Magtanong sa information desk.", tap_office_map: "Pindutin ang pangalan ng opisina para sa direksyon.", on_map: "Nasa mapa",
     follow_position: "Sundan ang posisyon ko", following_position: "Sinusundan ang lakad", floor_overview: "Buong palapag", route_start: "Simula ng ruta", zoom_in: "Palakihin", zoom_out: "Paliitin", rotate_map: "Paikutin", reset_view: "Ibalik ang tanaw", map_gestures: "I-drag para ilipat · Kurutin o i-scroll para mag-zoom · Paikutin ang palapag",
     city: 'Self-service kiosk', kiosk_name: 'Malaybalay City Hall',
@@ -122,6 +126,8 @@ const T = {
     view_requirements: 'Tingnan ang requirements', none: 'Wala',
   },
   ceb: {
+    where_label: 'Asa', room_n: 'Kwarto {c}', inside_hall: 'Sulod sa City Hall', about_time: 'mga {t}',
+    browse_sub: 'Pilia ang opisina nga nagdumala sa imong kinahanglan. Nakasulat kung unsa ang matabangan sa matag usa.', helps_with: 'Motabang sa: {text}', public_services: 'Mga serbisyo para sa publiko', gov_services: 'Para sa ubang opisina sa gobyerno', choose_office: 'Pilia ang opisina aron makita ang mga serbisyo niini.',
     not_on_map_yet: "Wala pa sa mapa. Pangutana sa information desk.", tap_office_map: "Pindota ang ngalan sa opisina para sa direksyon.", on_map: "Naa sa mapa",
     follow_position: "Sunda ang akong posisyon", following_position: "Nagsunod sa lakaw", floor_overview: "Tibuok andana", route_start: "Sinugdanan sa ruta", zoom_in: "Padak-a", zoom_out: "Pagamya", rotate_map: "Libota", reset_view: "Ibalik ang tan-aw", map_gestures: "I-drag aron ibalhin · Pinch o scroll aron mag-zoom · Libota ang andana",
     city: 'Self-service kiosk', kiosk_name: 'Malaybalay City Hall',

@@ -77,3 +77,4 @@ label.f input[type=checkbox], label.row input[type=checkbox] { width: auto; flex
 .reference-plan img { display: block; width: 100%; border: 1px solid var(--border-default); }
 .table-scroll { overflow-x: auto; }
 [hidden] { display: none !important; }
+.plain-item textarea { margin-top: 10px; min-height: 56px; }

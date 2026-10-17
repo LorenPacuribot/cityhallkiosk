@@ -47,7 +47,7 @@ export function serviceDetail(id, { includeUnpublished = false } = {}) {
 
 export function officesWithLocation() {
   return all(`SELECT o.id, o.name, o.short_name, o.phone, o.hours, o.location_type, o.offsite_address,
-                     (SELECT count(*) FROM services s WHERE s.office_id = o.id AND s.status = 'published' AND s.is_citizen_facing = 1) AS service_count
+                     (SELECT count(*) FROM services s WHERE s.office_id = o.id AND s.status = 'published') AS service_count
                 FROM offices o WHERE o.is_active = 1 ORDER BY o.name`)
     .map(o => ({ ...o, location: locationPayload(officeLocation(o.id)) }));
 }
@@ -58,6 +58,16 @@ export function floorsWithRooms() {
                                    WHERE ol.room_id = r.id AND ol.valid_to IS NULL AND ol.is_primary = 1) AS occupant
                        FROM rooms r WHERE r.is_active = 1 ORDER BY r.code`);
   return floors.map(f => ({ ...f, rooms: rooms.filter(r => r.floor_id === f.id) }));
+}
+
+/** Approved plain-language summaries only, as { office: Map(id -> {en, fil, ceb}), service: Map(...) }. */
+export function approvedSummaries() {
+  const out = { office: new Map(), service: new Map() };
+  for (const r of all(`SELECT entity_type, entity_id, lang, approved_text FROM plain_summaries WHERE approved_text IS NOT NULL AND approved_text != ''`)) {
+    const m = out[r.entity_type], cur = m.get(r.entity_id) || {};
+    cur[r.lang] = r.approved_text; m.set(r.entity_id, cur);
+  }
+  return out;
 }
 
 export function activeAnnouncements() {
@@ -83,8 +93,11 @@ export function kioskBundle(kioskCode) {
   const kiosk = get(`SELECT k.id, k.code, k.name, k.floor_id, k.x, k.y, k.z, k.facing_deg, f.level AS floor_level
                        FROM kiosks k JOIN floors f ON f.id = k.floor_id WHERE k.code = ?`, [kioskCode]);
   if (!kiosk) return { kiosk: null };
-  const ids = all(`SELECT id FROM services WHERE status='published' AND is_citizen_facing=1 ORDER BY id`).map(r => r.id);
+  // every published Charter service; is_citizen_facing only decides where it is listed (public vs. other government offices)
+  const ids = all(`SELECT id FROM services WHERE status='published' ORDER BY id`).map(r => r.id);
   const nav = publishedNavigation();
+  const summaries = approvedSummaries();
+  const withSummary = (type, x) => ({ ...x, summary: summaries[type].get(x.id) || null });
   return {
     content_version: Number(setting('content_version', '1')),
     // published navigation tuple (model release, calibration, graph, opening/sign mappings); null = prototype mode
@@ -94,8 +107,8 @@ export function kioskBundle(kioskCode) {
     kiosk,
     building: get('SELECT * FROM buildings ORDER BY id LIMIT 1'),
     floors: floorsWithRooms(),
-    offices: officesWithLocation(),
-    services: ids.map(id => serviceDetail(id)),
+    offices: officesWithLocation().map(o => withSummary('office', o)),
+    services: ids.map(id => withSummary('service', serviceDetail(id))),
     announcements: activeAnnouncements(),
     popular_service_ids: popularServiceIds(),
   };

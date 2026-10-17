@@ -57,6 +57,11 @@ h1, h2, h3, p { margin: 0; }
 .row .txt { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .row .title { font-size: var(--fs-body); font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
 .row .sub { font-size: var(--fs-caption); color: var(--text-secondary); font-weight: 500; }
+.row .sub.meta { font-weight: 600; color: var(--brand-navy); opacity: .72; }
+.row[aria-current="true"] { border-color: var(--brand-blue); box-shadow: 0 0 0 3px var(--brand-blue) inset, 0 6px 16px rgba(15,42,74,.08); }
+.group-h { margin-top: 16px; }
+.office-sum { color: var(--brand-navy); }
+.browse-empty { padding: 48px 8px; }
 .row .chev { color: var(--text-secondary); flex: none; }
 .list { display: flex; flex-direction: column; gap: 16px; }
 .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 999px; font-size: var(--fs-caption); font-weight: 500; }
@@ -518,3 +523,18 @@ h1, h2, h3, p { margin: 0; }
 #stage:not(.landscape) .directions { max-height: 38%; overflow-y: auto; }
 #stage:not(.landscape) .viewport3d { min-height: 430px; }
 .floor-label.you { background: var(--brand-navy); color: #fff; border-color: #fff; pointer-events: none; }
+
+/* Office page: header band, info card + "Show me the way" left, services right */
+.office-head .head-loc { display: flex; align-items: center; gap: 10px; }
+.office-info { display: flex; flex-direction: column; gap: 28px; }
+.info-row { display: flex; gap: 24px; align-items: flex-start; }
+.info-ic { flex: none; width: 64px; height: 64px; border-radius: 16px; background: var(--brand-sky); color: var(--brand-blue); display: grid; place-items: center; }
+.info-txt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.info-val { font-size: var(--fs-h3); font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+.open-pill { align-self: flex-start; display: inline-flex; align-items: center; gap: 12px; padding: 10px 22px; border-radius: 999px; font-size: var(--fs-label); font-weight: 700; }
+.open-pill .dot { width: 14px; height: 14px; border-radius: 50%; background: currentColor; }
+.open-pill.is-open { background: var(--brand-grass-tint); color: var(--status-success); }
+.open-pill.is-closed { background: var(--status-warning-tint); color: var(--status-warning); }
+.svc-list-h { color: var(--brand-navy); }
+.office-cols .btn-block { min-height: 112px; }
+.landscape .office-cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); }

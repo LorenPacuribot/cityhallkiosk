@@ -63,6 +63,7 @@ async function logout() { await api('/api/auth/logout', { method: 'POST' }).catc
 const NAV = [
   ['dashboard', 'Dashboard', 'chart', 'viewer'],
   ['services', 'Services', 'file-text', 'viewer'],
+  ['plain', 'Plain language', 'message', 'viewer'],
   ['approvals', 'Approvals', 'check', 'lgu_admin'],
   ['offices', 'Offices', 'building', 'viewer'],
   ['assignments', 'Room assignments', 'move', 'viewer'],
@@ -586,6 +587,62 @@ ACTIONS.addkw = b => {
       try { const s = await api(`/api/admin/services/${sb.dataset.sid}`); const r = await api(`/api/admin/services/${s.id}`, { method: 'PUT', body: { keywords: [...s.keywords, word] } }); el.remove(); toast(r.message || `“${word}” now finds ${s.display_title}.`); } catch (err) { toast(err.message, true); } });
   });
 };
+
+// ---------------- plain language (one-line summaries shown on the kiosk's "Find a service" browse)
+const PLAIN_TABS = [['draft', 'Waiting for approval'], ['approved', 'Approved'], ['rejected', 'Rejected'], ['none', 'Not written'], ['all', 'All']];
+const PLAIN_LANGS = [['en', 'English'], ['fil', 'Filipino'], ['ceb', 'Cebuano']];
+PAGES.plain = async () => {
+  const P = S.plain ??= { status: 'draft', lang: 'en', type: '', q: '', limit: 40 };
+  const d = await api(`/api/admin/plain-summaries?lang=${P.lang}`);
+  const q = P.q.trim().toLowerCase();
+  const items = d.items.filter(r => (P.status === 'all' || r.status === P.status) && (!P.type || r.entity_type === P.type)
+    && (!q || `${r.name} ${r.office_short} ${r.text || ''}`.toLowerCase().includes(q)));
+  const mine = r => can('lgu_admin') || (can('office_editor') && Number(S.me.office_id) === Number(r.office_id));
+  const card = r => {
+    const key = `${r.entity_type}/${r.entity_id}/${d.lang}`;
+    const label = r.entity_type === 'office' ? 'Office · "Helps with…"' : `Service · ${esc(r.office_short)}${r.is_citizen_facing === 0 ? ' · for other government offices' : ''}`;
+    const badge = { draft: '<span class="badge warn">Waiting</span>', approved: '<span class="badge ok">Approved · on the kiosk</span>', rejected: '<span class="badge bad">Rejected</span>', none: '<span class="badge">Not written</span>' }[r.status];
+    return `<div class="card plain-item" data-key="${key}">
+      <div class="row" style="justify-content:space-between;gap:12px;align-items:flex-start"><div><small class="muted">${label}</small><h3 style="margin:2px 0 0">${esc(r.name)}</h3>
+        ${r.context ? `<div class="muted small">Who may apply (Charter): ${esc(String(r.context).slice(0, 160))}</div>` : ''}
+        ${r.charter_source ? `<div class="muted small">${esc(r.charter_source)}</div>` : ''}</div>${badge}</div>
+      ${r.approved_text && r.status !== 'approved' ? `<div class="notice" style="margin-top:8px"><span><b>On the kiosk now:</b> ${esc(r.approved_text)}</span></div>` : ''}
+      <textarea class="plain-text" rows="2" maxlength="200" ${mine(r) ? '' : 'readonly'} placeholder="${r.entity_type === 'office' ? 'What visitors come to this office for, in plain words' : 'For people who… (one plain line)'}">${esc(r.text || '')}</textarea>
+      <div class="row" style="gap:8px;margin-top:8px;align-items:center">
+        ${r.source === 'drafted' && r.status === 'draft' ? '<span class="muted small">Prepared from the Charter text, not yet checked by staff.</span>' : ''}
+        <span style="flex:1"></span>
+        ${mine(r) ? `<button class="btn sm" data-act="plainsave">Save as draft</button>` : ''}
+        ${can('lgu_admin') && r.status === 'draft' ? `<button class="btn sm" data-act="plainreject">Reject</button>` : ''}
+        ${can('lgu_admin') ? `<button class="btn sm primary" data-act="plainapprove">${r.status === 'approved' ? 'Save and keep approved' : 'Approve'}</button>` : ''}
+      </div></div>`;
+  };
+  shell('plain', `<div class="head"><h1>Plain language</h1>
+      ${can('lgu_admin') && (d.counts.none || 0) > 0 && P.lang === 'en' ? `<button class="btn" data-act="plainimport">${icon('plus', 18)}Load prepared drafts</button>` : ''}</div>
+    <p class="sub">One short line per office (“Helps with…”) and per service (“For people who…”) for the kiosk’s <b>Find a service</b> browse. It helps visitors pick the right service; the Citizen’s Charter text itself is never changed. A line appears on the kiosk only after an LGU admin approves it. If the Filipino or Cebuano line is missing, the approved English line is shown.</p>
+    <div class="card" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      ${PLAIN_TABS.map(([k, l]) => `<button class="btn sm${P.status === k ? ' primary' : ''}" data-act="plaintab" data-k="${k}">${l}${k !== 'all' ? ` (${d.counts[k] || 0})` : ''}</button>`).join('')}
+      <span style="flex:1"></span>
+      <select id="plang" aria-label="Language">${PLAIN_LANGS.map(([k, l]) => `<option value="${k}" ${P.lang === k ? 'selected' : ''}>${l}</option>`).join('')}</select>
+      <select id="ptype" aria-label="Show"><option value="">Offices and services</option><option value="office" ${P.type === 'office' ? 'selected' : ''}>Offices</option><option value="service" ${P.type === 'service' ? 'selected' : ''}>Services</option></select>
+      <input id="pq" type="search" placeholder="Filter by name or office" value="${esc(P.q)}">
+    </div>
+    <div class="plain-list" style="display:grid;gap:12px;margin-top:12px">${items.slice(0, P.limit).map(card).join('') || '<div class="card muted">Nothing here.</div>'}</div>
+    ${items.length > P.limit ? `<button class="btn" style="margin-top:12px" data-act="plainmore">Show more (${items.length - P.limit} left)</button>` : ''}`);
+  $('#plang').addEventListener('change', e => { P.lang = e.target.value; P.limit = 40; PAGES.plain(); });
+  $('#ptype').addEventListener('change', e => { P.type = e.target.value; P.limit = 40; PAGES.plain(); });
+  $('#pq').addEventListener('input', e => { clearTimeout(P.t); P.t = setTimeout(() => { P.q = e.target.value; PAGES.plain().then(() => { const i = $('#pq'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }); }, 300); });
+};
+const plainTarget = b => { const c = b.closest('.plain-item'); return { c, key: c.dataset.key, text: $('.plain-text', c).value }; };
+ACTIONS.plaintab = b => { S.plain.status = b.dataset.k; S.plain.limit = 40; PAGES.plain(); };
+ACTIONS.plainmore = () => { S.plain.limit += 40; PAGES.plain(); };
+ACTIONS.plainsave = async b => { const { key, text } = plainTarget(b);
+  try { await api(`/api/admin/plain-summaries/${key}`, { method: 'PUT', body: { text } }); toast('Saved as a draft. It shows on the kiosk after approval.'); PAGES.plain(); } catch (e) { toast(e.message, true); } };
+ACTIONS.plainapprove = async b => { const { key, text } = plainTarget(b);
+  try { await api(`/api/admin/plain-summaries/${key}/approve`, { method: 'POST', body: { text } }); toast('Approved. Kiosks show it within a minute.'); PAGES.plain(); } catch (e) { toast(e.message, true); } };
+ACTIONS.plainreject = async b => { if (!confirmInline(b, 'Reject?')) return; const { key } = plainTarget(b);
+  try { await api(`/api/admin/plain-summaries/${key}/reject`, { method: 'POST', body: {} }); toast('Rejected. The kiosk keeps showing the last approved line, if any.'); PAGES.plain(); } catch (e) { toast(e.message, true); } };
+ACTIONS.plainimport = async b => { if (!confirmInline(b, 'Load drafts?')) return;
+  try { const r = await api('/api/admin/plain-summaries/import-drafts', { method: 'POST', body: {} }); toast(`${r.added} drafts added for review${r.kept ? `, ${r.kept} existing lines kept` : ''}. Nothing is shown on the kiosk until approved.`); S.plain.status = 'draft'; PAGES.plain(); } catch (e) { toast(e.message, true); } };
 
 // ---------------- users
 PAGES.users = async () => {

@@ -346,3 +346,27 @@ test('baked shader decodes RGBM with the binding range and grades once', async (
   assert.ok(r.max <= 2 && r.mean < 0.6, `baked shader vs CPU-decoded RGBM through the same LUT: ${JSON.stringify(r)}`);
   await page.close();
 });
+
+test('Browse offices: grouped by floor, plain lines once approved, Back keeps the place', async () => {
+  const office = srv.fx.office;
+  await srv.api('POST', '/admin/plain-summaries/import-drafts', {});
+  await srv.api('POST', `/admin/plain-summaries/office/${office.id}/en/approve`, {});
+  const page = await b.newPage(PORTRAIT), errors = watch(page);
+  await page.goto(`${srv.base}/kiosk?idle=0&screen=home`, { waitUntil: 'networkidle' });
+  await page.click('.choice[data-action="offices"]');
+  assert.ok((await page.$$('.group-h')).length >= 2, 'grouped by floor');
+  const row = page.locator(`.row[data-action="office"][data-id="${office.id}"]`);
+  assert.match(await row.textContent(), /Helps with:/, 'approved line shown');
+  const unapproved = await page.$$eval('.row[data-action="office"]', rows => rows.filter(r => /Helps with:/.test(r.textContent)).length);
+  assert.equal(unapproved, 1, 'drafts that are not approved stay hidden');
+  await page.evaluate(() => { document.querySelector('.content').scrollTop = 600; });
+  const before = await page.evaluate(() => document.querySelector('.content').scrollTop);
+  // a DOM click (Playwright's own click would first scroll the row into view and move the list)
+  await page.evaluate(id => document.querySelector(`.row[data-action="office"][data-id="${id}"]`).click(), office.id);
+  await page.waitForSelector('.row[data-action="service"]');
+  await page.click('[data-action="back"]');
+  await page.waitForSelector('.row[data-action="office"]');
+  assert.equal(await page.evaluate(() => document.querySelector('.content').scrollTop), before, 'Back returns to the same place in the list');
+  assert.deepEqual(errors, []);
+  await page.close();
+});

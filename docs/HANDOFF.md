@@ -16,7 +16,7 @@
 | Repo | `Desktop\cityhallkiosk_codex\City Hall Code\cityhallkiosk`, GitHub `LorenPacuribot/cityhallkiosk` (this repo uses the LorenPacuribot account) |
 | Branch | `codex/3d-building-r09` (not merged to `main`) |
 | Last commit | `9c1c61a`. Work after it is uncommitted; see **In progress**. |
-| Tests | `npm test`: 35/35 pass. `npm run test:e2e`: 14/14 pass. `node test/e2e/pilot-routes.mjs` (portrait and landscape): pass, no errors. All run after the changes below. |
+| Tests | `npm test`: 39/39 pass. `npm run test:e2e`: 15/15 pass. `node test/e2e/pilot-routes.mjs` (portrait and landscape): pass, no errors. All run after the changes below. |
 | Live database | `server/data/kiosk.sqlite`. Never reset or reseed it. Nothing is published, and the navigation tables are not created yet: the first start of the new server adds them, so **back it up first**. |
 
 ## The three folders
@@ -26,6 +26,8 @@
 | `Desktop\cityhallkiosk_codex\City Hall Code\cityhallkiosk` | **The app.** Node/Express server, sql.js database, web kiosk, admin, phone page. |
 | `Documents\ChatGPT\CityHallKiosk_Codex` | **Model workspace.** Blender revisions 01–09. The web build reads `web_source_r09\` (see its `README.md`). Unity was removed on 2026-10-16; see `web_source_r09\CLEANUP_LOG.txt`. |
 | `Desktop\cityhallkiosk_codex\cityhallkiosk_codex` | Old setup notes from 12 October (the Blender + MCP idea). **Obsolete**; points here. |
+
+Product brief (users, purpose, principles, brand rules): [`PRODUCT.md`](../PRODUCT.md). Read it before any design work.
 
 ## Decisions (do not re-open without the owner)
 
@@ -100,6 +102,35 @@
 7. **Docs:**
    - This handoff, `AGENTS.md` and `CLAUDE.md` are new; `NEXT_STEPS.md` was removed (merged here).
    - The old Codex notes point here.
+
+8. **Critique.** `/impeccable critique kiosk` scored 25/40 (saved in `.impeccable/critique/`). The owner chose all 5 priority issues, a civic wayfinding look, and one step at a time:
+   1. **shape: service browse** — done (see 9);
+   2. layout: service page;
+   3. harden: reset bug and dead ends;
+   4. distill: navigation screen;
+   5. clarify: floor and room names, "You are here", Cebuano leftovers;
+   6. document, then colorize and typeset (civic look);
+   7. polish.
+9. **"Find a service" browse (done):**
+   - **Home keeps its three cards** (owner's decision, 2026-10-17):
+     - **Find a service** opens search, as before;
+     - **Browse offices** opens the office list, now grouped by floor (walking order, then "location to be confirmed", then off-site);
+     - **Map of City Hall**, as before.
+
+     Do not merge or replace these cards.
+   - **Rows:**
+     - each office row shows "Helps with: …";
+     - each service row shows "For people who…";
+     - Back restores the list position;
+     - landscape shows the chosen office in a side panel.
+   - **All 276 Charter services now reach the kiosk** (owner's decision): `is_citizen_facing` only sorts services under "For other government offices", and "Most searched" stays public-only.
+   - **Plain-language lines:**
+     - Stored in the new `plain_summaries` table (migration `2026-10-17-001`).
+     - Edited in the new **Admin → Plain language** page (`routes/plain-admin.js`): office editors propose for their own office; LGU admins approve or reject.
+     - Only approved text reaches the kiosk bundle (`summary: {en, fil, ceb}`); the kiosk falls back to English.
+     - The Charter text is never changed.
+   - **Prepared drafts:** English drafts for all 26 offices and 276 services are in `server/data/plain-summaries-draft.json`. **Load them** with **Admin → Plain language → Load prepared drafts**. **None is approved on the live database yet.** The demo server loads them as drafts.
+   - **Tests:** `test/plain.test.js` and one e2e test.
 
 ### Known small issues
 

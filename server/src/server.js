@@ -7,6 +7,7 @@ import { seed } from './seed.js';
 import { publicApi } from './routes/public.js';
 import { authApi, adminApi } from './routes/admin.js';
 import { navAdminApi } from './routes/navigation-admin.js';
+import { plainAdminApi } from './routes/plain-admin.js';
 
 const PORT = Number(process.env.PORT || 3000);
 
@@ -39,6 +40,7 @@ export async function createApp() {
   app.use('/api/auth', authApi);
   app.use('/api/admin', adminApi);
   app.use('/api/admin', navAdminApi);
+  app.use('/api/admin', plainAdminApi);
   app.use('/api', publicApi);
   app.use('/api', (req, res) => res.status(404).json({ error: 'Unknown API route' }));
 

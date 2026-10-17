@@ -136,6 +136,27 @@ CREATE TABLE IF NOT EXISTS navigation_publications (
 CREATE UNIQUE INDEX IF NOT EXISTS one_published_navigation ON navigation_publications(status) WHERE status = 'published';
 `,
   },
+  {
+    id: '2026-10-17-001-plain-summaries',
+    description: 'Plain-language summaries per office and service (draft until staff approve; the Charter text is never changed)',
+    sql: `
+CREATE TABLE IF NOT EXISTS plain_summaries (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  entity_type   TEXT NOT NULL CHECK (entity_type IN ('office','service')),
+  entity_id     INTEGER NOT NULL,
+  lang          TEXT NOT NULL DEFAULT 'en' CHECK (lang IN ('en','fil','ceb')),
+  text          TEXT NOT NULL,                    -- the current wording (a draft until approved)
+  status        TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','rejected')),
+  approved_text TEXT,                             -- what the public sees; kept while a newer draft waits
+  source        TEXT NOT NULL DEFAULT 'staff' CHECK (source IN ('drafted','staff')),
+  updated_by    INTEGER REFERENCES users(id),
+  updated_at    TEXT NOT NULL DEFAULT (datetime('now')),
+  reviewed_by   INTEGER REFERENCES users(id),
+  reviewed_at   TEXT,
+  UNIQUE (entity_type, entity_id, lang)
+);
+`,
+  },
 ];
 
 /** Applies pending migrations. `db` is the sql.js Database. Returns the ids applied. */

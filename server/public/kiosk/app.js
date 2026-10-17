@@ -169,11 +169,62 @@ const helpbar = () => `<div class="helpbar">${icon('users', 36)}<span>${t('help_
 const backBtn = (label = t('back')) => `<button class="back" data-action="back">${icon('arrow-left', 36)}<span>${esc(label)}</span></button>`;
 function rowHTML(item) {
   const isOffice = item.kind === 'office';
-  return `<button class="row" data-action="${isOffice ? 'office' : 'service'}" data-id="${item.id}">
+  return `<button class="row"${item.current ? ' aria-current="true"' : ''} data-action="${isOffice ? 'office' : 'service'}" data-id="${item.id}">
     <span class="tile">${icon(isOffice ? 'building' : 'file-text', 36)}</span>
-    <span class="txt"><span class="title">${esc(item.title)}</span><span class="sub">${esc(item.subtitle || '')}</span></span>
+    <span class="txt"><span class="title">${esc(item.title)}</span>${item.subtitle ? `<span class="sub">${esc(item.subtitle)}</span>` : ''}${item.meta ? `<span class="sub meta">${esc(item.meta)}</span>` : ''}</span>
     <span class="chev">${icon('chevron-right', 36)}</span></button>`;
 }
+// An approved plain-language line in the visitor's language (English when not yet translated), or null.
+const summaryOf = x => x?.summary ? (x.summary[getLang()] || x.summary.en || null) : null;
+// Browse groups, in walking order: each floor of the building, then offices whose room is not confirmed, then off-site.
+function officeGroups(filter = 'all') {
+  const floors = S.bundle.floors.filter(fl => S.bundle.offices.some(o => o.location?.room_id && o.location.floor_level === fl.level));
+  const groups = floors.map(fl => ({ key: String(fl.level), label: fl.name, items: S.bundle.offices.filter(o => o.location?.room_id && o.location.floor_level === fl.level) }));
+  groups.push({ key: 'unconfirmed', label: t('location_unconfirmed'), items: S.bundle.offices.filter(o => o.location_type !== 'offsite' && !o.location?.room_id) });
+  groups.push({ key: 'out', label: t('not_in_building'), items: S.bundle.offices.filter(o => o.location_type === 'offsite') });
+  return groups.filter(g => g.items.length && (filter === 'all' || filter === g.key || (filter === 'out' && g.key === 'unconfirmed')));
+}
+function officeRow(o, current = false) {
+  const sum = summaryOf(o);
+  return rowHTML({ kind: 'office', id: o.id, title: o.name, subtitle: sum ? t('helps_with', { text: sum }) : '',
+    meta: `${locText(o.location)} · ${t('services_count', { n: o.service_count })}`, current });
+}
+// An office's services: public first, then the ones the Charter lists for other government offices.
+function officeServicesHTML(o) {
+  const svcs = S.bundle.services.filter(s => s.office_id === o.id);
+  const time = s => { const v = String(s.total_processing_time || '').trim(); return v && v.length <= 40 && !v.includes('\n') ? t('about_time', { t: v.toLowerCase() }) : ''; };
+  const facts = s => [s.classification && s.classification.length <= 24 ? s.classification : '', time(s)].filter(Boolean).join(' · ');
+  const row = s => { const sum = summaryOf(s); return rowHTML({ kind: 'service', id: s.id, title: s.display_title, subtitle: sum || facts(s), meta: sum ? facts(s) : '' }); };
+  const pub = svcs.filter(s => s.is_citizen_facing), gov = svcs.filter(s => !s.is_citizen_facing);
+  return `${pub.length ? `<h2 class="h2 svc-list-h">${gov.length ? t('public_services') : t('office_services')} (${pub.length})</h2><div class="list">${pub.map(row).join('')}</div>` : ''}
+    ${gov.length ? `<h2 class="h2 svc-list-h">${t('gov_services')} (${gov.length})</h2><div class="list">${gov.map(row).join('')}</div>` : ''}`;
+}
+// "1st floor · Room 1F-102 · Inside City Hall" (or off-site / to be confirmed)
+function officeWhere(o, { short = false } = {}) {
+  const l = o.location;
+  if (o.location_type === 'offsite') return o.offsite_address || t('not_in_building');
+  if (!l?.room_id) return t('location_unconfirmed');
+  const room = l.room_code ? t('room_n', { c: l.room_code }) : '';
+  return short ? [l.floor_name, room].filter(Boolean).join(', ') : [l.floor_name, room, t('inside_hall')].filter(Boolean).join(' · ');
+}
+// Left column: open-now (City Hall hours), office hours, phone, where; then "Show me the way" for offices in the building
+function officeInfoHTML(o) {
+  const inBuilding = o.location?.room_id, sum = summaryOf(o), st = openStatus(new Date());
+  const item = (ic, label, value) => value ? `<div class="info-row"><span class="info-ic">${icon(ic, 32)}</span><div class="info-txt"><span class="body muted">${label}</span><span class="info-val">${esc(value)}</span></div></div>` : '';
+  return `${sum ? `<p class="body office-sum">${esc(t('helps_with', { text: sum }))}</p>` : ''}
+    <div class="card office-info">
+      ${inBuilding ? `<span class="open-pill ${st.open ? 'is-open' : 'is-closed'}"><i class="dot"></i>${esc(st.text)}</span>` : ''}
+      ${item('clock', t('office_hours'), o.hours)}
+      ${item('phone', t('phone'), o.phone)}
+      ${item('map-pin', t('where_label'), officeWhere(o, { short: true }))}
+    </div>
+    ${inBuilding ? `<button class="btn btn-primary btn-block" data-action="navoffice" data-id="${o.id}">${icon('navigation', 36)}${t('show_way')}</button>` : ''}`;
+}
+function officePanelHTML(o) {
+  if (!o) return `<p class="body muted browse-empty">${t('choose_office')}</p>`;
+  return `<h2 class="h2">${esc(o.name)}</h2><p class="body muted">${esc(officeWhere(o))}</p>${officeInfoHTML(o)}${officeServicesHTML(o)}`;
+}
+
 function locText(loc) {
   if (!loc || loc.type === 'unconfirmed' && !loc.room_id) return t('location_unconfirmed');
   if (loc.type === 'offsite') return t('not_in_building');
@@ -277,39 +328,35 @@ const screens = {
       </div>${helpbar()}</section>`;
   },
 
+  // "Find a service": every office, grouped by floor in walking order, each saying what it helps with. No typing.
+  // Landscape shows the chosen office's services beside the list.
   offices() {
-    const f = S.floorFilter;
-    const list = S.bundle.offices.filter(o => f === 'all' ? true : f === 'out' ? o.location_type !== 'in_building' || !o.location?.room_id : o.location?.floor_level === Number(f));
+    const f = S.floorFilter, wide = LAYOUT === 'landscape';
+    const all = officeGroups('all');
+    const chips = [['all', t('all_floors')], ...all.filter(g => g.key !== 'unconfirmed' && g.key !== 'out').map(g => [g.key, g.label]), ...(all.some(g => g.key === 'out' || g.key === 'unconfirmed') ? [['out', t('not_in_building')]] : [])];
+    const sel = wide ? idx.offices.get(S.browseSel) || null : null;
+    const list = officeGroups(f).map(g => `<h2 class="h3 group-h">${esc(g.label)}</h2><div class="list">${g.items.map(o => officeRow(o, sel?.id === o.id)).join('')}</div>`).join('');
     return `<section class="screen">${topbar()}
-      <div class="content" style="gap:24px">
+      <div class="content${wide ? ' cols browse-cols' : ''}" style="gap:24px">
+        <div class="col-main">
         ${backBtn()}
         <h1 class="h1">${t('offices_title')}</h1>
-        <div class="chips" role="group">
-          ${[['all', t('all_floors')], ...S.bundle.floors.filter(fl => S.bundle.offices.some(o => o.location?.floor_level === fl.level)).map(fl => [String(fl.level), fl.name]), ['out', t('not_in_building')]]
-            .map(([k, l]) => `<button class="chip" data-action="floorfilter" data-f="${k}" aria-pressed="${f === k}">${esc(l)}</button>`).join('')}
+        <div class="chips" role="group">${chips.map(([k, l]) => `<button class="chip" data-action="floorfilter" data-f="${k}" aria-pressed="${f === k}">${esc(l)}</button>`).join('')}</div>
+        ${list}
         </div>
-        <div class="list">${list.map(o => rowHTML({ kind: 'office', id: o.id, title: o.name, subtitle: `${locText(o.location)} · ${t('services_count', { n: o.service_count })}` })).join('')}</div>
+        ${wide ? `<div class="col-side browse-panel" aria-live="polite">${officePanelHTML(sel)}</div>` : ''}
       </div>${helpbar()}</section>`;
   },
 
   office({ id }) {
     const o = idx.offices.get(Number(id));
     if (!o) return screens.home();
-    const svcs = S.bundle.services.filter(s => s.office_id === o.id);
-    const inBuilding = o.location?.room_id;
     return `<section class="screen">${topbar()}
-      <div class="content">
-        ${backBtn()}
-        <h1 class="h1">${esc(o.name)}</h1>
-        <div class="badges">${inBuilding ? `<span class="badge info">${icon('map-pin', 24)}${esc(locText(o.location))}</span>` : `<span class="badge offsite">${t(o.location_type === 'offsite' ? 'not_in_building' : 'location_unconfirmed')}</span>`}</div>
-        <div class="card" style="display:grid;grid-template-columns:auto 1fr;gap:12px 20px;align-items:center">
-          ${icon('clock', 32)}<span class="caption">${esc(o.hours || '')}</span>
-          ${o.phone ? `${icon('phone', 32)}<span class="caption">${esc(o.phone)}</span>` : ''}
-          ${o.offsite_address ? `${icon('map-pin', 32)}<span class="caption">${esc(o.offsite_address)}</span>` : ''}
-        </div>
-        ${inBuilding ? `<button class="btn btn-primary btn-block" data-action="navoffice" data-id="${o.id}">${icon('navigation', 36)}${t('show_way')}</button>` : ''}
-        <h2 class="h3">${t('office_services')} (${svcs.length})</h2>
-        <div class="list">${svcs.map(s => rowHTML({ kind: 'service', id: s.id, title: s.display_title, subtitle: s.classification || '' })).join('')}</div>
+      <div class="page-head svc-head office-head">${backBtn()}<div class="head-txt"><h1 class="h1">${esc(o.name)}</h1>
+        <p class="body head-loc">${icon(o.location?.room_id ? 'map-pin' : 'building', 28)}<span>${esc(officeWhere(o))}</span></p></div></div>
+      <div class="content cols office-cols">
+        <div class="col-main">${officeInfoHTML(o)}</div>
+        <div class="col-side">${officeServicesHTML(o)}</div>
       </div>${helpbar()}</section>`;
   },
 
@@ -319,6 +366,7 @@ const screens = {
     if (S.online) fetch(`/api/services/${s.id}`).catch(() => {}); // view counter
     const verified = s.verified_at ? `<span class="badge success">${icon('circle-check', 24)}${t('verified_on', { d: new Date(s.verified_at).toLocaleDateString([], { month: 'short', year: 'numeric' }) })}</span>` : '';
     const inBuilding = s.location?.room_id;
+    const govBadge = s.is_citizen_facing ? '' : `<span class="badge neutral">${icon('building', 24)}${t('gov_services')}</span>`;
     return `<section class="screen">${topbar()}
       <div class="page-head svc-head">${backBtn()}<div class="head-txt"><h1 class="h1">${esc(s.display_title)}</h1>
         <p class="body">${esc(s.office_name)} · ${esc(locText(s.location))}</p></div></div>
@@ -329,7 +377,7 @@ const screens = {
           ${s.description ? `<p class="body muted svc-desc">${esc(s.description)}</p>` : ''}
           <div class="badges">
             <button class="badge badge-link ${inBuilding ? 'info' : 'offsite'}" data-action="office" data-id="${s.office_id}">${icon(inBuilding ? 'map-pin' : 'building', 24)}${esc(s.office_name)} · ${esc(locText(s.location))}${icon('chevron-right', 24)}</button>
-            ${s.classification ? `<span class="badge neutral">${esc(s.classification)}</span>` : ''}${verified}
+            ${govBadge}${s.classification ? `<span class="badge neutral">${esc(s.classification)}</span>` : ''}${verified}
           </div>
         </header>
         <div class="stats">
@@ -584,14 +632,17 @@ setInterval(tickClock, 15000);
 
 // ---------------------------------------------------------------- router
 function current() { return S.stack[S.stack.length - 1]?.name || 'welcome'; }
-function go(name, p = {}, { replace = false } = {}) {
+const SCROLLERS = '.content, .col-main, .col-side';
+function go(name, p = {}, { replace = false, restore = null } = {}) {
   if (name !== 'navigate') stopNav();
   if (replace) S.stack.pop();
+  else { const cur = S.stack[S.stack.length - 1]; if (cur) cur.scroll = [...stage.querySelectorAll(SCROLLERS)].map(el => el.scrollTop); }
   S.stack.push({ name, p });
   rerender();
+  if (restore) stage.querySelectorAll(SCROLLERS).forEach((el, i) => { if (restore[i]) el.scrollTop = restore[i]; });
 }
 function back() {
-  if (S.stack.length > 1) { S.stack.pop(); const top = S.stack[S.stack.length - 1]; S.stack.pop(); go(top.name, top.p); }
+  if (S.stack.length > 1) { S.stack.pop(); const top = S.stack[S.stack.length - 1]; S.stack.pop(); go(top.name, top.p, { restore: top.scroll }); }
   else go('home');
 }
 function rerender() {
@@ -617,7 +668,7 @@ function updateScrollFades() {
 }
 stage.addEventListener('scroll', updateScrollFades, { capture: true, passive: true });
 function resetToWelcome() {
-  S.stack = []; S.query = ''; S.results = null; S.filter = 'all'; S.floorFilter = 'all'; S.lastSuggest = [];
+  S.stack = []; S.query = ''; S.results = null; S.filter = 'all'; S.floorFilter = 'all'; S.lastSuggest = []; S.browseSel = null;
   stage.classList.remove('large'); setLang(safeLS.get(LS.lang) || 'en');
   stage.querySelectorAll('.overlay').forEach(o => o.remove());
   go('welcome');
@@ -956,7 +1007,14 @@ const actions = {
   map: () => { S.mapFloor = S.bundle.kiosk.floor_level; go('map'); },
   mapfloor: d => { S.mapFloor = Number(d.l); go('map', {}, { replace: true }); },
   maproom: d => { const off = S.bundle.offices.find(o => o.location?.room_id === Number(d.id)); if (off) go('office', { id: off.id }); else { const r = idx.rooms.get(Number(d.id)); routeTo({ roomId: r.id }, r.name); } },
-  office: d => { if (d.id) go('office', { id: d.id }); },
+  office: d => {
+    if (!d.id) return;
+    const panel = LAYOUT === 'landscape' && current() === 'offices' && $('.browse-panel');
+    if (!panel) return go('office', { id: d.id });
+    S.browseSel = Number(d.id);
+    panel.innerHTML = officePanelHTML(idx.offices.get(S.browseSel)); panel.scrollTop = 0;
+    stage.querySelectorAll('.browse-cols .col-main .row').forEach(r => r.dataset.id === String(S.browseSel) ? r.setAttribute('aria-current', 'true') : r.removeAttribute('aria-current'));
+  },
   service: d => go('service', { id: d.id }),
   filter: d => { S.filter = d.f; go('results', {}, { replace: true }); },
   floorfilter: d => { S.floorFilter = d.f; go('offices', {}, { replace: true }); },

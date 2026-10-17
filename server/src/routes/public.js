@@ -49,7 +49,7 @@ publicApi.get('/services/popular', (req, res) => {
 
 publicApi.get('/services/:id', (req, res) => {
   const s = serviceDetail(int(req.params.id));
-  if (!s || !s.is_citizen_facing) return res.status(404).json({ error: 'Service not found' });
+  if (!s) return res.status(404).json({ error: 'Service not found' });
   if (req.query.view !== '0') run('UPDATE services SET view_count = view_count + 1 WHERE id = ?', [s.id]);
   res.json(s);
 });
@@ -58,8 +58,8 @@ publicApi.get('/offices', (req, res) => res.json({ items: officesWithLocation() 
 publicApi.get('/offices/:id', (req, res) => {
   const o = get('SELECT * FROM offices WHERE id = ? AND is_active = 1', [int(req.params.id)]);
   if (!o) return res.status(404).json({ error: 'Office not found' });
-  const services = all(`SELECT id, COALESCE(plain_title, title) AS title, classification, total_fees, total_processing_time
-                          FROM services WHERE office_id = ? AND status='published' AND is_citizen_facing=1 ORDER BY title`, [o.id]);
+  const services = all(`SELECT id, COALESCE(plain_title, title) AS title, classification, total_fees, total_processing_time, is_citizen_facing
+                          FROM services WHERE office_id = ? AND status='published' ORDER BY is_citizen_facing DESC, title`, [o.id]);
   res.json({ ...o, location: locationPayload(officeLocation(o.id)), services });
 });
 
