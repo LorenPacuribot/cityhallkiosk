@@ -119,3 +119,7 @@ Use the recorded card, button and requirement radii. Circular number markers dis
 - Don't extend this scoped redesign to other app screens.
 - Don't truncate requirements or process text to fit a card.
 - Don't invent office locations, routes or accessibility connections.
+
+## Office directory
+
+Browse offices is a separate floor-grouped directory using the civic detail chrome. Landscape uses two equal columns of office rows; portrait uses one. Each row opens the individual office page. Floor filters and Back preserve the browsing flow. This replaces the former landscape preview panel.

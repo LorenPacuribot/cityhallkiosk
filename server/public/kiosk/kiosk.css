@@ -606,3 +606,14 @@ h1, h2, h3, p { margin: 0; }
 #stage:not(.landscape) .service-bring > .helpful { order:3; }
 #stage:not(.landscape) .service-bring > .service-context { order:4; }
 #stage:not(.landscape) .service-bring > p { order:5; }
+/* Dedicated office directory inherits the office detail visual language. */
+.office-directory .directory-content { padding:32px 64px; gap:28px; }
+.office-directory-group { display:flex; flex-direction:column; gap:18px; }
+.office-directory-group .group-h { color:#13385f; margin:0; font-size:36px; }
+.office-directory .row { min-height:136px; padding:24px 28px; }
+.office-directory .row .title { font-size:30px; font-weight:700; }
+.office-directory .row .chev { color:#13385f; }
+.office-directory .row .sub { font-size:24px; }
+.office-directory .chips { flex:none; }
+.landscape .office-directory .list { grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+#stage.narrow .office-directory .directory-content { padding-inline:24px; }

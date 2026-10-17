@@ -134,6 +134,14 @@ Product brief (users, purpose, principles, brand rules): [`PRODUCT.md`](../PRODU
 
 ### In progress
 
+- 3D map diagnosis: port 3000 uses the live database with no navigation publication. The configured model is on demo port 3100, with kiosk=PILOT-ENTRANCE and preview=1. Verified the real 3D map loads with zero browser errors; screenshot in .impeccable/review/restored-3d-map.png. The current office redesign is served there too. Live database was not changed.
+
+- Owner confirmed separate office directory and individual office pages. Browse offices now uses a full-width floor-grouped directory, two columns in landscape, and every row opens the individual reference-styled office page. This supersedes the former landscape side-panel decision. Filters and Back remain available. Asset revision bumped. Landscape/portrait browser smoke verified directory ? office ? Back; screenshots in `.impeccable/review/*-directory.png`.
+
+- Owner requested stopping EstimateMaster: verified PID 15964 belongs to EstimateMasterApp-main and stopped only that process.
+
+- Follow-up: HTTP checks confirm localhost:3000 serves redesigned kiosk assets, but 127.0.0.1:3000 serves unrelated EstimateMaster HTML (competing IPv4 listener). Added versioned kiosk CSS/JS URLs and translated View office details action in landscape browse panel. Syntax check passed. Use localhost for kiosk preview.
+
 - Office and service detail redesign is complete, uncommitted. Matches the supplied blue civic references: scoped header/chrome, office information and service rows, service summary cards, requirements and process panels, and fixed QR/directions dock. Portrait places steps before feedback/context. Actual Charter text, office locations and navigation rules are preserved; live database untouched.
 - Verification: 39/39 unit/API and 15/15 browser tests pass; landscape and portrait screenshots in `.impeccable/review/`. QR, feedback and larger text smoke checks pass. Browser fixtures log missing optional `plans/fx-test01/plans.json` 404s but all tests pass. Independent visual review: ship after portrait ordering fix.
 - Design decisions documented in `DESIGN.md` and `.impeccable/design.json`.
@@ -145,7 +153,11 @@ Product brief (users, purpose, principles, brand rules): [`PRODUCT.md`](../PRODU
 
 ## Next (in order)
 
-- Review the redesigned office and service detail pages against the supplied references; next prior critique item is reset/dead-end hardening. No commit or push without owner request.
+- Review the model at http://localhost:3100/kiosk/landscape?kiosk=PILOT-ENTRANCE&preview=1&screen=map. Use npm run demo if the demo server is stopped. Live navigation setup remains a separate task.
+
+- EstimateMaster process PID 15964 stopped at owner request; recheck kiosk listener when starting npm start.
+
+- Review the separate office directory and individual office pages; next prior critique item is reset/dead-end hardening. No commit or push without owner request.
 
 1. **Match each in-building office (15 in the live database) to its model door.**
    - Use the reference plans in the admin.

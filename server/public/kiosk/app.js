@@ -222,7 +222,7 @@ function officeInfoHTML(o) {
 }
 function officePanelHTML(o) {
   if (!o) return `<p class="body muted browse-empty">${t('choose_office')}</p>`;
-  return `<h2 class="h2">${esc(o.name)}</h2><p class="body muted">${esc(officeWhere(o))}</p>${officeInfoHTML(o)}${officeServicesHTML(o)}`;
+  return `<h2 class="h2">${esc(o.name)}</h2><p class="body muted">${esc(officeWhere(o))}</p>${officeInfoHTML(o)}<button class="btn btn-secondary btn-block" data-action="officedetail" data-id="${o.id}">${icon('building', 32)}${t('view_office')}</button>${officeServicesHTML(o)}`;
 }
 
 function locText(loc) {
@@ -328,23 +328,17 @@ const screens = {
       </div>${helpbar()}</section>`;
   },
 
-  // "Find a service": every office, grouped by floor in walking order, each saying what it helps with. No typing.
-  // Landscape shows the chosen office's services beside the list.
+  // Dedicated office directory; each office opens its own detail screen.
   offices() {
-    const f = S.floorFilter, wide = LAYOUT === 'landscape';
+    const f = S.floorFilter;
     const all = officeGroups('all');
     const chips = [['all', t('all_floors')], ...all.filter(g => g.key !== 'unconfirmed' && g.key !== 'out').map(g => [g.key, g.label]), ...(all.some(g => g.key === 'out' || g.key === 'unconfirmed') ? [['out', t('not_in_building')]] : [])];
-    const sel = wide ? idx.offices.get(S.browseSel) || null : null;
-    const list = officeGroups(f).map(g => `<h2 class="h3 group-h">${esc(g.label)}</h2><div class="list">${g.items.map(o => officeRow(o, sel?.id === o.id)).join('')}</div>`).join('');
-    return `<section class="screen">${topbar()}
-      <div class="content${wide ? ' cols browse-cols' : ''}" style="gap:24px">
-        <div class="col-main">
-        ${backBtn()}
-        <h1 class="h1">${t('offices_title')}</h1>
-        <div class="chips" role="group">${chips.map(([k, l]) => `<button class="chip" data-action="floorfilter" data-f="${k}" aria-pressed="${f === k}">${esc(l)}</button>`).join('')}</div>
+    const list = officeGroups(f).map(g => `<section class="office-directory-group"><h2 class="h2 group-h">${esc(g.label)}</h2><div class="list">${g.items.map(o => officeRow(o)).join('')}</div></section>`).join('');
+    return `<section class="screen civic-detail office-directory">${topbar()}
+      <div class="page-head svc-head">${backBtn()}<div class="head-txt"><h1 class="h1">${t('offices_title')}</h1></div></div>
+      <div class="content directory-content">
+        <div class="chips" role="group" aria-label="${t('all_floors')}">${chips.map(([k, l]) => `<button class="chip" data-action="floorfilter" data-f="${k}" aria-pressed="${f === k}">${esc(l)}</button>`).join('')}</div>
         ${list}
-        </div>
-        ${wide ? `<div class="col-side browse-panel" aria-live="polite">${officePanelHTML(sel)}</div>` : ''}
       </div>${helpbar()}</section>`;
   },
 
@@ -1008,14 +1002,8 @@ const actions = {
   map: () => { S.mapFloor = S.bundle.kiosk.floor_level; go('map'); },
   mapfloor: d => { S.mapFloor = Number(d.l); go('map', {}, { replace: true }); },
   maproom: d => { const off = S.bundle.offices.find(o => o.location?.room_id === Number(d.id)); if (off) go('office', { id: off.id }); else { const r = idx.rooms.get(Number(d.id)); routeTo({ roomId: r.id }, r.name); } },
-  office: d => {
-    if (!d.id) return;
-    const panel = LAYOUT === 'landscape' && current() === 'offices' && $('.browse-panel');
-    if (!panel) return go('office', { id: d.id });
-    S.browseSel = Number(d.id);
-    panel.innerHTML = officePanelHTML(idx.offices.get(S.browseSel)); panel.scrollTop = 0;
-    stage.querySelectorAll('.browse-cols .col-main .row').forEach(r => r.dataset.id === String(S.browseSel) ? r.setAttribute('aria-current', 'true') : r.removeAttribute('aria-current'));
-  },
+  office: d => { if (d.id) go('office', { id: d.id }); },
+  officedetail: d => go('office', { id: d.id }),
   service: d => go('service', { id: d.id }),
   filter: d => { S.filter = d.f; go('results', {}, { replace: true }); },
   floorfilter: d => { S.floorFilter = d.f; go('offices', {}, { replace: true }); },
